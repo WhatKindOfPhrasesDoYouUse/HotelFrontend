@@ -95,7 +95,7 @@ function Login() {
                     {loading ? "Вход..." : "Войти"}
                 </button>
             </div>
-            <div style={{marginTop: '20px'}}>
+            <div>
                 <Link to="/guest-registration">
                     <button style={styles.registerButton}>Регистрация</button>
                 </Link>

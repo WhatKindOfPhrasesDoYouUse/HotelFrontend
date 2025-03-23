@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {Link} from "react-router-dom";
+import Navbar from "./Navbar.jsx";
 
 const HotelList = () => {
     const [hotels, setHotels] = useState([]);
@@ -29,6 +30,7 @@ const HotelList = () => {
 
     return (
         <div className="hotel-container">
+            <Navbar />
             <h1 className="title">Отели</h1>
             <div className="hotel-list">
                 {hotels.map(hotel => (
