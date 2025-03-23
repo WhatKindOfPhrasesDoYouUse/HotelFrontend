@@ -35,9 +35,19 @@ function GuestRegistration() {
             errors.email = "Неверный формат email";
         }
 
-        const phonePattern = /^\+?\d{10,15}$/;
+        const phonePattern = /^\+?\d{10,12}$/;
         if (phoneNumber && !phonePattern.test(phoneNumber)) {
             errors.phoneNumber = "Неверный формат номера телефона";
+        }
+
+        const passportSeriesHashPattern = /^\d{4}$/;
+        if (passportSeriesHash && !passportSeriesHashPattern.test(passportSeriesHash)) {
+            errors.passportSeriesHash = "Неверный формат серии паспорта";
+        }
+
+        const passportNumberHashPattern = /^\d{6}$/;
+        if (passportNumberHash && !passportNumberHashPattern.test(passportNumberHash)) {
+            errors.passportNumberHash = "Неверный формат номера паспорта";
         }
 
         setValidationErrors(errors);
@@ -229,6 +239,7 @@ function GuestRegistration() {
                            color: '#333'
                        }}
                 />
+                {validationErrors.passportSeriesHash && <p style={{ color: 'red' }}>{validationErrors.passportSeriesHash}</p>}
 
                 <input type="text" placeholder="Номер паспорта" value={passportNumberHash}
                        onChange={(e) => setPassportNumberHash(e.target.value)}
@@ -242,6 +253,7 @@ function GuestRegistration() {
                            color: '#333'
                        }}
                 />
+                {validationErrors.passportNumberHash && <p style={{ color: 'red' }}>{validationErrors.passportNumberHash}</p>}
 
                 <button onClick={handleRegistration} style={{
                     padding: '10px 20px',
