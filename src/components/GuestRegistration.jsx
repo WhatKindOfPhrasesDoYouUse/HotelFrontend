@@ -14,12 +14,45 @@ function GuestRegistration() {
     const [passportSeriesHash, setPassportSeriesHash] = useState("");
     const [passportNumberHash, setPassportNumberHash] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [validationErrors, setValidationErrors] = useState({});
     const navigate = useNavigate();
 
+    const validate = () => {
+        let errors = {};
+
+        if (!name) errors.name = "Имя обязательно";
+        if (!surname) errors.surname = "Фамилия обязательна";
+        if (!email) errors.email = "Email обязателен";
+        if (!phoneNumber) errors.phoneNumber = "Номер телефона обязателен";
+        if (!passwordHash) errors.passwordHash = "Пароль обязателен";
+        if (!cityOfResidence) errors.cityOfResidence = "Город проживания обязателен";
+        if (!dateOfBirth) errors.dateOfBirth = "Дата рождения обязательна";
+        if (!passportSeriesHash) errors.passportSeriesHash = "Серия паспорта обязательна";
+        if (!passportNumberHash) errors.passportNumberHash = "Номер паспорта обязателен";
+
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (email && !emailPattern.test(email)) {
+            errors.email = "Неверный формат email";
+        }
+
+        const phonePattern = /^\+?\d{10,15}$/;
+        if (phoneNumber && !phonePattern.test(phoneNumber)) {
+            errors.phoneNumber = "Неверный формат номера телефона";
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    }
 
     const handleRegistration = async () => {
-        try {
 
+        const isValid = validate();
+
+        if (!isValid) {
+            return;
+        }
+
+        try {
             const formattedDateOfBirth = formatDateToISO(dateOfBirth)
 
             const requestData = {
@@ -39,7 +72,7 @@ function GuestRegistration() {
                 }
             };
 
-            console.log("Request Payload:", requestData); // Для отладки, можно убрать после теста
+            console.log("Request Payload:", requestData);
 
             const response = await axios.post("http://localhost:5221/api/auths/registration", requestData);
 
@@ -127,6 +160,8 @@ function GuestRegistration() {
                            color: '#333'
                        }}
                 />
+                {validationErrors.email && <p style={{ color: 'red' }}>{validationErrors.email}</p>}
+
 
                 <input type="text" placeholder="Номер телефона" value={phoneNumber}
                        onChange={(e) => setPhoneNumber(e.target.value)}
@@ -140,6 +175,7 @@ function GuestRegistration() {
                            color: '#333'
                        }}
                 />
+                {validationErrors.phoneNumber && <p style={{ color: 'red' }}>{validationErrors.phoneNumber}</p>}
 
                 <input type="password" placeholder="Пароль" value={passwordHash}
                        onChange={(e) => setPasswordHash(e.target.value)}
