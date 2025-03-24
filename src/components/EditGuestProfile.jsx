@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 
 const EditGuestProfile = () => {
@@ -18,6 +18,11 @@ const EditGuestProfile = () => {
         dateOfBirth: '',
         passportSeriesHash: '',
         passportNumberHash: '',
+    });
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: '',
     });
     const navigate = useNavigate();
 
@@ -64,13 +69,18 @@ const EditGuestProfile = () => {
         setEditData((prevState) => ({ ...prevState, [name]: value }));
     };
 
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordData((prevState) => ({ ...prevState, [name]: value }));
+    };
+
     const handleSaveData = async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
             const decodedToken = jwtDecode(token);
 
-             await axios.patch(
+            await axios.patch(
                 `http://localhost:5221/api/clients/${decodedToken.client_id}`,
                 editData
             );
@@ -86,109 +96,188 @@ const EditGuestProfile = () => {
         }
     };
 
+    const handleChangePassword = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const decodedToken = jwtDecode(token);
+
+
+            await axios.patch(
+                `http://localhost:5221/api/clients/${decodedToken.client_id}/password`,
+                passwordData
+            );
+        } catch (err) {
+            console.error("Ошибка при обновлении пароля:", err);
+            setError(err.response?.data?.message || "Ошибка при обновлении пароля");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
 
     return (
-        <div style={styles.profileContainer}>
+        <div style={styles.container}>
+
             <Navbar />
-            <h2>Редактирование пользователя</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleSaveData(); }}>
-                <label>
-                    Имя:
-                    <input
-                        type="text"
-                        name="name"
-                        value={editData.name}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Отчество:
-                    <input
-                        type="text"
-                        name="patronymic"
-                        value={editData.patronymic}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Email:
-                    <input
-                        type="email"
-                        name="email"
-                        value={editData.email}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Телефон:
-                    <input
-                        type="text"
-                        name="phoneNumber"
-                        value={editData.phoneNumber}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Город проживания:
-                    <input
-                        type="text"
-                        name="cityOfResidence"
-                        value={editData.cityOfResidence}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Дата рождения:
-                    <input
-                        type="date"
-                        name="dateOfBirth"
-                        value={editData.dateOfBirth}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Серия паспорта:
-                    <input
-                        type="text"
-                        name="passportSeriesHash"
-                        value={editData.passportSeriesHash}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <label>
-                    Номер паспорта:
-                    <input
-                        type="text"
-                        name="passportNumberHash"
-                        value={editData.passportNumberHash}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </label>
-                <button type="submit" style={styles.saveButton}>
-                    Сохранить
-                </button>
-            </form>
+
+            <div style={styles.profileSection}>
+                <h2>Редактирование профиля</h2>
+                <form onSubmit={(e) => { e.preventDefault(); handleSaveData(); }}>
+                    <label>
+                        Имя:
+                        <input
+                            type="text"
+                            name="name"
+                            value={editData.name}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Отчество:
+                        <input
+                            type="text"
+                            name="patronymic"
+                            value={editData.patronymic}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Email:
+                        <input
+                            type="email"
+                            name="email"
+                            value={editData.email}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Телефон:
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={editData.phoneNumber}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Город проживания:
+                        <input
+                            type="text"
+                            name="cityOfResidence"
+                            value={editData.cityOfResidence}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Дата рождения:
+                        <input
+                            type="date"
+                            name="dateOfBirth"
+                            value={editData.dateOfBirth}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Серия паспорта:
+                        <input
+                            type="text"
+                            name="passportSeriesHash"
+                            value={editData.passportSeriesHash}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Номер паспорта:
+                        <input
+                            type="text"
+                            name="passportNumberHash"
+                            value={editData.passportNumberHash}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <button type="submit" style={styles.saveButton}>
+                        Сохранить
+                    </button>
+                </form>
+            </div>
+
+            <div style={styles.passwordSection}>
+                <h2>Изменить пароль</h2>
+                <form onSubmit={(e) => { e.preventDefault(); handleChangePassword(); }}>
+                    <label>
+                        Текущий пароль:
+                        <input
+                            type="password"
+                            name="oldPassword"
+                            value={passwordData.oldPassword}
+                            onChange={handlePasswordChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Новый пароль:
+                        <input
+                            type="password"
+                            name="newPassword"
+                            value={passwordData.newPassword}
+                            onChange={handlePasswordChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Подтвердите новый пароль:
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={passwordData.confirmPassword}
+                            onChange={handlePasswordChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <button type="submit" style={styles.saveButton}>
+                        Изменить пароль
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
 
 const styles = {
-    profileContainer: {
-        maxWidth: "500px",
+    container: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "20px",
+        maxWidth: "1000px",
         margin: "20px auto",
         padding: "20px",
-        borderRadius: "10px",
+    },
+    profileSection: {
+        flex: 1,
+        maxWidth: "48%",
         backgroundColor: "#f5f5f5",
+        padding: "20px",
+        borderRadius: "10px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    },
+    passwordSection: {
+        flex: 1,
+        maxWidth: "48%",
+        backgroundColor: "#f5f5f5",
+        padding: "20px",
+        borderRadius: "10px",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     },
     input: {
@@ -208,11 +297,6 @@ const styles = {
         border: "none",
         borderRadius: "5px",
         cursor: "pointer",
-    },
-    successMessage: {
-        color: "green",
-        fontSize: "16px",
-        marginBottom: "10px",
     },
 };
 
