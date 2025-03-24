@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
+import {Link} from "react-router-dom";
 
 const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
@@ -41,6 +42,7 @@ const GuestProfile = () => {
     return (
         <div style={styles.profileContainer}>
             <Navbar />
+
             <h2>Профиль  {userData.name}</h2>
             <p><strong>ФИО:</strong> {userData?.name} {userData?.surname} {userData?.patronymic}</p>
             <p><strong>Email:</strong> {userData?.email}</p>
@@ -54,6 +56,11 @@ const GuestProfile = () => {
                     <p><strong>Паспорт:</strong> {guestData.passportSeriesHash} {guestData.passportNumberHash}</p>
                 </>
             )}
+
+            <Link to="/edit-guest-profile">
+                <button style={styles.editButton}>Редактировать профиль</button>
+            </Link>
+
         </div>
     );
 };
@@ -66,6 +73,16 @@ const styles = {
         borderRadius: "10px",
         backgroundColor: "#f5f5f5",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)"
+    },
+    editButton: {
+        padding: "8px 16px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+        margin: "10px 0",
+        fontSize: "16px"
     }
 };
 

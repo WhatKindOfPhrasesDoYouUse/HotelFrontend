@@ -66,20 +66,16 @@ function GuestRegistration() {
             const formattedDateOfBirth = formatDateToISO(dateOfBirth)
 
             const requestData = {
-                client: {
-                    name,
-                    surname,
-                    patronymic,
-                    email,
-                    phoneNumber,
-                    passwordHash
-                },
-                guest: {
-                    cityOfResidence,
-                    dateOfBirth: formattedDateOfBirth,
-                    passportSeriesHash,
-                    passportNumberHash
-                }
+                name,
+                surname,
+                patronymic,
+                email,
+                phoneNumber,
+                passwordHash,
+                cityOfResidence,
+                dateOfBirth: formattedDateOfBirth,
+                passportSeriesHash,
+                passportNumberHash
             };
 
             console.log("Request Payload:", requestData);
