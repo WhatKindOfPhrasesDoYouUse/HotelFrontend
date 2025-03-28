@@ -57,7 +57,7 @@ const Navbar = () => {
                     <span style={styles.greeting}>Привет, гость</span>
                 )}
 
-                <Link to="/hotels" style={styles.navLinks}>Отели</Link>
+                <Link to="/hotels" style={styles.navLinks}>Отель</Link>
             </div>
         </nav>
     );

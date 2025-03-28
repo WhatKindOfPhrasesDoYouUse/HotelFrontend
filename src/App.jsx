@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import HotelList from "./components/HotelList.jsx";
+import HotelDetail from "./components/HotelDetail.jsx";
 import RoomList from "./components/RoomList.jsx";
 import Login from "./components/Login.jsx";
 import GuestRegistration from "./components/GuestRegistration.jsx";
@@ -15,7 +15,7 @@ function App() {
                     <Route path="/edit-guest-profile" element={<EditGuestProfile />} />
                     <Route path="/guest-profile" element={<GuestProfile />} />
                     <Route path="/guest-registration" element={<GuestRegistration />} />
-                    <Route path="/hotels" element={<HotelList />} />
+                    <Route path="/hotels" element={<HotelDetail />} />
                     <Route path="/hotels/:hotelId/rooms" element={<RoomList />} />
                     <Route path="/login" element={<Login />} />
                 </Routes>

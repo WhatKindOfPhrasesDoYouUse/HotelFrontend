@@ -38,18 +38,7 @@ const RoomList = () => {
                         <h3>Комната {room.roomNumber}</h3>
                         <p><strong>Описание:</strong> {room.description}</p>
                         <p><strong>Вместимость:</strong> {room.capacity} человек</p>
-                        <p><strong>Цена за ночь:</strong> ${room.unitPrice}</p>
-                        {/* Дополнительно можно отображать удобства или бронирования */}
-                        {room.amenities.length > 0 && (
-                            <div>
-                                <strong>Удобства:</strong>
-                                <ul>
-                                    {room.amenities.map((amenity, index) => (
-                                        <li key={index}>{amenity}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                        <p><strong>Цена за ночь:</strong> {room.unitPrice} руб.</p>
                     </div>
                 ))}
             </div>
