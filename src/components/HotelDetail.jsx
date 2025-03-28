@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 
 const HotelDetail = () => {
@@ -41,7 +41,11 @@ const HotelDetail = () => {
                 <p><strong>Год постройки:</strong> {hotel.yearOfConstruction}</p>
                 <p><strong>Рейтинг:</strong> {hotel.rating} ⭐</p>
                 <p><strong>Контакты:</strong> {hotel.phoneNumber} | {hotel.email}</p>
+                <Link to={`/hotels/${hotel.id}/rooms`} style={styles.button}>
+                    Просмотр комнат
+                </Link>
             </div>
+
             <div style={styles.imageGallery}>
                 <img src="src/images/hotels/hotel-image-1.jpg" alt="Фото отеля" style={styles.image} />
                 <img src="src/images/hotels/hotel-image-2.jpg" alt="Фото отеля" style={styles.image} />
@@ -56,9 +60,9 @@ const styles = {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "80vh", // Полное окно
+        height: "80vh",
         padding: "20px",
-        backgroundColor: "#f8f8f8",
+        backgroundColor: "D5D5D5",
     },
     card: {
         backgroundColor: "#fff",
@@ -94,6 +98,16 @@ const styles = {
         color: "red",
         textAlign: "center",
     },
+    button: {
+        padding: "8px 16px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+        margin: "10px 0",
+        fontSize: "16px"
+    }
 };
 
 export default HotelDetail;

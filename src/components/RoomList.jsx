@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Navbar from "./Navbar.jsx";
+import {list} from "postcss";
 
 const RoomList = () => {
     const { hotelId } = useParams();
@@ -31,10 +33,11 @@ const RoomList = () => {
 
     return (
         <div className="room-container">
-            <h1 className="title">Комнаты отеля {hotelId}</h1>
-            <div className="room-list">
+            <Navbar />
+            <h1 className="title">Доступные комнаты</h1>
+            <div style={styles.roomList}>
                 {rooms.map(room => (
-                    <div key={room.id} className="room-card">
+                    <div key={room.id} style={styles.roomCard} className="room-card">
                         <h3>Комната {room.roomNumber}</h3>
                         <p><strong>Описание:</strong> {room.description}</p>
                         <p><strong>Вместимость:</strong> {room.capacity} человек</p>
@@ -44,6 +47,21 @@ const RoomList = () => {
             </div>
         </div>
     );
+};
+
+const styles = {
+    roomList: {
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)",
+        gap: "20px",
+        padding: "20px"
+    },
+    roomCard: {
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "15px",
+        boxSizing: "0 2px 4px rgba(0,0,0,0.1)"
+    }
 };
 
 export default RoomList;
