@@ -10,9 +10,28 @@ const RoomList = () => {
 
     const [sortByPrice, setSortByPrice] = useState(null);
     const [sortByCapacity, setSortByCapacity] = useState(null);
+
     const [capacity, setCapacity] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
+
+    const [comforts, setComforts] = useState({});
+
+    const fetchComforts = async (roomId) => {
+        try {
+            const response = await fetch(`http://localhost:5221/api/rooms/${roomId}/comforts`);
+            if (!response.ok) {
+                throw Error('Ошибка при загрузке данных о комфортностях');
+            }
+            const data = await response.json();
+            setComforts(prev => ({
+                ...prev,
+                [roomId]: data
+            }));
+        } catch (error) {
+            console.error("Ошибка при получении информации об удобствах для комнат: ", error);
+        }
+    }
 
     useEffect(() => {
         const fetchFilteredRooms = async () => {
@@ -28,6 +47,11 @@ const RoomList = () => {
                 }
                 const data = await response.json();
                 setRooms(data);
+
+                data.forEach((room) => {
+                    fetchComforts(room.id);
+                })
+
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -49,6 +73,11 @@ const RoomList = () => {
                     throw Error('Ошибка при загрузке данных о номерах');
                 }
                 const data = await response.json();
+
+                data.forEach((room) => {
+                    fetchComforts(room.id);
+                })
+
                 setRooms(data);
             } catch (error) {
                 setError(error.message);
@@ -107,6 +136,18 @@ const RoomList = () => {
                         <p><strong>Описание:</strong> {room.description}</p>
                         <p><strong>Вместимость:</strong> {room.capacity} человек</p>
                         <p><strong>Цена за ночь:</strong> {room.unitPrice} руб.</p>
+                        <div>
+                            <strong>Удобства:</strong>
+                            {comforts[room.id] ? (
+                                <ul style={styles.comfortsList}>
+                                    {comforts[room.id].map(comfort => (
+                                        <li key={comfort.id}>{comfort.name}</li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>Загрузка удобств...</p>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>
