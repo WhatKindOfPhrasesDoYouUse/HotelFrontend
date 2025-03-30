@@ -7,22 +7,26 @@ const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [sortByPrice, setSortByPrice] = useState(null);
     const [sortByCapacity, setSortByCapacity] = useState(null);
+    const [capacity, setCapacity] = useState("");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
 
     useEffect(() => {
-        const fetchRooms = async () => {
+        const fetchFilteredRooms = async () => {
             try {
                 const queryParams = new URLSearchParams();
-                if (sortByPrice !== null) queryParams.append("sortingDirectionByPrice", sortByPrice);
-                if (sortByCapacity !== null) queryParams.append("sortingDirectionByCapacity", sortByCapacity);
+                if (capacity) queryParams.append("capacity", capacity);
+                if (minPrice) queryParams.append("minUnitPrice", minPrice);
+                if (maxPrice) queryParams.append("maxUnitPrice", maxPrice);
 
-                const response = await fetch(`http://localhost:5221/api/rooms/sort/${hotelId}?${queryParams}`);
+                const response = await fetch(`http://localhost:5221/api/rooms/filter/${hotelId}?${queryParams}`);
                 if (!response.ok) {
-                    throw Error('Ошибка при загрузке данных о номерах')
+                    throw Error('Ошибка при загрузке данных о номерах');
                 }
                 const data = await response.json();
-                console.log("Полученные данные:", data);
                 setRooms(data);
             } catch (error) {
                 setError(error.message);
@@ -30,18 +34,38 @@ const RoomList = () => {
                 setLoading(false);
             }
         };
-        fetchRooms();
+        fetchFilteredRooms();
+    }, [hotelId, capacity, minPrice, maxPrice]);
+
+    useEffect(() => {
+        const fetchSortedRooms = async () => {
+            try {
+                const queryParams = new URLSearchParams();
+                if (sortByPrice !== null) queryParams.append("sortingDirectionByPrice", sortByPrice === "true");
+                if (sortByCapacity !== null) queryParams.append("sortingDirectionByCapacity", sortByCapacity === "true");
+
+                const response = await fetch(`http://localhost:5221/api/rooms/sort/${hotelId}?${queryParams}`);
+                if (!response.ok) {
+                    throw Error('Ошибка при загрузке данных о номерах');
+                }
+                const data = await response.json();
+                setRooms(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSortedRooms();
     }, [hotelId, sortByPrice, sortByCapacity]);
 
-    const handleSortByPriceChange = (e) => {
-        setSortByPrice(e.target.value === "" ? null : e.target.value === "true");
-    };
-
-    const handleSortByCapacityChange = (e) => {
-        setSortByCapacity(e.target.value === "" ? null : e.target.value === "true");
-    };
-
     const handleResetFilters = () => {
+        setCapacity("");
+        setMinPrice("");
+        setMaxPrice("");
+    };
+
+    const handleResetSorting = () => {
         setSortByPrice(null);
         setSortByCapacity(null);
     };
@@ -53,18 +77,28 @@ const RoomList = () => {
         <div className="room-container">
             <Navbar />
             <h1 className="title">Доступные комнаты</h1>
-            <div className="filter-container" style={styles.filterContainer}>
-                <select name="sortByPrice" onChange={handleSortByPriceChange}
-                        value={sortByPrice === null ? "" : sortByPrice ? "true" : "false"}>
-                    <option value="true">Цена: по возрастанию</option>
-                    <option value="false">Цена: по убыванию</option>
-                </select>
-                <select name="sortByCapacity" onChange={handleSortByCapacityChange}
-                        value={sortByCapacity === null ? "" : sortByCapacity ? "true" : "false"}>
-                    <option value="true">Вместимость: по возрастанию</option>
-                    <option value="false">Вместимость: по убыванию</option>
-                </select>
-                <button onClick={handleResetFilters} style={styles.resetButton}>Сбросить фильтры</button>
+            <div className="filters" style={styles.filters}>
+                <div className="filter-box" style={styles.filterBox}>
+                    <h3>Фильтрация</h3>
+                    <input type="number" placeholder="Вместимость" value={capacity} onChange={e => setCapacity(e.target.value)} style={styles.input} />
+                    <input type="number" placeholder="Мин. цена" value={minPrice} onChange={e => setMinPrice(e.target.value)} style={styles.input} />
+                    <input type="number" placeholder="Макс. цена" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} style={styles.input} />
+                    <button onClick={handleResetFilters} style={styles.resetButton}>Сбросить фильтры</button>
+                </div>
+                <div className="sort-box" style={styles.filterBox}>
+                    <h3>Сортировка</h3>
+                    <select onChange={e => setSortByPrice(e.target.value === "" ? null : e.target.value)} style={styles.select}>
+                        <option value="">Сортировать по цене</option>
+                        <option value="true">По возрастанию</option>
+                        <option value="false">По убыванию</option>
+                    </select>
+                    <select onChange={e => setSortByCapacity(e.target.value === "" ? null : e.target.value)} style={styles.select}>
+                        <option value="">Сортировать по вместимости</option>
+                        <option value="true">По возрастанию</option>
+                        <option value="false">По убыванию</option>
+                    </select>
+                    <button onClick={handleResetSorting} style={styles.resetButton}>Сбросить сортировку</button>
+                </div>
             </div>
             <div style={styles.roomList}>
                 {rooms.map(room => (
@@ -81,31 +115,38 @@ const RoomList = () => {
 };
 
 const styles = {
+    filters: {
+        display: "flex",
+        justifyContent: "center",
+        gap: "20px",
+        marginBottom: "20px"
+    },
     filterBox: {
         border: "1px solid #ccc",
         borderRadius: "10px",
-        padding: "15px",
-        margin: "20px auto",
-        width: "50%",
-        backgroundColor: "#f9f9f9"
+        padding: "45px",
+        width: "300px",
+        textAlign: "center",
+        backgroundColor: "#f5f5f5",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
     },
-    filterContainer: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        alignItems: "center"
-    },
-    label: {
-        fontSize: "16px",
-        fontWeight: "bold"
+    input: {
+        width: "100%",
+        padding: "8px",
+        marginBottom: "10px",
+        borderRadius: "5px",
+        backgroundColor: "#f5f5f5",
+        color: "black",
+        border: "1px solid #ccc"
     },
     select: {
+        width: "100%",
         padding: "8px",
+        marginBottom: "10px",
         borderRadius: "5px",
-        border: "1px solid #ccc",
-        cursor: "pointer",
-        fontSize: "16px",
-        width: "80%"
+        backgroundColor: "#f5f5f5",
+        color: "black",
+        border: "1px solid #ccc"
     },
     resetButton: {
         padding: "10px 15px",
@@ -128,6 +169,7 @@ const styles = {
         border: "1px solid #ddd",
         borderRadius: "8px",
         padding: "15px",
+        backgroundColor: "#f5f5f5",
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
     }
 };
