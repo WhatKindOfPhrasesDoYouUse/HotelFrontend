@@ -15,16 +15,19 @@ const RoomList = () => {
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
 
-    const [comforts, setComforts] = useState({});
+    const [comforts, setComforts] = useState([]);
+    const [roomComforts, setRoomComforts] = useState({});
+    const [selectedComforts, setSelectedComforts] = useState([]);
 
-    const fetchComforts = async (roomId) => {
+    const fetchRoomComforts = async (roomId) => {
         try {
             const response = await fetch(`http://localhost:5221/api/rooms/${roomId}/comforts`);
             if (!response.ok) {
                 throw Error('Ошибка при загрузке данных о комфортностях');
             }
             const data = await response.json();
-            setComforts(prev => ({
+            console.log(data);
+            setRoomComforts(prev => ({
                 ...prev,
                 [roomId]: data
             }));
@@ -32,6 +35,23 @@ const RoomList = () => {
             console.error("Ошибка при получении информации об удобствах для комнат: ", error);
         }
     }
+
+    useEffect(() => {
+        const fetchComforts = async () => {
+            try {
+                const response = await fetch("http://localhost:5221/api/comforts");
+                if (!response.ok) {
+                    throw new Error("Ошибка при загрузке комфортностей");
+                }
+                const data = await response.json();
+                setComforts(data);
+            } catch (error) {
+                console.error("Ошибка загрузки комфортностей:", error);
+            }
+        };
+
+        fetchComforts();
+    }, []);
 
     useEffect(() => {
         const fetchFilteredRooms = async () => {
@@ -49,7 +69,7 @@ const RoomList = () => {
                 setRooms(data);
 
                 data.forEach((room) => {
-                    fetchComforts(room.id);
+                    fetchRoomComforts(room.id);
                 })
 
             } catch (error) {
@@ -75,7 +95,7 @@ const RoomList = () => {
                 const data = await response.json();
 
                 data.forEach((room) => {
-                    fetchComforts(room.id);
+                    fetchRoomComforts(room.id);
                 })
 
                 setRooms(data);
@@ -88,10 +108,46 @@ const RoomList = () => {
         fetchSortedRooms();
     }, [hotelId, sortByPrice, sortByCapacity]);
 
+    const fetchFilteredRoomsByComforts = async () => {
+        try {
+            if (selectedComforts.length === 0) {
+                return;
+            }
+
+            const queryParams = new URLSearchParams();
+            selectedComforts.forEach(id => queryParams.append("comfortIds", id));
+
+            const response = await fetch(`http://localhost:5221/api/rooms/filter-by-comforts/${hotelId}?${queryParams}`);
+            if (!response.ok) {
+                throw new Error("Ошибка при загрузке номеров");
+            }
+
+            const data = await response.json();
+            setRooms(data);
+
+            data.forEach(room => {
+                fetchRoomComforts(room.id);
+            });
+
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleResetFilters = () => {
         setCapacity("");
         setMinPrice("");
         setMaxPrice("");
+    };
+
+    const handleComfortChange = (event, comfortId) => {
+        setSelectedComforts(prev =>
+            event.target.checked
+                ? [...prev, comfortId]
+                : prev.filter(id => id !== comfortId)
+        );
     };
 
     const handleResetSorting = () => {
@@ -109,25 +165,50 @@ const RoomList = () => {
             <div className="filters" style={styles.filters}>
                 <div className="filter-box" style={styles.filterBox}>
                     <h3>Фильтрация</h3>
-                    <input type="number" placeholder="Вместимость" value={capacity} onChange={e => setCapacity(e.target.value)} style={styles.input} />
-                    <input type="number" placeholder="Мин. цена" value={minPrice} onChange={e => setMinPrice(e.target.value)} style={styles.input} />
-                    <input type="number" placeholder="Макс. цена" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} style={styles.input} />
+                    <input type="number" placeholder="Вместимость" value={capacity}
+                           onChange={e => setCapacity(e.target.value)} style={styles.input}/>
+                    <input type="number" placeholder="Мин. цена" value={minPrice}
+                           onChange={e => setMinPrice(e.target.value)} style={styles.input}/>
+                    <input type="number" placeholder="Макс. цена" value={maxPrice}
+                           onChange={e => setMaxPrice(e.target.value)} style={styles.input}/>
                     <button onClick={handleResetFilters} style={styles.resetButton}>Сбросить фильтры</button>
                 </div>
                 <div className="sort-box" style={styles.filterBox}>
                     <h3>Сортировка</h3>
-                    <select onChange={e => setSortByPrice(e.target.value === "" ? null : e.target.value)} style={styles.select}>
+                    <select onChange={e => setSortByPrice(e.target.value === "" ? null : e.target.value)}
+                            style={styles.select}>
                         <option value="">Сортировать по цене</option>
                         <option value="true">По возрастанию</option>
                         <option value="false">По убыванию</option>
                     </select>
-                    <select onChange={e => setSortByCapacity(e.target.value === "" ? null : e.target.value)} style={styles.select}>
+                    <select onChange={e => setSortByCapacity(e.target.value === "" ? null : e.target.value)}
+                            style={styles.select}>
                         <option value="">Сортировать по вместимости</option>
                         <option value="true">По возрастанию</option>
                         <option value="false">По убыванию</option>
                     </select>
                     <button onClick={handleResetSorting} style={styles.resetButton}>Сбросить сортировку</button>
                 </div>
+
+                <div className="filter-box" style={styles.filterBox}>
+                    <h3>Фильтр по комфорту</h3>
+                    <div style={styles.comfortsContainer}>
+                        {comforts.map(comfort => (
+                            <label key={comfort.id} style={styles.comfortLabel}>
+                                <input
+                                    type="checkbox"
+                                    value={comfort.id}
+                                    checked={selectedComforts.includes(comfort.id)}
+                                    onChange={e => handleComfortChange(e, comfort.id)}
+                                    style={styles.checkbox}
+                                />
+                                {comfort.name}
+                            </label>
+                        ))}
+                    </div>
+                    <button onClick={fetchFilteredRoomsByComforts} style={styles.resetButton}>Применить</button>
+                </div>
+
             </div>
             <div style={styles.roomList}>
                 {rooms.map(room => (
@@ -138,9 +219,9 @@ const RoomList = () => {
                         <p><strong>Цена за ночь:</strong> {room.unitPrice} руб.</p>
                         <div>
                             <strong>Удобства:</strong>
-                            {comforts[room.id] ? (
+                            {roomComforts[room.id] ? (
                                 <ul style={styles.comfortsList}>
-                                    {comforts[room.id].map(comfort => (
+                                {roomComforts[room.id].map(comfort => (
                                         <li key={comfort.id}>{comfort.name}</li>
                                     ))}
                                 </ul>
@@ -212,6 +293,16 @@ const styles = {
         padding: "15px",
         backgroundColor: "#f5f5f5",
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+    },
+    comfortLabel: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        fontSize: "16px",
+        cursor: "pointer"
+    },
+    checkbox: {
+        transform: "scale(1.2)"
     }
 };
 
