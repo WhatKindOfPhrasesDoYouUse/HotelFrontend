@@ -6,12 +6,15 @@ import Login from "./components/Login.jsx";
 import GuestRegistration from "./components/GuestRegistration.jsx";
 import GuestProfile from "./components/GuestProfile.jsx";
 import EditGuestProfile from "./components/EditGuestProfile.jsx";
+import AddCard from "./components/AddCard.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/add-card" element={<AddCard />} />
+                    <Route path="/bind-card-to-guest" element={<EditGuestProfile />} />
                     <Route path="/edit-guest-profile" element={<EditGuestProfile />} />
                     <Route path="/guest-profile" element={<GuestProfile />} />
                     <Route path="/guest-registration" element={<GuestRegistration />} />

@@ -10,6 +10,7 @@ const GuestProfile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
     useEffect(() => {
         const getUserDataFromToken = async () => {
             const token = localStorage.getItem("token");
@@ -41,9 +42,9 @@ const GuestProfile = () => {
 
     return (
         <div style={styles.profileContainer}>
-            <Navbar />
+            <Navbar/>
 
-            <h2>Профиль  {userData.name}</h2>
+            <h2>Профиль {userData.name}</h2>
             <p><strong>ФИО:</strong> {userData?.name} {userData?.surname} {userData?.patronymic}</p>
             <p><strong>Email:</strong> {userData?.email}</p>
             <p><strong>Телефон:</strong> {userData?.phoneNumber}</p>
@@ -59,6 +60,12 @@ const GuestProfile = () => {
 
             <Link to="/edit-guest-profile">
                 <button style={styles.editButton}>Редактировать профиль</button>
+            </Link>
+
+            <br/>
+
+            <Link to="/add-card">
+                <button style={styles.editButton}>Привязать карту</button>
             </Link>
 
         </div>
