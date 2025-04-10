@@ -90,6 +90,12 @@ const GuestProfile = () => {
                     <p><strong>Дата:</strong> {cardData.cardDate}</p>
                     <p><strong>Банк:</strong> {cardData.bankName}</p>
 
+                    <Link to={`/edit-card/${cardData.id}`}>
+                        <button style={styles.editButton}>Обновить</button>
+                    </Link>
+
+                    <br/>
+
                     <button onClick={handleDeleteCard} style={styles.deleteButton}>
                         Отвязать
                     </button>
