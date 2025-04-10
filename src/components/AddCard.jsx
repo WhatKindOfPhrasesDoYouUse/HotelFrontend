@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import Navbar from "./Navbar.jsx";
 
 const AddCard = () => {
     const [cardData, setCardData] = useState({
@@ -63,12 +64,13 @@ const AddCard = () => {
 
     return (
         <div style={styles.container}>
+            <Navbar/>
             <h2>Добавить карту</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     name="cardNumber"
-                    placeholder="Номер карты (1234567812345678)"
+                    placeholder="Номер карты"
                     value={cardData.cardNumber}
                     onChange={handleChange}
                     required
@@ -97,7 +99,7 @@ const AddCard = () => {
                     min="1"
                     style={styles.input}
                 />
-                <button type="submit" style={styles.button}>Сохранить и привязать</button>
+                <button type="submit" style={styles.button}>Привязать карту</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
@@ -106,20 +108,26 @@ const AddCard = () => {
 
 const styles = {
     container: {
-        maxWidth: "400px",
-        margin: "20px auto",
-        padding: "20px",
+        maxWidth: "250px",
+        margin: "0 auto",
+        padding: "100px",
         borderRadius: "10px",
-        backgroundColor: "#f0f0f0",
-        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)"
+        backgroundColor: "#f5f5f5",
+        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
     },
     input: {
-        display: "block",
         width: "100%",
-        padding: "10px",
+        padding: "12px",
         marginBottom: "10px",
         borderRadius: "5px",
-        border: "1px solid #ccc"
+        border: "1px solid #ccc",
+        boxSizing: "border-box",
+        backgroundColor: "#f5f5f5",
+        color: "Black"
     },
     button: {
         padding: "10px 20px",
@@ -128,7 +136,8 @@ const styles = {
         border: "none",
         borderRadius: "5px",
         cursor: "pointer",
-        fontSize: "16px"
+        fontSize: "16px",
+        marginTop: "10px"
     }
 };
 

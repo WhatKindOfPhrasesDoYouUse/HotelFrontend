@@ -6,39 +6,60 @@ import {Link} from "react-router-dom";
 
 const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
+    const [cardData, setCardData] = useState(null);
     const [guestData, setGuestData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
 
     useEffect(() => {
-        const getUserDataFromToken = async () => {
-            const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Пользователь не авторизован");
+            setLoading(false);
+            return;
+        }
 
-            if (token) {
-                try {
-                    const decodedToken = jwtDecode(token);
-                    const response = await axios.get(`http://localhost:5221/api/clients/${decodedToken.client_id}/guest`);
-
-                    setUserData(response.data);
-                    setGuestData(response.data.guest);
-                } catch (err) {
-                    console.error("Ошибка при получении данных пользователя:", err);
-                    setError(err.response?.data?.message || "Ошибка загрузки данных");
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setError("Пользователь не авторизован");
-                setLoading(false);
-            }
-        };
-
-        getUserDataFromToken();
+        const decodedToken = jwtDecode(token);
+        axios.get(`http://localhost:5221/api/clients/${decodedToken.client_id}/guest`)
+            .then((response) => {
+                setUserData(response.data);
+                setGuestData(response.data.guest);
+            })
+            .catch((err) => {
+                setError("Ошибка загрузки данных");
+                console.error(err);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
+    useEffect(() => {
+        if (!guestData?.id) return;
+
+        console.log(guestData.id);
+
+        axios.get(`http://localhost:5221/api/cards/${guestData.id}/guest`)
+            .then((res) => setCardData(res.data))
+            .catch((err) => {
+                console.error("Ошибка загрузки карты", err);
+                setCardData(null);
+            });
+    }, [guestData]);
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
+
+    const handleDeleteCard = async () => {
+        if (cardData) {
+            try {
+                await axios.delete(`http://localhost:5221/api/cards/${cardData.id}`);
+                setCardData(null);
+                alert("Карта успешно удалена");
+            } catch (error) {
+                console.error("Ошибка при удалении карты", error);
+                alert("Ошибка при удалении карты");
+            }
+        }
+    }
 
     return (
         <div style={styles.profileContainer}>
@@ -62,12 +83,26 @@ const GuestProfile = () => {
                 <button style={styles.editButton}>Редактировать профиль</button>
             </Link>
 
-            <br/>
+            {cardData ? (
+                <div style={styles.cardSection}>
+                    <h3>Информация о карте</h3>
+                    <p><strong>Номер:</strong> {cardData.cardNumber}</p>
+                    <p><strong>Дата:</strong> {cardData.cardDate}</p>
+                    <p><strong>Банк:</strong> {cardData.bankName}</p>
 
-            <Link to="/add-card">
-                <button style={styles.editButton}>Привязать карту</button>
-            </Link>
-
+                    <button onClick={handleDeleteCard} style={styles.deleteButton}>
+                        Отвязать
+                    </button>
+                </div>
+            ) : (
+                <div style={styles.cardSection}>
+                    <h3>Информация о карте</h3>
+                    <p style={{color: "gray" }}>Карта пока не привязана.</p>
+                    <Link to="/add-card">
+                        <button style={styles.editButton}>Привязать</button>
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };
@@ -90,6 +125,23 @@ const styles = {
         cursor: "pointer",
         margin: "10px 0",
         fontSize: "16px"
+    },
+    cardSection: {
+        marginTop: "20px",
+        padding: "15px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        backgroundColor: "#f5f5f5"
+    },
+    deleteButton: {
+        padding: "8px 16px",
+        backgroundColor: "#f44336",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer",
+        margin: "10px 0",
+        fontSize: "16px",
     }
 };
 
