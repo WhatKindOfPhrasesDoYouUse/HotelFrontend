@@ -12,6 +12,7 @@ const AddCard = () => {
     });
     const [clientId, setClientId] = useState(null);
     const [guestData, setGuestData] = useState(null);
+    const [banks, setBanks] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
@@ -62,6 +63,20 @@ const AddCard = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchBanks = async () => {
+            try {
+                const response = await axios.get("http://localhost:5221/api/banks");
+                setBanks(response.data);
+            } catch (err) {
+                console.error("Ошибка при загрузке банков:", err);
+                setError("Не удалось загрузить список банков");
+            }
+        };
+
+        fetchBanks();
+    }, []);
+
     return (
         <div style={styles.container}>
             <Navbar/>
@@ -89,40 +104,40 @@ const AddCard = () => {
                     title="Введите срок действия в формате MM/YY"
                     style={styles.input}
                 />
-                <input
-                    type="number"
+                <select
                     name="bankId"
-                    placeholder="ID банка (например: 1)"
-                    value={cardData.bankId}
+                    value={cardData.bankId || ""}
                     onChange={handleChange}
                     required
-                    min="1"
                     style={styles.input}
-                />
+                >
+                    <option value="">Выберите банк</option>
+                    {banks.map((bank) => (
+                        <option key={bank.id} value={bank.id}>
+                            {bank.name}
+                        </option>
+                    ))}
+                </select>
                 <button type="submit" style={styles.button}>Привязать карту</button>
             </form>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <p style={{color: "red"}}>{error}</p>}
         </div>
     );
 };
 
 const styles = {
     container: {
-        maxWidth: "250px",
+        maxWidth: "500px",
         margin: "0 auto",
-        padding: "100px",
-        borderRadius: "10px",
+        padding: "20px",
         backgroundColor: "#f5f5f5",
-        boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-        textAlign: "center",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
+        borderRadius: "10px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     },
     input: {
         width: "100%",
-        padding: "12px",
-        marginBottom: "10px",
+        padding: "8px",
+        margin: "10px 0",
         borderRadius: "5px",
         border: "1px solid #ccc",
         boxSizing: "border-box",
@@ -130,14 +145,12 @@ const styles = {
         color: "Black"
     },
     button: {
-        padding: "10px 20px",
+        padding: "10px 15px",
         backgroundColor: "#4CAF50",
         color: "white",
         border: "none",
         borderRadius: "5px",
         cursor: "pointer",
-        fontSize: "16px",
-        marginTop: "10px"
     }
 };
 

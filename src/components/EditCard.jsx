@@ -11,10 +11,11 @@ const EditCard = () => {
         cardDate: '',
         bankId: '',
     });
+    const [banks, setBanks] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const fetchCardData = async () => {
             try {
@@ -36,6 +37,20 @@ const EditCard = () => {
         fetchCardData();
     }, [cardId]);
 
+    useEffect(() => {
+        const fetchBanks = async () => {
+            try {
+                const response = await axios.get('http://localhost:5221/api/banks');
+                setBanks(response.data);
+            } catch (err) {
+                setError("Ошибка при загрузке списка банков");
+                console.error(err);
+            }
+        };
+
+        fetchBanks();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditData((prevData) => ({ ...prevData, [name]: value }));
@@ -44,7 +59,6 @@ const EditCard = () => {
     const handleSaveData = async () => {
         setLoading(true);
         try {
-            // Отправляем данные для обновления
             await axios.patch(
                 `http://localhost:5221/api/cards/${cardId}`,
                 {
@@ -70,7 +84,10 @@ const EditCard = () => {
         <div style={styles.container}>
             <Navbar/>
             <h2>Редактирование карты</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleSaveData(); }}>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveData();
+            }}>
                 <label>
                     Номер карты:
                     <input
@@ -92,14 +109,20 @@ const EditCard = () => {
                     />
                 </label>
                 <label>
-                    Идентификатор банка:
-                    <input
-                        type="text"
+                    Банк:
+                    <select
                         name="bankId"
                         value={editData.bankId}
                         onChange={handleChange}
                         style={styles.input}
-                    />
+                    >
+                        <option value="">Выберите банк</option>
+                        {banks.map((bank) => (
+                            <option key={bank.id} value={bank.id}>
+                                {bank.name}
+                            </option>
+                        ))}
+                    </select>
                 </label>
                 <button type="submit" style={styles.saveButton}>
                     Сохранить изменения
@@ -135,7 +158,7 @@ const styles = {
         border: "none",
         borderRadius: "5px",
         cursor: "pointer",
-    },
+    }
 };
 
 export default EditCard;
