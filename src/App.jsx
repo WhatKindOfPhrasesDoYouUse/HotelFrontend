@@ -8,12 +8,14 @@ import GuestProfile from "./components/GuestProfile.jsx";
 import EditGuestProfile from "./components/EditGuestProfile.jsx";
 import AddCard from "./components/AddCard.jsx";
 import EditCard from "./components/EditCard.jsx";
+import RoomBooking from "./components/RoomBooking.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/room-booking/:roomId" element={<RoomBooking />} />
                     <Route path="/edit-card/:cardId" element={<EditCard />} />
                     <Route path="/add-card" element={<AddCard />} />
                     <Route path="/bind-card-to-guest" element={<EditGuestProfile />} />

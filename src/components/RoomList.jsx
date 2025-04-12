@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 
 const RoomList = () => {
@@ -228,6 +228,11 @@ const RoomList = () => {
                             ) : (
                                 <p>Загрузка удобств...</p>
                             )}
+
+                            <Link to={`/room-booking/${room.id}`} style={{ textDecoration: "none" }}>
+                                <button style={styles.navLinks}>Забронировать</button>
+                            </Link>
+                            
                         </div>
                     </div>
                 ))}

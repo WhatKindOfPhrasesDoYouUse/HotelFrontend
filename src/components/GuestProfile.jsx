@@ -8,6 +8,7 @@ const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
     const [cardData, setCardData] = useState(null);
     const [guestData, setGuestData] = useState(null);
+    /*const [roomBookings, setRoomBookings] = useState([]);*/
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -45,6 +46,21 @@ const GuestProfile = () => {
                 setCardData(null);
             });
     }, [guestData]);
+
+    /*useEffect(() => {
+        if (!guestData?.id) return;
+
+        console.log(guestData.id);
+
+        axios.get(`http://localhost:5221/api/room-bookings/by-guest/${guestData.id}`)
+            .then((res) => {setRoomBookings(res.data);})
+            .catch((err) => {
+                console.error("Ошибка при загрузке данных бронирования комнат: ", err);
+                setRoomBookings(null);
+            });
+    },[guestData.id]);*/
+
+
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
 
@@ -116,7 +132,7 @@ const GuestProfile = () => {
 const styles = {
     profileContainer: {
         maxWidth: "500px",
-        margin: "20px auto",
+        margin: "20px 0 20px 20px",
         padding: "20px",
         borderRadius: "10px",
         backgroundColor: "#f5f5f5",
