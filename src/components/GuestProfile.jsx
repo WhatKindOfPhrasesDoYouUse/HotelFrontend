@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
     const [cardData, setCardData] = useState(null);
     const [guestData, setGuestData] = useState(null);
-    /*const [roomBookings, setRoomBookings] = useState([]);*/
+    const [roomBookings, setRoomBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -47,19 +46,20 @@ const GuestProfile = () => {
             });
     }, [guestData]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         if (!guestData?.id) return;
 
         console.log(guestData.id);
 
         axios.get(`http://localhost:5221/api/room-bookings/by-guest/${guestData.id}`)
-            .then((res) => {setRoomBookings(res.data);})
+            .then((res) => setRoomBookings(res.data))
             .catch((err) => {
-                console.error("Ошибка при загрузке данных бронирования комнат: ", err);
+                console.error("Ошибка загрузки данных бронирований", err);
                 setRoomBookings(null);
-            });
-    },[guestData.id]);*/
+            })
+    }, [guestData]);
 
+    console.log(roomBookings);
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
@@ -76,6 +76,7 @@ const GuestProfile = () => {
             }
         }
     }
+
 
     return (
         <div style={styles.profileContainer}>
@@ -99,6 +100,10 @@ const GuestProfile = () => {
                 <button style={styles.editButton}>Редактировать профиль</button>
             </Link>
 
+            <Link to={`/delete-client/${guestData.id}/${userData.id}`}>
+                <button style={styles.deleteButton}>Удалить аккаунт</button>
+            </Link>
+
             {cardData ? (
                 <div style={styles.cardSection}>
                     <h3>Информация о карте</h3>
@@ -119,7 +124,7 @@ const GuestProfile = () => {
             ) : (
                 <div style={styles.cardSection}>
                     <h3>Информация о карте</h3>
-                    <p style={{color: "gray" }}>Карта пока не привязана.</p>
+                    <p style={{color: "gray"}}>Карта пока не привязана.</p>
                     <Link to="/add-card">
                         <button style={styles.editButton}>Привязать</button>
                     </Link>
@@ -136,7 +141,8 @@ const styles = {
         padding: "20px",
         borderRadius: "10px",
         backgroundColor: "#f5f5f5",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)"
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        left: "-100px"
     },
     editButton: {
         padding: "8px 16px",
