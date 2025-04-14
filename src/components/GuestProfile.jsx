@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
     const [cardData, setCardData] = useState(null);
     const [guestData, setGuestData] = useState(null);
-    const [roomBookings, setRoomBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -45,21 +44,6 @@ const GuestProfile = () => {
                 setCardData(null);
             });
     }, [guestData]);
-
-    useEffect(() => {
-        if (!guestData?.id) return;
-
-        console.log(guestData.id);
-
-        axios.get(`http://localhost:5221/api/room-bookings/by-guest/${guestData.id}`)
-            .then((res) => setRoomBookings(res.data))
-            .catch((err) => {
-                console.error("Ошибка загрузки данных бронирований", err);
-                setRoomBookings(null);
-            })
-    }, [guestData]);
-
-    console.log(roomBookings);
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;

@@ -47,7 +47,7 @@ const Navbar = () => {
                 {userName ? (
                     <select
                         style={styles.select}
-                        onChange={handleSelectChange} // Обработчик изменений
+                        onChange={handleSelectChange}
                     >
                         <option value="">{`Здравствуй, ${userName}`}</option>
                         <option value="profile">Личный кабинет</option>
@@ -58,6 +58,8 @@ const Navbar = () => {
                 )}
 
                 <Link to="/hotels" style={styles.navLinks}>Отель</Link>
+                <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
+                <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
             </div>
         </nav>
     );

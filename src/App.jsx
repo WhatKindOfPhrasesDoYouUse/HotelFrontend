@@ -10,12 +10,14 @@ import AddCard from "./components/AddCard.jsx";
 import EditCard from "./components/EditCard.jsx";
 import RoomBooking from "./components/RoomBooking.jsx";
 import DeleteClient from "./components/DeleteClient.jsx";
+import RoomBookingsList from "./components/RoomBookingsList.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/mybookings" element={<RoomBookingsList />} />
                     <Route path="/delete-client/:guestId/:clientId" element={<DeleteClient />} />
                     <Route path="/room-booking/:roomId" element={<RoomBooking />} />
                     <Route path="/edit-card/:cardId" element={<EditCard />} />
