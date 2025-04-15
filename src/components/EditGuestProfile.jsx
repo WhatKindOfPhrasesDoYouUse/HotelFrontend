@@ -12,6 +12,7 @@ const EditGuestProfile = () => {
     const [editData, setEditData] = useState({
         name: '',
         patronymic: '',
+        surname: '',
         email: '',
         phoneNumber: '',
         cityOfResidence: '',
@@ -38,10 +39,10 @@ const EditGuestProfile = () => {
                     setUserData(response.data);
                     setGuestData(response.data.guest);
 
-                    // Заполнение полей редактируемых данными пользователя
                     setEditData({
                         name: response.data.name || '',
                         patronymic: response.data.patronymic || '',
+                        surname: response.data.surname || '',
                         email: response.data.email || '',
                         phoneNumber: response.data.phoneNumber || '',
                         cityOfResidence: response.data.guest?.cityOfResidence || '',
@@ -126,13 +127,26 @@ const EditGuestProfile = () => {
 
             <div style={styles.profileSection}>
                 <h2>Редактирование профиля</h2>
-                <form onSubmit={(e) => { e.preventDefault(); handleSaveData(); }}>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSaveData();
+                }}>
                     <label>
                         Имя:
                         <input
                             type="text"
                             name="name"
                             value={editData.name}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </label>
+                    <label>
+                        Фамилия:
+                        <input
+                            type="text"
+                            name="surname"
+                            value={editData.surname}
                             onChange={handleChange}
                             style={styles.input}
                         />
@@ -215,7 +229,10 @@ const EditGuestProfile = () => {
 
             <div style={styles.passwordSection}>
                 <h2>Изменить пароль</h2>
-                <form onSubmit={(e) => { e.preventDefault(); handleChangePassword(); }}>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleChangePassword();
+                }}>
                     <label>
                         Текущий пароль:
                         <input

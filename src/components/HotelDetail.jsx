@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 
 const HotelDetail = () => {
@@ -12,11 +12,9 @@ const HotelDetail = () => {
         const fetchHotel = async () => {
             try {
                 const response = await fetch(`http://localhost:5221/api/hotels`);
-                if (!response.ok) {
-                    throw new Error("Ошибка загрузки данных отеля");
-                }
+                if (!response.ok) throw new Error("Ошибка загрузки данных отеля");
                 const data = await response.json();
-                setHotel(data[0]);
+                setHotel(data[0]); // оставим так, как ты хочешь
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -31,64 +29,58 @@ const HotelDetail = () => {
     if (!hotel) return <p style={styles.error}>Отель не найден</p>;
 
     return (
-        <div style={styles.container}>
+        <div>
             <Navbar />
-            <div style={styles.card}>
-                <h1 style={styles.title}>{hotel.name}</h1>
-                <p><strong>Город:</strong> {hotel.city}</p>
-                <p><strong>Адрес:</strong> {hotel.address}</p>
-                <p><strong>Описание:</strong> {hotel.description}</p>
-                <p><strong>Год постройки:</strong> {hotel.yearOfConstruction}</p>
-                <p><strong>Рейтинг:</strong> {hotel.rating} ⭐</p>
-                <p><strong>Контакты:</strong> {hotel.phoneNumber} | {hotel.email}</p>
-                <Link to={`/hotels/${hotel.id}/rooms`} style={styles.button}>
-                    Просмотр комнат
-                </Link>
+
+            {/* Хедер с изображением */}
+            <div style={styles.header}>
+                <img src="src/images/hotels/hotel-image-1.jpg" alt="Hotel" style={styles.headerImage} />
+                <div style={styles.headerOverlay}>
+                    <h1 style={styles.headerTitle}>{hotel.name}</h1>
+                    <p style={styles.headerSubtitle}>{hotel.city} — {hotel.address}</p>
+                </div>
             </div>
 
-            <div style={styles.imageGallery}>
-                <img src="src/images/hotels/hotel-image-1.jpg" alt="Фото отеля" style={styles.image} />
-                <img src="src/images/hotels/hotel-image-2.jpg" alt="Фото отеля" style={styles.image} />
+            {/* Контент */}
+            <div style={styles.content}>
+                {/* Описание */}
+                <section style={styles.section}>
+                    <h2 style={styles.sectionTitle}>Об отеле</h2>
+                    <p style={styles.description}>{hotel.description}</p>
+                </section>
+
+                {/* Информация */}
+                <section style={styles.section}>
+                    <h2 style={styles.sectionTitle}>Информация</h2>
+                    <ul style={styles.infoList}>
+                        <li><strong>Год постройки:</strong> {hotel.yearOfConstruction}</li>
+                        <li><strong>Рейтинг:</strong> {hotel.rating} ⭐</li>
+                        <li><strong>Телефон:</strong> {hotel.phoneNumber}</li>
+                        <li><strong>Email:</strong> {hotel.email}</li>
+                    </ul>
+                </section>
+
+                {/* Кнопка к комнатам */}
+                <section style={styles.section}>
+                    <Link to={`/hotels/${hotel.id}/rooms`} style={styles.button}>
+                        Просмотр комнат
+                    </Link>
+                </section>
+
+                {/* Галерея */}
+                <section style={styles.gallerySection}>
+                    <h2 style={styles.sectionTitle}>Галерея</h2>
+                    <div style={styles.gallery}>
+                        <img src="src/images/hotels/hotel-image-1.jpg" alt="Фото 1" style={styles.galleryImage} />
+                        <img src="src/images/hotels/hotel-image-2.jpg" alt="Фото 2" style={styles.galleryImage} />
+                    </div>
+                </section>
             </div>
         </div>
     );
 };
 
 const styles = {
-    container: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "80vh",
-        padding: "20px",
-        backgroundColor: "D5D5D5",
-    },
-    card: {
-        backgroundColor: "#fff",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        textAlign: "center",
-        width: "60%",
-        maxWidth: "600px",
-    },
-    title: {
-        fontSize: "28px",
-        marginBottom: "10px",
-    },
-    imageGallery: {
-        display: "flex",
-        gap: "15px",
-        marginTop: "20px",
-    },
-    image: {
-        width: "200px",
-        height: "130px",
-        borderRadius: "8px",
-        objectFit: "cover",
-        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-    },
     loading: {
         textAlign: "center",
         fontSize: "18px",
@@ -98,15 +90,83 @@ const styles = {
         color: "red",
         textAlign: "center",
     },
+    header: {
+        position: "relative",
+        height: "400px",
+        width: "100%",
+        overflow: "hidden",
+        marginTop: "64px"
+    },
+    headerImage: {
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        filter: "brightness(60%)",
+    },
+    headerOverlay: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        color: "#fff",
+        textAlign: "center",
+    },
+    headerTitle: {
+        fontSize: "48px",
+        fontWeight: "bold",
+        margin: 0,
+    },
+    headerSubtitle: {
+        fontSize: "20px",
+        marginTop: "10px",
+    },
+    content: {
+        maxWidth: "900px",
+        margin: "0 auto",
+        padding: "40px 20px",
+    },
+    section: {
+        marginBottom: "40px",
+    },
+    sectionTitle: {
+        fontSize: "24px",
+        marginBottom: "10px",
+        borderBottom: "2px solid #ccc",
+        paddingBottom: "5px",
+    },
+    description: {
+        fontSize: "16px",
+        lineHeight: "1.6",
+    },
+    infoList: {
+        listStyle: "none",
+        paddingLeft: 0,
+        fontSize: "16px",
+        lineHeight: "1.8",
+    },
     button: {
-        padding: "8px 16px",
+        display: "inline-block",
+        padding: "12px 24px",
         backgroundColor: "#4CAF50",
         color: "white",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        margin: "10px 0",
-        fontSize: "16px"
+        textDecoration: "none",
+        borderRadius: "8px",
+        fontSize: "16px",
+    },
+    gallerySection: {
+        marginTop: "20px",
+    },
+    gallery: {
+        display: "flex",
+        gap: "20px",
+    },
+    galleryImage: {
+        width: "100%",
+        maxWidth: "400px",
+        height: "250px",
+        borderRadius: "10px",
+        objectFit: "cover",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
     }
 };
 
