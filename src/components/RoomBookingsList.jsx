@@ -42,6 +42,23 @@ const RoomBookingsList = () => {
             })
     }, [guestId]);
 
+    useEffect(() => {
+        if (!guestId) return;
+
+        const interval = setInterval(() => {
+            axios.get(`http://localhost:5221/api/room-bookings/${guestId}/guest`)
+                .then((response) => {
+                    setRoomBookings(response.data);
+                })
+                .catch((err) => {
+                    setError(`Ошибка при обновлении списка: ${err.message}`);
+                });
+        }, 15000);
+
+        return () => clearInterval(interval);
+    }, [guestId]);
+
+
     console.log(`id гостя: ${guestId}`);
     console.log(roomBookings);
 
