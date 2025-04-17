@@ -100,6 +100,9 @@ const RoomBooking = () => {
     return (
         <div style={styles.container}>
             <Navbar/>
+            <p style={{fontSize: "14px", color: "#777", marginTop: "10px"}}>
+                После оформления у вас будет <strong>15 минут</strong> на подтверждение бронирования.
+            </p>
             <h2>Бронирование комнаты #{roomId}</h2>
             <form onSubmit={handleSubmit}>
                 <label>Дата заезда:</label>
