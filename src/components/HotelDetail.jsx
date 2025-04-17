@@ -14,7 +14,7 @@ const HotelDetail = () => {
                 const response = await fetch(`http://localhost:5221/api/hotels`);
                 if (!response.ok) throw new Error("Ошибка загрузки данных отеля");
                 const data = await response.json();
-                setHotel(data[0]); // оставим так, как ты хочешь
+                setHotel(data[0]);
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -32,7 +32,6 @@ const HotelDetail = () => {
         <div>
             <Navbar />
 
-            {/* Хедер с изображением */}
             <div style={styles.header}>
                 <img src="src/images/hotels/hotel-image-1.jpg" alt="Hotel" style={styles.headerImage} />
                 <div style={styles.headerOverlay}>
@@ -41,15 +40,12 @@ const HotelDetail = () => {
                 </div>
             </div>
 
-            {/* Контент */}
             <div style={styles.content}>
-                {/* Описание */}
                 <section style={styles.section}>
                     <h2 style={styles.sectionTitle}>Об отеле</h2>
                     <p style={styles.description}>{hotel.description}</p>
                 </section>
 
-                {/* Информация */}
                 <section style={styles.section}>
                     <h2 style={styles.sectionTitle}>Информация</h2>
                     <ul style={styles.infoList}>
@@ -60,14 +56,12 @@ const HotelDetail = () => {
                     </ul>
                 </section>
 
-                {/* Кнопка к комнатам */}
-                <section style={styles.section}>
+{/*                <section style={styles.section}>
                     <Link to={`/hotels/${hotel.id}/rooms`} style={styles.button}>
                         Просмотр комнат
                     </Link>
-                </section>
+                </section>*/}
 
-                {/* Галерея */}
                 <section style={styles.gallerySection}>
                     <h2 style={styles.sectionTitle}>Галерея</h2>
                     <div style={styles.gallery}>

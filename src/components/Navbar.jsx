@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     const [userName, setUserName] = useState("");
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getUserNameFromToken = async () => {
@@ -20,7 +20,6 @@ const Navbar = () => {
                     setUserName("");
                 }
             } else {
-                console.log("Пользователь не прошел аутентификацию, токен не получен");
                 setUserName("");
             }
         };
@@ -30,36 +29,29 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem("token");
         setUserName("");
-        window.location.href = '/hotels';
-    };
-
-    const handleSelectChange = (event) => {
-        if (event.target.value === 'logout') {
-            handleLogout();
-        } else if (event.target.value === 'profile') {
-            Navigate('/guest-profile');
-        }
+        navigate('/hotels');
     };
 
     return (
         <nav style={styles.navbar}>
-            <div style={styles.navItems}>
-                {userName ? (
-                    <select
-                        style={styles.select}
-                        onChange={handleSelectChange}
-                    >
-                        <option value="">{`Здравствуй, ${userName}`}</option>
-                        <option value="profile">Личный кабинет</option>
-                        <option value="logout">Выйти</option>
-                    </select>
-                ) : (
-                    <span style={styles.greeting}>Привет, гость</span>
-                )}
+            <div style={styles.navContainer}>
+                <div style={styles.navItems}>
+                    {userName ? (
+                        <>
+                            <span style={styles.greeting}>{`Здравствуйте, ${userName}`}</span>
+                            <button onClick={handleLogout} style={styles.logoutButton}>
+                                Выйти
+                            </button>
+                        </>
+                    ) : (
+                        <Link to="/login" style={styles.navLinks}>Авторизуйтесь</Link>
+                    )}
 
-                <Link to="/hotels" style={styles.navLinks}>Отель</Link>
-                <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
-                <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
+                    <Link to="/guest-profile" style={styles.navLinks}>Личный кабинет</Link>
+                    <Link to="/hotels" style={styles.navLinks}>Отель</Link>
+                    <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
+                    <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
+                </div>
             </div>
         </nav>
     );
@@ -73,46 +65,47 @@ const styles = {
         left: 0,
         backgroundColor: '#D5D5D5',
         padding: '10px 20px',
-        color: 'fff',
+        color: '#fff',
         zIndex: 1000,
+    },
+    navContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'flex-start',
     },
     navItems: {
         display: 'flex',
-        justifyItems: 'flex-start',
         alignItems: 'center',
-        margin: '0 auto',
-        gap: '15px',
+        gap: '20px',
     },
     navLinks: {
         color: '#fff',
         textDecoration: 'none',
         fontSize: '16px',
-        padding: '8px 16px',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        transition: 'background-color 0.2s',
+        ':hover': {
+            backgroundColor: 'rgba(255,255,255,0.2)',
+        }
     },
     greeting: {
         color: '#fff',
         fontSize: '16px',
-        cursor: 'pointer', // Указатель на то, что это кликабельный элемент
     },
-    select: {
-        backgroundColor: '#fff',
-        color: '#333',
-        fontSize: '16px',
-        borderRadius: '5px',
-        border: 'none',
-        padding: '8px 12px',
-        cursor: 'pointer',
-        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-        appearance: 'none', // Убираем стандартный стиль для select
-        WebkitAppearance: 'none', // Для Safari
-        MozAppearance: 'none', // Для Firefox
-    },
-    option: {
-        backgroundColor: '#007bff',
+    logoutButton: {
+        backgroundColor: 'transparent',
         color: '#fff',
-        padding: '10px 20px',
-        border: 'none',
+        border: '1px solid #fff',
+        borderRadius: '4px',
+        padding: '8px 16px',
+        fontSize: '16px',
         cursor: 'pointer',
+        transition: 'all 0.2s',
+        ':hover': {
+            backgroundColor: 'rgba(255,255,255,0.1)',
+        }
     }
 };
 
