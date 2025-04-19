@@ -142,14 +142,15 @@ const RoomBookingsList = () => {
                 </thead>
                 <tbody>
                 {roomBookings.map((booking) => (
-                    <tr key={booking.roomBookingId} style={{ borderBottom: "1px solid #eaeaea" }}>
+                    <tr key={booking.roomBookingId} style={{borderBottom: "1px solid #eaeaea"}}>
                         <td style={tdStyle}>{booking.roomNumber}</td>
                         <td style={tdStyle}>{booking.checkInDate} {booking.checkInTime}</td>
                         <td style={tdStyle}>{booking.checkOutDate} {booking.checkOutTime}</td>
                         <td style={tdStyle}>{booking.unitPrice}</td>
                         <td style={tdStyle}>{booking.numberOfGuests}/{booking.capacity}</td>
                         <td style={tdStyle}>
-                                <span style={{ color: getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) }}>
+                                <span
+                                    style={{color: getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime)}}>
                                     {booking.cancelUntilDate} {booking.cancelUntilTime}
                                 </span>
                         </td>
@@ -162,7 +163,7 @@ const RoomBookingsList = () => {
                         </td>
                         <td style={tdStyle}>
                             {booking.isConfirmed ? (
-                                <span style={{ color: "green", fontWeight: "bold" }}>Подтверждено</span>
+                                <span style={{color: "green", fontWeight: "bold"}}>Подтверждено</span>
                             ) : (
                                 !booking.isPayd && (
                                     <span style={{
@@ -191,21 +192,38 @@ const RoomBookingsList = () => {
                                     Подтвердить
                                 </button>
                             )}
-                            {getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) === 'green' && (
+{/*                            {!booking.isPayd && booking.isConfirmed && (
                                 <button
-                                    onClick={() => handleDelete(booking.roomBookingId)}
+                                    onClick={() => handlePay(booking.roomBookingId)}
                                     style={{
                                         padding: '5px 10px',
-                                        backgroundColor: 'red',
+                                        backgroundColor: '#28a745',
                                         color: 'white',
                                         border: 'none',
                                         borderRadius: '5px',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        marginRight: '10px'
                                     }}
                                 >
-                                    Отменить
+                                    Оплатить
                                 </button>
-                            )}
+                            )}*/}
+                            {getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) === 'green' &&
+                                !booking.isConfirmed && (
+                                    <button
+                                        onClick={() => handleDelete(booking.roomBookingId)}
+                                        style={{
+                                            padding: '5px 10px',
+                                            backgroundColor: 'red',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Отменить
+                                    </button>
+                                )}
                         </td>
                     </tr>
                 ))}

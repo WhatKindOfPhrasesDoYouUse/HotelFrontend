@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
+import { FaStar, FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaWifi, FaSwimmingPool, FaSpa, FaUtensils, FaDumbbell, FaParking, FaSnowflake, FaConciergeBell } from "react-icons/fa";
 
 const HotelDetail = () => {
     const { hotelId } = useParams();
@@ -24,144 +25,395 @@ const HotelDetail = () => {
         fetchHotel();
     }, [hotelId]);
 
-    if (loading) return <p style={styles.loading}>Загрузка...</p>;
-    if (error) return <p style={styles.error}>Ошибка: {error}</p>;
-    if (!hotel) return <p style={styles.error}>Отель не найден</p>;
-
-    return (
-        <div>
-            <Navbar />
-
-            <div style={styles.header}>
-                <img src="src/images/hotels/hotel-image-1.jpg" alt="Hotel" style={styles.headerImage} />
-                <div style={styles.headerOverlay}>
-                    <h1 style={styles.headerTitle}>{hotel.name}</h1>
-                    <p style={styles.headerSubtitle}>{hotel.city} — {hotel.address}</p>
-                </div>
-            </div>
-
-            <div style={styles.content}>
-                <section style={styles.section}>
-                    <h2 style={styles.sectionTitle}>Об отеле</h2>
-                    <p style={styles.description}>{hotel.description}</p>
-                </section>
-
-                <section style={styles.section}>
-                    <h2 style={styles.sectionTitle}>Информация</h2>
-                    <ul style={styles.infoList}>
-                        <li><strong>Год постройки:</strong> {hotel.yearOfConstruction}</li>
-                        <li><strong>Рейтинг:</strong> {hotel.rating} ⭐</li>
-                        <li><strong>Телефон:</strong> {hotel.phoneNumber}</li>
-                        <li><strong>Email:</strong> {hotel.email}</li>
-                    </ul>
-                </section>
-
-{/*                <section style={styles.section}>
-                    <Link to={`/hotels/${hotel.id}/rooms`} style={styles.button}>
-                        Просмотр комнат
-                    </Link>
-                </section>*/}
-
-                <section style={styles.gallerySection}>
-                    <h2 style={styles.sectionTitle}>Галерея</h2>
-                    <div style={styles.gallery}>
-                        <img src="src/images/hotels/hotel-image-1.jpg" alt="Фото 1" style={styles.galleryImage} />
-                        <img src="src/images/hotels/hotel-image-2.jpg" alt="Фото 2" style={styles.galleryImage} />
-                    </div>
-                </section>
-            </div>
+    if (loading) return (
+        <div className="loading-screen">
+            <div className="spinner"></div>
+            <p>Загрузка отеля...</p>
         </div>
     );
-};
 
-const styles = {
-    loading: {
-        textAlign: "center",
-        fontSize: "18px",
-        marginTop: "20px",
-    },
-    error: {
-        color: "red",
-        textAlign: "center",
-    },
-    header: {
-        position: "relative",
-        height: "400px",
-        width: "100%",
-        overflow: "hidden",
-        marginTop: "64px"
-    },
-    headerImage: {
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        filter: "brightness(60%)",
-    },
-    headerOverlay: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        color: "#fff",
-        textAlign: "center",
-    },
-    headerTitle: {
-        fontSize: "48px",
-        fontWeight: "bold",
-        margin: 0,
-    },
-    headerSubtitle: {
-        fontSize: "20px",
-        marginTop: "10px",
-    },
-    content: {
-        maxWidth: "900px",
-        margin: "0 auto",
-        padding: "40px 20px",
-    },
-    section: {
-        marginBottom: "40px",
-    },
-    sectionTitle: {
-        fontSize: "24px",
-        marginBottom: "10px",
-        borderBottom: "2px solid #ccc",
-        paddingBottom: "5px",
-    },
-    description: {
-        fontSize: "16px",
-        lineHeight: "1.6",
-    },
-    infoList: {
-        listStyle: "none",
-        paddingLeft: 0,
-        fontSize: "16px",
-        lineHeight: "1.8",
-    },
-    button: {
-        display: "inline-block",
-        padding: "12px 24px",
-        backgroundColor: "#4CAF50",
-        color: "white",
-        textDecoration: "none",
-        borderRadius: "8px",
-        fontSize: "16px",
-    },
-    gallerySection: {
-        marginTop: "20px",
-    },
-    gallery: {
-        display: "flex",
-        gap: "20px",
-    },
-    galleryImage: {
-        width: "100%",
-        maxWidth: "400px",
-        height: "250px",
-        borderRadius: "10px",
-        objectFit: "cover",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-    }
+    if (error) return (
+        <div className="error-message">
+            <h2>Произошла ошибка</h2>
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>Попробовать снова</button>
+        </div>
+    );
+
+    if (!hotel) return (
+        <div className="error-message">
+            <h2>Отель не найден</h2>
+            <p>Попробуйте выбрать другой отель</p>
+        </div>
+    );
+
+    return (
+        <div className="hotel-detail-container">
+            <Navbar />
+
+            <header className="hotel-header">
+                <img
+                    src="src/images/hotels/hotel-image-1.jpg"
+                    alt={hotel.name}
+                    className="hotel-main-image"
+                />
+                <div className="hotel-title-overlay">
+                    <h1>{hotel.name}</h1>
+                    <div className="hotel-rating">
+                        <div className="stars">
+                            {[...Array(5)].map((_, i) => (
+                                <FaStar key={i} className={i < Math.floor(hotel.rating) ? "star-filled" : "star-empty"} />
+                            ))}
+                        </div>
+                        <span className="rating-value">{hotel.rating}/5</span>
+                    </div>
+                    <p className="hotel-location">
+                        <FaMapMarkerAlt /> {hotel.city}, {hotel.address}
+                    </p>
+                </div>
+            </header>
+
+            <main className="hotel-content">
+                <div className="hotel-main-info">
+                    <section className="hotel-description">
+                        <h2>Об отеле</h2>
+                        <p>{hotel.description}</p>
+                    </section>
+
+                    <section className="hotel-features">
+                        <h2>Удобства отеля</h2>
+                        <div className="features-grid">
+                            <div className="feature">
+                                <FaWifi />
+                                <span>Бесплатный Wi-Fi</span>
+                            </div>
+                            <div className="feature">
+                                <FaSwimmingPool />
+                                <span>Бассейн</span>
+                            </div>
+                            <div className="feature">
+                                <FaSpa />
+                                <span>Спа-центр</span>
+                            </div>
+                            <div className="feature">
+                                <FaUtensils />
+                                <span>Ресторан</span>
+                            </div>
+                            <div className="feature">
+                                <FaDumbbell />
+                                <span>Фитнес-центр</span>
+                            </div>
+                            <div className="feature">
+                                <FaParking />
+                                <span>Парковка</span>
+                            </div>
+                            <div className="feature">
+                                <FaSnowflake />
+                                <span>Кондиционеры</span>
+                            </div>
+                            <div className="feature">
+                                <FaConciergeBell />
+                                <span>Консьерж</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="hotel-gallery">
+                        <h2>Галерея</h2>
+                        <div className="gallery-grid">
+                            <img src="src/images/hotels/hotel-image-1.jpg" alt="Фото отеля 1" />
+                            <img src="src/images/hotels/hotel-image-2.jpg" alt="Фото отеля 2" />
+                        </div>
+                    </section>
+                </div>
+
+                <aside className="hotel-sidebar">
+                    <div className="hotel-quick-info">
+                        <h3>Краткая информация</h3>
+                        <ul>
+                            <li><strong>Год постройки:</strong> {hotel.yearOfConstruction}</li>
+                            <li><strong>Телефон:</strong> {hotel.phoneNumber}</li>
+                            <li><strong>Email:</strong> {hotel.email}</li>
+                        </ul>
+                    </div>
+
+                    <div className="hotel-contacts">
+                        <h3>Контакты</h3>
+                        <div className="contact-item">
+                            <FaPhone />
+                            <span>{hotel.phoneNumber}</span>
+                        </div>
+                        <div className="contact-item">
+                            <FaEnvelope />
+                            <span>{hotel.email}</span>
+                        </div>
+                        <div className="contact-item">
+                            <FaMapMarkerAlt />
+                            <span>{hotel.city}, {hotel.address}</span>
+                        </div>
+                        <div className="contact-item">
+                            <FaClock />
+                            <span>Круглосуточно</span>
+                        </div>
+                    </div>
+
+                    <Link to={`/hotels/${hotel.id}/rooms`} className="rooms-btn">
+                        Просмотреть номера
+                    </Link>
+                </aside>
+            </main>
+
+            <style jsx>{`
+                .hotel-detail-container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+                
+                .hotel-header {
+                    position: relative;
+                    height: 400px;
+                    overflow: hidden;
+                    margin-top: 64px;
+                }
+                
+                .hotel-main-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    filter: brightness(0.7);
+                }
+                
+                .hotel-title-overlay {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    padding: 2rem;
+                    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+                    color: white;
+                }
+                
+                .hotel-title-overlay h1 {
+                    font-size: 2.5rem;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .hotel-rating {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .stars {
+                    display: flex;
+                    gap: 3px;
+                }
+                
+                .star-filled {
+                    color: #ffd700;
+                }
+                
+                .star-empty {
+                    color: #ccc;
+                }
+                
+                .rating-value {
+                    font-weight: bold;
+                }
+                
+                .hotel-location {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+                
+                .hotel-content {
+                    display: grid;
+                    grid-template-columns: 2fr 1fr;
+                    gap: 30px;
+                    padding: 30px 20px;
+                }
+                
+                .hotel-main-info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 30px;
+                }
+                
+                .hotel-description h2,
+                .hotel-features h2,
+                .hotel-gallery h2 {
+                    font-size: 1.8rem;
+                    margin-bottom: 1rem;
+                    color: #2c3e50;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 2px solid #3498db;
+                }
+                
+                .hotel-description p {
+                    line-height: 1.6;
+                    color: #555;
+                }
+                
+                .features-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 20px;
+                }
+                
+                .feature {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px;
+                    background: #f5f5f5;
+                    border-radius: 5px;
+                }
+                
+                .feature svg {
+                    color: #3498db;
+                    font-size: 1.2rem;
+                }
+                
+                .gallery-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                    gap: 15px;
+                }
+                
+                .gallery-grid img {
+                    width: 100%;
+                    height: 200px;
+                    object-fit: cover;
+                    border-radius: 8px;
+                    transition: transform 0.3s ease;
+                }
+                
+                .gallery-grid img:hover {
+                    transform: scale(1.03);
+                }
+                
+                .hotel-sidebar {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 30px;
+                }
+                
+                .hotel-quick-info {
+                    background: #f5f5f5;
+                    padding: 20px;
+                    border-radius: 8px;
+                }
+                
+                .hotel-quick-info h3 {
+                    margin-bottom: 15px;
+                    color: #2c3e50;
+                }
+                
+                .hotel-quick-info ul {
+                    list-style: none;
+                    padding-left: 0;
+                }
+                
+                .hotel-quick-info li {
+                    margin-bottom: 10px;
+                }
+                
+                .hotel-contacts {
+                    background: #f5f5f5;
+                    padding: 20px;
+                    border-radius: 8px;
+                }
+                
+                .hotel-contacts h3 {
+                    margin-bottom: 15px;
+                    color: #2c3e50;
+                }
+                
+                .contact-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                }
+                
+                .contact-item svg {
+                    color: #3498db;
+                }
+                
+                .rooms-btn {
+                    display: block;
+                    text-align: center;
+                    background: #3498db;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                }
+                
+                .rooms-btn:hover {
+                    background: #2980b9;
+                }
+                
+                .loading-screen {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                }
+                
+                .spinner {
+                    border: 5px solid #f3f3f3;
+                    border-top: 5px solid #3498db;
+                    border-radius: 50%;
+                    width: 50px;
+                    height: 50px;
+                    animation: spin 1s linear infinite;
+                    margin-bottom: 20px;
+                }
+                
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                
+                .error-message {
+                    text-align: center;
+                    padding: 40px;
+                    color: #e74c3c;
+                }
+                
+                .error-message button {
+                    background: #3498db;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-top: 20px;
+                }
+                
+                @media (max-width: 768px) {
+                    .hotel-content {
+                        grid-template-columns: 1fr;
+                    }
+                    
+                    .hotel-title-overlay h1 {
+                        font-size: 2rem;
+                    }
+                    
+                    .features-grid {
+                        grid-template-columns: 1fr 1fr;
+                    }
+                }
+            `}</style>
+        </div>
+    );
 };
 
 export default HotelDetail;
