@@ -14,10 +14,10 @@ const PaymentPage = () => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('saved-card');
     const [cardData, setCardData] = useState({
         number: '',
-        name: '',
         expiry: '',
         cvv: ''
     });
+    const [paymentProcessing, setPaymentProcessing] = useState(false);
 
     useEffect(() => {
         const fetchBookingData = async () => {
@@ -34,14 +34,35 @@ const PaymentPage = () => {
         fetchBookingData();
     }, [bookingId]);
 
-    const handlePaymentSubmit = () => {
-        console.log('Оплата проведена', {
-            bookingId,
-            paymentMethod: selectedPaymentMethod,
-            amount: bookingData.totalAmount,
-            cardData: selectedPaymentMethod === 'new-card' ? cardData : null
-        });
-        navigate('/payment-success');
+    const handlePaymentSubmit = async () => {
+        setPaymentProcessing(true);
+        setError(null);
+
+        try {
+            const paymentData = {
+                roomBookingId: parseInt(bookingId),
+                paymentTypeId: selectedPaymentMethod === 'saved-card' ? 1 : 2
+            };
+
+            const response = await axios.post(
+                'http://localhost:5221/api/room-payments',
+                paymentData
+            );
+
+            if (response.status === 200) {
+                navigate('/mybookings', {
+                    state: {
+                        amount: bookingData.totalAmount,
+                        bookingId: bookingId
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Ошибка оплаты:', err);
+            setError(err.response?.data?.message || 'Ошибка при проведении платежа');
+        } finally {
+            setPaymentProcessing(false);
+        }
     };
 
     const handleCardInputChange = (e) => {
@@ -158,16 +179,7 @@ const PaymentPage = () => {
                                 value={cardData.number}
                                 onChange={handleCardInputChange}
                                 placeholder="1234 5678 9012 3456"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Имя владельца</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={cardData.name}
-                                onChange={handleCardInputChange}
-                                placeholder="IVAN IVANOV"
+                                required
                             />
                         </div>
                         <div className="form-row">
@@ -179,6 +191,7 @@ const PaymentPage = () => {
                                     value={cardData.expiry}
                                     onChange={handleCardInputChange}
                                     placeholder="MM/ГГ"
+                                    required
                                 />
                             </div>
                             <div className="form-group">
@@ -189,19 +202,32 @@ const PaymentPage = () => {
                                     value={cardData.cvv}
                                     onChange={handleCardInputChange}
                                     placeholder="123"
+                                    required
                                 />
                             </div>
                         </div>
                     </div>
                 )}
 
+                {error && <div className="payment-error">{error}</div>}
+
                 <button
                     className="pay-button"
                     onClick={handlePaymentSubmit}
-                    disabled={selectedPaymentMethod === 'new-card' && (!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv)}
+                    disabled={
+                        paymentProcessing ||
+                        (selectedPaymentMethod === 'new-card' &&
+                            (!cardData.number || !cardData.expiry || !cardData.cvv))
+                    }
                 >
-                    <FaLock className="lock-icon" />
-                    Оплатить {bookingData.totalAmount.toLocaleString('ru-RU')} ₽
+                    {paymentProcessing ? (
+                        'Обработка...'
+                    ) : (
+                        <>
+                            <FaLock className="lock-icon" />
+                            Оплатить {bookingData.totalAmount.toLocaleString('ru-RU')} ₽
+                        </>
+                    )}
                 </button>
 
                 <div className="agreement">
@@ -218,7 +244,7 @@ const PaymentPage = () => {
                     padding: 20px;
                     font-family: 'Arial', sans-serif;
                 }
-                
+
                 .payment-card {
                     width: 100%;
                     max-width: 500px;
@@ -227,62 +253,62 @@ const PaymentPage = () => {
                     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
                     overflow: hidden;
                 }
-                
+
                 .payment-header {
                     padding: 25px;
                     text-align: center;
                     border-bottom: 1px solid #f0f0f0;
                 }
-                
+
                 .payment-header h1 {
                     font-size: 24px;
                     margin: 10px 0 5px;
                     color: #2d3748;
                 }
-                
+
                 .payment-header p {
                     color: #718096;
                     font-size: 14px;
                     margin: 0;
                 }
-                
+
                 .payment-icon {
                     font-size: 28px;
                     color: #4a6bff;
                 }
-                
+
                 .booking-section,
                 .payment-methods {
                     padding: 20px;
                     border-bottom: 1px solid #f0f0f0;
                 }
-                
+
                 h2 {
                     font-size: 18px;
                     margin: 0 0 15px;
                     color: #2d3748;
                 }
-                
+
                 .details-grid {
                     display: grid;
                     grid-template-columns: 1fr;
                     gap: 12px;
                 }
-                
+
                 .detail {
                     display: flex;
                     justify-content: space-between;
                 }
-                
+
                 .detail-label {
                     font-weight: 600;
                     color: #4a5568;
                 }
-                
+
                 .detail-value {
                     color: #2d3748;
                 }
-                
+
                 .total-section {
                     display: flex;
                     justify-content: space-between;
@@ -291,19 +317,19 @@ const PaymentPage = () => {
                     background-color: #f8fafc;
                     font-weight: 600;
                 }
-                
+
                 .total-amount {
                     font-size: 18px;
                     font-weight: 700;
                     color: #2d3748;
                 }
-                
+
                 .payment-options {
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
                 }
-                
+
                 .payment-option {
                     display: flex;
                     align-items: center;
@@ -313,12 +339,12 @@ const PaymentPage = () => {
                     cursor: pointer;
                     transition: all 0.2s;
                 }
-                
+
                 .payment-option.selected {
                     border-color: #4a6bff;
                     background-color: rgba(74, 107, 255, 0.05);
                 }
-                
+
                 .radio-container {
                     width: 20px;
                     height: 20px;
@@ -329,72 +355,72 @@ const PaymentPage = () => {
                     align-items: center;
                     justify-content: center;
                 }
-                
+
                 .radio-check {
                     color: #4a6bff;
                     font-size: 12px;
                 }
-                
+
                 .card-info {
                     flex: 1;
                 }
-                
+
                 .card-brand {
                     display: flex;
                     align-items: center;
                     margin-bottom: 5px;
                 }
-                
+
                 .card-icon {
                     font-size: 24px;
                     margin-right: 10px;
                 }
-                
+
                 .visa {
                     color: #1a1f71;
                 }
-                
+
                 .mastercard {
                     color: #eb001b;
                 }
-                
+
                 .new-card {
                     color: #4a5568;
                 }
-                
+
                 .card-number {
                     font-weight: 500;
                 }
-                
+
                 .card-expiry {
                     font-size: 14px;
                     color: #718096;
                     margin-left: 34px;
                 }
-                
+
                 .new-card-text {
                     margin-left: 10px;
                     font-weight: 500;
                 }
-                
+
                 .new-card-form {
                     padding: 15px;
                     margin-top: 10px;
                     background-color: #f8fafc;
                     border-radius: 8px;
                 }
-                
+
                 .form-group {
                     margin-bottom: 15px;
                 }
-                
+
                 .form-group label {
                     display: block;
                     margin-bottom: 8px;
                     font-size: 14px;
                     color: #4a5568;
                 }
-                
+
                 .form-group input {
                     width: 100%;
                     padding: 12px;
@@ -402,16 +428,25 @@ const PaymentPage = () => {
                     border-radius: 6px;
                     font-size: 16px;
                 }
-                
+
                 .form-row {
                     display: flex;
                     gap: 15px;
                 }
-                
+
                 .form-row .form-group {
                     flex: 1;
                 }
-                
+
+                .payment-error {
+                    color: #e53e3e;
+                    text-align: center;
+                    margin: 15px 20px 0;
+                    padding: 10px;
+                    background-color: #fff5f5;
+                    border-radius: 6px;
+                }
+
                 .pay-button {
                     width: calc(100% - 40px);
                     margin: 20px;
@@ -429,42 +464,42 @@ const PaymentPage = () => {
                     cursor: pointer;
                     transition: background-color 0.2s;
                 }
-                
+
                 .pay-button:hover {
                     background-color: #3a5bef;
                 }
-                
+
                 .pay-button:disabled {
                     background-color: #a0aec0;
                     cursor: not-allowed;
                 }
-                
+
                 .lock-icon {
                     font-size: 16px;
                 }
-                
+
                 .agreement {
                     text-align: center;
                     padding: 0 20px 20px;
                     font-size: 14px;
                     color: #718096;
                 }
-                
+
                 .agreement a {
                     color: #4a6bff;
                     text-decoration: none;
                 }
-                
+
                 .agreement a:hover {
                     text-decoration: underline;
                 }
-                
+
                 .loading, .error {
                     text-align: center;
                     padding: 50px;
                     font-size: 16px;
                 }
-                
+
                 .error {
                     color: #e53e3e;
                 }
