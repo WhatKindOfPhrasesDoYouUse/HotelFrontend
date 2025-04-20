@@ -4,7 +4,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar.jsx";
 
-const RoomBooking = () => {
+const SingleRoomBooking = () => {
     const { roomId } = useParams();  // ID комнаты, получаем через роутер
     const navigate = useNavigate();  // Для навигации после успешного бронирования
 
@@ -195,4 +195,4 @@ const styles = {
     },
 };
 
-export default RoomBooking;
+export default SingleRoomBooking;

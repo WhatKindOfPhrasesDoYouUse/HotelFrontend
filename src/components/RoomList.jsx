@@ -221,7 +221,7 @@ const RoomList = () => {
                             <strong>Удобства:</strong>
                             {roomComforts[room.id] ? (
                                 <ul style={styles.comfortsList}>
-                                {roomComforts[room.id].map(comfort => (
+                                    {roomComforts[room.id].map(comfort => (
                                         <li key={comfort.id}>{comfort.name}</li>
                                     ))}
                                 </ul>
@@ -229,10 +229,26 @@ const RoomList = () => {
                                 <p>Загрузка удобств...</p>
                             )}
 
-                            <Link to={`/room-booking/${room.id}`} style={{ textDecoration: "none" }}>
-                                <button style={styles.navLinks}>Забронировать</button>
-                            </Link>
-                            
+                            {room.capacity === 1 ? (
+                                <Link
+                                    to={`/single-room-booking/${room.id}`}
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <button style={styles.navLinks}>
+                                        Забронировать одиночную
+                                    </button>
+                                </Link>
+                            ) : (
+                                <Link
+                                    to={`/group-room-booking/${room.id}`}
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <button style={styles.navLinks}>
+                                        Забронировать для группы
+                                    </button>
+                                </Link>
+                            )}
+
                         </div>
                     </div>
                 ))}

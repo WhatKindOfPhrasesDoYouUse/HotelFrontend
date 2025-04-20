@@ -8,7 +8,7 @@ import GuestProfile from "./components/GuestProfile.jsx";
 import EditGuestProfile from "./components/EditGuestProfile.jsx";
 import AddCard from "./components/AddCard.jsx";
 import EditCard from "./components/EditCard.jsx";
-import RoomBooking from "./components/RoomBooking.jsx";
+import SingleRoomBooking from "./components/SingleRoomBooking.jsx";
 import DeleteClient from "./components/DeleteClient.jsx";
 import RoomBookingsList from "./components/RoomBookingsList.jsx";
 
@@ -19,7 +19,7 @@ function App() {
                 <Routes>
                     <Route path="/mybookings" element={<RoomBookingsList />} />
                     <Route path="/delete-client/:guestId/:clientId" element={<DeleteClient />} />
-                    <Route path="/room-booking/:roomId" element={<RoomBooking />} />
+                    <Route path="/single-room-booking/:roomId" element={<SingleRoomBooking />} />
                     <Route path="/edit-card/:cardId" element={<EditCard />} />
                     <Route path="/add-card" element={<AddCard />} />
                     <Route path="/bind-card-to-guest" element={<EditGuestProfile />} />
