@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar.jsx";
+import {Link} from "react-router-dom";
 
 const RoomBookingsList = () => {
     const [roomBookings, setRoomBookings] = useState([]);
@@ -192,9 +193,10 @@ const RoomBookingsList = () => {
                                     Подтвердить
                                 </button>
                             )}
-{/*                            {!booking.isPayd && booking.isConfirmed && (
-                                <button
-                                    onClick={() => handlePay(booking.roomBookingId)}
+
+                            {!booking.isPayd && booking.isConfirmed && (
+                                <Link
+                                    to={`/payment-room-booking/${booking.roomBookingId}`}
                                     style={{
                                         padding: '5px 10px',
                                         backgroundColor: '#28a745',
@@ -202,12 +204,15 @@ const RoomBookingsList = () => {
                                         border: 'none',
                                         borderRadius: '5px',
                                         cursor: 'pointer',
-                                        marginRight: '10px'
+                                        marginRight: '10px',
+                                        textDecoration: 'none',
+                                        display: 'inline-block'
                                     }}
                                 >
                                     Оплатить
-                                </button>
-                            )}*/}
+                                </Link>
+                            )}
+
                             {getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) === 'green' &&
                                 !booking.isConfirmed && (
                                     <button
