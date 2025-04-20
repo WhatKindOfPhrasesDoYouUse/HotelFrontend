@@ -11,6 +11,7 @@ import EditCard from "./components/EditCard.jsx";
 import SingleRoomBooking from "./components/SingleRoomBooking.jsx";
 import DeleteClient from "./components/DeleteClient.jsx";
 import RoomBookingsList from "./components/RoomBookingsList.jsx";
+import GroupRoomBooking from "./components/GroupRoomBooking.jsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Routes>
                     <Route path="/mybookings" element={<RoomBookingsList />} />
                     <Route path="/delete-client/:guestId/:clientId" element={<DeleteClient />} />
+                    <Route path="/group-room-booking/:roomId" element={<GroupRoomBooking />} />
                     <Route path="/single-room-booking/:roomId" element={<SingleRoomBooking />} />
                     <Route path="/edit-card/:cardId" element={<EditCard />} />
                     <Route path="/add-card" element={<AddCard />} />

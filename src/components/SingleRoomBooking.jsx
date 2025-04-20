@@ -86,7 +86,7 @@ const SingleRoomBooking = () => {
         console.log("Данные для отправки:", payload);
 
         try {
-            const response = await axios.post("http://localhost:5221/api/room-bookings", payload);
+            const response = await axios.post("http://localhost:5221/api/room-bookings/single-booking", payload);
             console.log("Бронирование успешно!", response.data);
             navigate("/guest-profile"); // Переход на страницу профиля гостя
         } catch (err) {
