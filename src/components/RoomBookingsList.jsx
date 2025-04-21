@@ -213,6 +213,25 @@ const RoomBookingsList = () => {
                                 </Link>
                             )}
 
+                            {booking.isPayd && booking.isConfirmed && (
+                                <Link
+                                    to={`/hotel-review/${booking.roomBookingId}`}
+                                    style={{
+                                        padding: '5px 10px',
+                                        backgroundColor: '#28a745',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer',
+                                        marginRight: '10px',
+                                        textDecoration: 'none',
+                                        display: 'inline-block'
+                                    }}
+                                >
+                                    Написать отзыв
+                                </Link>
+                            )}
+
                             {getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) === 'green' &&
                                 !booking.isConfirmed && (
                                     <button
