@@ -158,7 +158,11 @@ const HotelDetail = () => {
                     </div>
 
                     <Link to={`/hotels/${hotel.id}/rooms`} className="rooms-btn">
-                        Просмотреть номера
+                        Посмотреть номера
+                    </Link>
+
+                    <Link to={`/hotels/${hotel.id}/reviews`} className="rooms-btn">
+                        Просмотреть отзывы
                     </Link>
                 </aside>
             </main>

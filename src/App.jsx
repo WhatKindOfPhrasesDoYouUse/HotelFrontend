@@ -13,12 +13,15 @@ import DeleteClient from "./components/DeleteClient.jsx";
 import RoomBookingsList from "./components/RoomBookingsList.jsx";
 import GroupRoomBooking from "./components/GroupRoomBooking.jsx";
 import PayRoomBooking from "./components/PayRoomBooking.jsx";
+import HotelReviewList from "./components/HotelReviewList.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/hotels/:hotelId/reviews" element={<HotelReviewList />} />
+                    <Route path="/payment-room-booking/:bookingId" element={<PayRoomBooking />} />
                     <Route path="/payment-room-booking/:bookingId" element={<PayRoomBooking />} />
                     <Route path="/mybookings" element={<RoomBookingsList />} />
                     <Route path="/delete-client/:guestId/:clientId" element={<DeleteClient />} />
