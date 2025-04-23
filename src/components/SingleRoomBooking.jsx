@@ -5,9 +5,8 @@ import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar.jsx";
 
 const SingleRoomBooking = () => {
-    const { roomId } = useParams();  // ID комнаты, получаем через роутер
-    const navigate = useNavigate();  // Для навигации после успешного бронирования
-
+    const { roomId } = useParams();
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         checkInDate: "",
         checkOutDate: "",
@@ -17,25 +16,22 @@ const SingleRoomBooking = () => {
         numberOfGuests: 1,
         roomId: roomId, // ID комнаты
     });
+    const [error, setError] = useState(null);
 
-    const [error, setError] = useState(null); // Для ошибок
-
-    // Функция для декодирования JWT и получения client_id
     const parseJwt = (token) => {
         try {
             const decoded = jwtDecode(token);
-            return decoded.client_id; // Возвращаем client_id из токена
+            return decoded.client_id;
         } catch (error) {
             console.error("Ошибка при декодировании JWT:", error);
             return null;
         }
     };
 
-    // Получаем guestId по client_id
     useEffect(() => {
         const fetchGuestId = async () => {
             const token = localStorage.getItem("token");
-            const clientId = parseJwt(token); // Получаем client_id из токена
+            const clientId = parseJwt(token);
 
             if (clientId) {
                 try {
@@ -54,7 +50,6 @@ const SingleRoomBooking = () => {
         fetchGuestId();
     }, []);
 
-    // Обработчик изменения значений формы
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({
@@ -63,32 +58,28 @@ const SingleRoomBooking = () => {
         }));
     };
 
-    // Обработчик отправки формы
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Добавляем ":00" к времени
         const formattedCheckInTime = form.checkInTime + ":00";
         const formattedCheckOutTime = form.checkOutTime + ":00";
 
-        // Подготовка данных для отправки
         const payload = {
             checkInDate: form.checkInDate,
             checkOutDate: form.checkOutDate,
             checkInTime: formattedCheckInTime,
             checkOutTime: formattedCheckOutTime,
-            numberOfGuests: parseInt(form.numberOfGuests, 10), // Убедитесь, что это число
-            guestId: form.guestId, // guestId должен быть числом
-            roomId: parseInt(form.roomId, 10), // roomId должен быть числом
+            numberOfGuests: parseInt(form.numberOfGuests, 10),
+            guestId: form.guestId,
+            roomId: parseInt(form.roomId, 10),
         };
 
-        // Логируем отправляемые данные для отладки
         console.log("Данные для отправки:", payload);
 
         try {
             const response = await axios.post("http://localhost:5221/api/room-bookings/single-booking", payload);
             console.log("Бронирование успешно!", response.data);
-            navigate("/guest-profile"); // Переход на страницу профиля гостя
+            navigate("/guest-profile");
         } catch (err) {
             console.error("Ошибка при создании бронирования:", err);
             setError("Не удалось создать бронирование");

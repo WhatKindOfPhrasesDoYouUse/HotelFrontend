@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Navbar from "./Navbar.jsx";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { FaSpinner, FaHotel, FaCalendarAlt, FaUser, FaMoneyBillWave, FaTimes, FaCheck, FaClock } from "react-icons/fa";
 
 const RoomBookingsList = () => {
     const [roomBookings, setRoomBookings] = useState([]);
@@ -86,10 +87,22 @@ const RoomBookingsList = () => {
         return () => clearInterval(interval);
     }, [roomBookings]);
 
-    const getDeadlineStatus = (cancelUntilDate, cancelUntilTime) => {
-        const currentDate = new Date();
-        const cancelDate = new Date(`${cancelUntilDate}T${cancelUntilTime}`);
-        return currentDate < cancelDate ? "green" : "red";
+    const getStatus = (booking) => {
+        if (booking.isConfirmed && booking.isPayd) return { text: "Подтверждено", icon: <FaCheck />, color: "#27ae60" };
+        if (booking.isConfirmed && !booking.isPayd) return { text: "Ожидает оплаты", icon: <FaClock />, color: "#e67e22" };
+        if (!booking.isConfirmed && !booking.isPayd) {
+            return timeLeft[booking.roomBookingId] === "время истекло"
+                ? { text: "Истекло время", icon: <FaTimes />, color: "#e74c3c" }
+                : { text: "Ожидает подтверждения", icon: <FaClock />, color: "#3498db" };
+        }
+        return { text: "Неизвестный статус", icon: null, color: "#7f8c8d" };
+    };
+
+    const getTotalPrice = (booking) => {
+        const checkIn = new Date(`${booking.checkInDate}T${booking.checkInTime}`);
+        const checkOut = new Date(`${booking.checkOutDate}T${booking.checkOutTime}`);
+        const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+        return nights * booking.unitPrice;
     };
 
     const handleDelete = async (bookingId) => {
@@ -114,160 +127,407 @@ const RoomBookingsList = () => {
         }
     };
 
-    if (loading) return <p>Загрузка...</p>
-    if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
+    if (loading) return (
+        <div className="container">
+            <Navbar />
+            <div className="loading-spinner">
+                <FaSpinner className="spinner" />
+                <p>Загрузка бронирований...</p>
+            </div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="container">
+            <Navbar />
+            <div className="error-message">
+                <p style={{ color: "red" }}>Ошибка: {error}</p>
+            </div>
+        </div>
+    );
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+        <div className="container">
             <Navbar />
-            <h2 style={{ marginBottom: "20px" }}>Мои бронирования</h2>
-            <table style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                borderRadius: "8px",
-                overflow: "hidden"
-            }}>
-                <thead style={{ backgroundColor: "#f4f4f4", textAlign: "left" }}>
-                <tr>
-                    <th style={thStyle}>Номер комнаты</th>
-                    <th style={thStyle}>Дата заезда</th>
-                    <th style={thStyle}>Дата выезда</th>
-                    <th style={thStyle}>Цена/ночь</th>
-                    <th style={thStyle}>Количество гостей</th>
-                    <th style={thStyle}>Дедлайн для отмены</th>
-                    <th style={thStyle}>Статус оплаты</th>
-                    <th style={thStyle}>Подтверждение</th>
-                    <th style={thStyle}>Действия</th>
-                </tr>
-                </thead>
-                <tbody>
-                {roomBookings.map((booking) => (
-                    <tr key={booking.roomBookingId} style={{borderBottom: "1px solid #eaeaea"}}>
-                        <td style={tdStyle}>{booking.roomNumber}</td>
-                        <td style={tdStyle}>{booking.checkInDate} {booking.checkInTime}</td>
-                        <td style={tdStyle}>{booking.checkOutDate} {booking.checkOutTime}</td>
-                        <td style={tdStyle}>{booking.unitPrice}</td>
-                        <td style={tdStyle}>{booking.numberOfGuests}/{booking.capacity}</td>
-                        <td style={tdStyle}>
-                                <span
-                                    style={{color: getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime)}}>
-                                    {booking.cancelUntilDate} {booking.cancelUntilTime}
-                                </span>
-                        </td>
-                        <td style={{
-                            ...tdStyle,
-                            color: booking.isPayd ? "green" : "red",
-                            fontWeight: "bold"
-                        }}>
-                            {booking.isPayd ? "Оплачено" : "Не оплачено"}
-                        </td>
-                        <td style={tdStyle}>
-                            {booking.isConfirmed ? (
-                                <span style={{color: "green", fontWeight: "bold"}}>Подтверждено</span>
-                            ) : (
-                                !booking.isPayd && (
-                                    <span style={{
-                                        color: timeLeft[booking.roomBookingId] === "время истекло"
-                                            ? "red" : "orange"
-                                    }}>
-                                            ⏱️ {timeLeft[booking.roomBookingId] || "—"}
-                                        </span>
-                                )
-                            )}
-                        </td>
-                        <td style={tdStyle}>
-                            {!booking.isConfirmed && (
-                                <button
-                                    onClick={() => handleConfirm(booking.roomBookingId)}
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#007bff',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        marginRight: '10px'
-                                    }}
-                                >
-                                    Подтвердить
-                                </button>
-                            )}
+            <h1>Мои бронирования</h1>
 
-                            {!booking.isPayd && booking.isConfirmed && (
-                                <Link
-                                    to={`/payment-room-booking/${booking.roomBookingId}`}
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#28a745',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        marginRight: '10px',
-                                        textDecoration: 'none',
-                                        display: 'inline-block'
-                                    }}
-                                >
-                                    Оплатить
-                                </Link>
-                            )}
+            {roomBookings.length === 0 ? (
+                <div className="no-bookings">
+                    <FaHotel size={50} />
+                    <p>У вас нет активных бронирований</p>
+                    <Link to="/hotels/1/rooms" className="btn btn-primary">
+                        Забронировать комнату
+                    </Link>
+                </div>
+            ) : (
+                roomBookings.map((booking) => {
+                    const status = getStatus(booking);
+                    const totalPrice = getTotalPrice(booking);
+                    const nights = Math.ceil(
+                        (new Date(`${booking.checkOutDate}T${booking.checkOutTime}`) -
+                            new Date(`${booking.checkInDate}T${booking.checkInTime}`)) / (1000 * 60 * 60 * 24)
+                    );
 
-                            {booking.isPayd && booking.isConfirmed && (
-                                <Link
-                                    to={`/hotel-review/${booking.roomBookingId}`}
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#28a745',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        marginRight: '10px',
-                                        textDecoration: 'none',
-                                        display: 'inline-block'
-                                    }}
-                                >
-                                    Написать отзыв
-                                </Link>
-                            )}
+                    return (
+                        <div key={booking.roomBookingId} className="booking-card">
+                            <div className="booking-header">
+                                <div className="hotel-info">
+                                    <h2>Номер {booking.roomNumber}</h2>
+                                    <p className="hotel-name">Отель "Три семерки"</p>
+                                </div>
+                                <div className="booking-status" style={{ backgroundColor: `${status.color}20`, color: status.color }}>
+                                    {status.icon} {status.text}
+                                </div>
+                            </div>
 
-                            {getDeadlineStatus(booking.cancelUntilDate, booking.cancelUntilTime) === 'green' &&
-                                !booking.isConfirmed && (
+                            <div className="booking-details">
+                                <div className="detail-item">
+                                    <div className="icon-wrapper">
+                                        <FaCalendarAlt />
+                                    </div>
+                                    <div>
+                                        <p className="detail-label">Даты проживания</p>
+                                        <p className="detail-value">
+                                            {booking.checkInDate} - {booking.checkOutDate} ({nights} ночей)
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="icon-wrapper">
+                                        <FaUser />
+                                    </div>
+                                    <div>
+                                        <p className="detail-label">Гости</p>
+                                        <p className="detail-value">{booking.numberOfGuests} взрослых</p>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="icon-wrapper">
+                                        <FaMoneyBillWave />
+                                    </div>
+                                    <div>
+                                        <p className="detail-label">Стоимость</p>
+                                        <p className="detail-value">
+                                            {totalPrice} ₽ ({booking.unitPrice} ₽ за ночь)
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {!booking.isConfirmed && !booking.isPayd && (
+                                    <div className="timer">
+                                        <div className="icon-wrapper">
+                                            <FaClock />
+                                        </div>
+                                        <div>
+                                            <p className="detail-label">До автоматической отмены</p>
+                                            <p className="detail-value" style={{
+                                                color: timeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#3498db",
+                                                fontWeight: "bold"
+                                            }}>
+                                                {timeLeft[booking.roomBookingId] || "—"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {booking.amenities && booking.amenities.length > 0 && (
+                                    <div className="amenities">
+                                        <p className="amenities-title">Удобства номера:</p>
+                                        <div className="amenities-list">
+                                            {booking.amenities.map(amenity => (
+                                                <span key={amenity.id} className="amenity">
+                                                    {amenity.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="booking-actions">
+                                {!booking.isConfirmed && (
+                                    <button
+                                        onClick={() => handleConfirm(booking.roomBookingId)}
+                                        className="btn btn-primary"
+                                        disabled={timeLeft[booking.roomBookingId] === "время истекло"}
+                                    >
+                                        Подтвердить
+                                    </button>
+                                )}
+
+                                {!booking.isPayd && booking.isConfirmed && (
+                                    <Link
+                                        to={`/payment-room-booking/${booking.roomBookingId}`}
+                                        className="btn btn-primary"
+                                    >
+                                        Оплатить
+                                    </Link>
+                                )}
+
+                                {booking.isPayd && booking.isConfirmed && (
+                                    <Link
+                                        to={`/hotel-review/${booking.roomBookingId}`}
+                                        className="btn btn-secondary"
+                                    >
+                                        Оставить отзыв
+                                    </Link>
+                                )}
+
+                                {(!booking.isConfirmed || !booking.isPayd) && (
                                     <button
                                         onClick={() => handleDelete(booking.roomBookingId)}
-                                        style={{
-                                            padding: '5px 10px',
-                                            backgroundColor: 'red',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer'
-                                        }}
+                                        className="btn btn-danger"
+                                        disabled={timeLeft[booking.roomBookingId] === "время истекло"}
                                     >
                                         Отменить
                                     </button>
                                 )}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+                            </div>
+                        </div>
+                    );
+                })
+            )}
+
+            <style jsx>{`
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                }
+
+                h1 {
+                    color: #2c3e50;
+                    text-align: center;
+                    margin-bottom: 30px;
+                    font-weight: 600;
+                    font-size: 28px;
+                }
+
+                .loading-spinner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 200px;
+                }
+
+                .spinner {
+                    animation: spin 1s linear infinite;
+                    font-size: 40px;
+                    margin-bottom: 15px;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .no-bookings {
+                    text-align: center;
+                    padding: 40px 20px;
+                    background-color: #f8f9fa;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                }
+
+                .no-bookings p {
+                    margin: 15px 0;
+                    color: #6c757d;
+                }
+
+                .booking-card {
+                    background: white;
+                    border-radius: 10px;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+                    padding: 25px;
+                    margin-bottom: 25px;
+                    border-left: 4px solid #e74c3c;
+                    transition: transform 0.2s ease;
+                }
+
+                .booking-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                }
+
+                .booking-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                }
+
+                .hotel-info h2 {
+                    font-size: 1.4rem;
+                    color: #2c3e50;
+                    margin: 0 0 5px 0;
+                }
+
+                .hotel-name {
+                    color: #636e72;
+                    margin: 0;
+                    font-size: 0.95rem;
+                }
+
+                .booking-status {
+                    padding: 8px 15px;
+                    border-radius: 18px;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .booking-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                    padding: 20px 0;
+                }
+
+                .detail-item {
+                    display: flex;
+                    gap: 15px;
+                    align-items: flex-start;
+                }
+
+                .icon-wrapper {
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #7f8c8d;
+                    margin-top: 3px;
+                }
+
+                .detail-label {
+                    font-weight: 500;
+                    color: #7f8c8d;
+                    font-size: 0.9rem;
+                    margin-bottom: 5px;
+                }
+
+                .detail-value {
+                    font-size: 1rem;
+                    font-weight: 500;
+                    color: #2d3436;
+                    margin: 0;
+                }
+
+                .timer {
+                    display: flex;
+                    gap: 15px;
+                    align-items: flex-start;
+                    margin-top: 10px;
+                }
+
+                .amenities {
+                    margin-top: 15px;
+                }
+
+                .amenities-title {
+                    font-weight: 500;
+                    color: #7f8c8d;
+                    font-size: 0.9rem;
+                    margin-bottom: 10px;
+                }
+
+                .amenities-list {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+
+                .amenity {
+                    background-color: #f0f7ff;
+                    color: #3498db;
+                    padding: 5px 12px;
+                    border-radius: 12px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                }
+
+                .booking-actions {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 15px;
+                    padding-top: 20px;
+                    border-top: 1px solid #ecf0f1;
+                    flex-wrap: wrap;
+                }
+
+                .btn {
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    text-decoration: none;
+                    display: inline-block;
+                    text-align: center;
+                    transition: all 0.2s;
+                    font-size: 0.95rem;
+                }
+
+                .btn-primary {
+                    background-color: #3498db;
+                    color: white;
+                }
+
+                .btn-primary:hover:not(:disabled) {
+                    background-color: #2980b9;
+                }
+
+                .btn-primary:disabled {
+                    background-color: #bdc3c7;
+                    cursor: not-allowed;
+                }
+
+                .btn-danger {
+                    background-color: #e74c3c;
+                    color: white;
+                }
+
+                .btn-danger:hover:not(:disabled) {
+                    background-color: #c0392b;
+                }
+
+                .btn-danger:disabled {
+                    background-color: #bdc3c7;
+                    cursor: not-allowed;
+                }
+
+                .btn-secondary {
+                    background-color: #bdc3c7;
+                    color: #2d3436;
+                }
+
+                .btn-secondary:hover {
+                    background-color: #95a5a6;
+                    color: white;
+                }
+
+                @media (max-width: 600px) {
+                    .booking-actions {
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+
+                    .btn {
+                        width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     );
-};
-
-const thStyle = {
-    padding: "12px",
-    fontWeight: "bold",
-    borderBottom: "2px solid #ddd",
-    fontSize: "14px",
-};
-
-const tdStyle = {
-    padding: "12px",
-    fontSize: "14px",
-    color: "#333",
 };
 
 export default RoomBookingsList;

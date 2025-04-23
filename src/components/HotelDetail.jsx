@@ -8,6 +8,9 @@ const HotelDetail = () => {
     const [hotel, setHotel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [reviewCount, setReviewCount] = useState(0);
+    const [avgRating, setAvgRating] = useState(0);
+
 
     useEffect(() => {
         const fetchHotel = async () => {
@@ -16,6 +19,17 @@ const HotelDetail = () => {
                 if (!response.ok) throw new Error("Ошибка загрузки данных отеля");
                 const data = await response.json();
                 setHotel(data[0]);
+
+                const reviewCountResponse = await fetch('http://localhost:5221/api/hotel-reviews/count');
+                if (!reviewCountResponse.ok) throw new Error("Ошибка загрузки количества отзывов");
+                const reviewCountData = await reviewCountResponse.json();
+                setReviewCount(reviewCountData);
+
+                const avgHotelRating = await fetch('http://localhost:5221/api/hotel-reviews/avg');
+                if (!avgHotelRating.ok) throw new Error("Ошибка загрузки среднего рейтинга отеля");
+                const avgHotelData = await avgHotelRating.json();
+                setAvgRating(avgHotelData);
+
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -62,13 +76,14 @@ const HotelDetail = () => {
                     <div className="hotel-rating">
                         <div className="stars">
                             {[...Array(5)].map((_, i) => (
-                                <FaStar key={i} className={i < Math.floor(hotel.rating) ? "star-filled" : "star-empty"} />
+                                <FaStar key={i}
+                                        className={i < Math.floor(hotel.rating) ? "star-filled" : "star-empty"}/>
                             ))}
                         </div>
                         <span className="rating-value">{hotel.rating}/5</span>
                     </div>
                     <p className="hotel-location">
-                        <FaMapMarkerAlt /> {hotel.city}, {hotel.address}
+                        <FaMapMarkerAlt/> {hotel.city}, {hotel.address}
                     </p>
                 </div>
             </header>
@@ -162,7 +177,7 @@ const HotelDetail = () => {
                     </Link>
 
                     <Link to={`/hotels/${hotel.id}/reviews`} className="rooms-btn">
-                        Просмотреть отзывы
+                        Просмотреть отзывы ({reviewCount})
                     </Link>
                 </aside>
             </main>
