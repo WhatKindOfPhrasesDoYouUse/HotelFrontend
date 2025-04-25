@@ -11,6 +11,8 @@ const RoomBookingsList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [timeLeft, setTimeLeft] = useState({});
+    const [reviewsAvailability, setReviewsAvailability] = useState({});
+
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -35,8 +37,17 @@ const RoomBookingsList = () => {
         if (!guestId) return;
 
         axios.get(`http://localhost:5221/api/room-bookings/${guestId}/guest`)
-            .then((response) => {
-                setRoomBookings(response.data);
+            .then(async (response) => {
+                const bookings = response.data;
+                setRoomBookings(bookings);
+
+                const availabilityMap = {};
+                for (const booking of bookings) {
+                    if (booking.isPayd && booking.isConfirmed) {
+                        availabilityMap[booking.roomBookingId] = await checkReviewAvailability(booking.roomBookingId);
+                    }
+                }
+                setReviewsAvailability(availabilityMap);
             })
             .catch((err) => {
                 setError(`Ошибка при загрузке данных забронированных комнат: ${err.message}`);
@@ -126,6 +137,16 @@ const RoomBookingsList = () => {
             alert("Не удалось подтвердить бронирование");
         }
     };
+
+    const checkReviewAvailability = async (bookingId) => {
+        try {
+            const response = await axios.get(`http://localhost:5221/api/hotel-reviews/${bookingId}/availability`);
+            return response.data;
+        } catch (error) {
+            console.error("Ошибка при проверке отзыва: ", error.message);
+            return false;
+        }
+    }
 
     if (loading) return (
         <div className="container">
@@ -266,7 +287,7 @@ const RoomBookingsList = () => {
                                     </Link>
                                 )}
 
-                                {booking.isPayd && booking.isConfirmed && (
+                                {booking.isPayd && booking.isConfirmed && reviewsAvailability[booking.roomBookingId] && (
                                     <Link
                                         to={`/hotel-review/${booking.roomBookingId}`}
                                         className="btn btn-secondary"
