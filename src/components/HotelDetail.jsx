@@ -76,11 +76,15 @@ const HotelDetail = () => {
                     <div className="hotel-rating">
                         <div className="stars">
                             {[...Array(5)].map((_, i) => (
-                                <FaStar key={i}
-                                        className={i < Math.floor(hotel.rating) ? "star-filled" : "star-empty"}/>
+                                <FaStar
+                                    key={i}
+                                    className={i < Math.floor(avgRating) ? "star-filled" : "star-empty"}
+                                />
                             ))}
                         </div>
-                        <span className="rating-value">{hotel.rating}/5</span>
+                        <span className="rating-value">
+                            {avgRating ? avgRating.toFixed(1) : "—"}/5
+                        </span>
                     </div>
                     <p className="hotel-location">
                         <FaMapMarkerAlt/> {hotel.city}, {hotel.address}
