@@ -17,12 +17,14 @@ import HotelReviewList from "./components/HotelReviewList.jsx";
 import WriteHotelReview from "./components/WriteHotelReview.jsx";
 import AmenityList from "./components/AmenityList.jsx";
 import AmenityBooking from "./components/AmenityBooking.jsx";
+import AmenityBookingsList from "./components/AmenityBookingsList.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/myamenitys/:bookingId" element={<AmenityBookingsList />} />
                     <Route path="/amenity-booking/:amenityId/:bookingId" element={<AmenityBooking />} />
                     <Route path="/amenity-list/:bookingId" element={<AmenityList />} />
                     <Route path="/hotel-review/:bookingId" element={<WriteHotelReview />} />

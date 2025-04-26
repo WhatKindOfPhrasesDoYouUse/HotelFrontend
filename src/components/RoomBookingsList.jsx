@@ -348,6 +348,16 @@ const RoomBookingsList = () => {
                                         Просмотреть услуги
                                     </Link>
                                 )}
+
+                                {booking.isPayd && booking.isConfirmed && (
+                                    <Link
+                                        to={`/myamenitys/${booking.roomBookingId}`}
+                                        className="btn btn-primary"
+                                    >
+                                        Посмотреть заказанные услуги
+                                    </Link>
+                                )}
+
                             </div>
                         </div>
                     );
