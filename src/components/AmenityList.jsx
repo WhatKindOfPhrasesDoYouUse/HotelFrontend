@@ -66,8 +66,8 @@ const AmenityList = () => {
                                 <td>{amenities.description || 'Описание отсутствует'}</td>
                                 <td>{amenities.unitPrice}</td>
                                 <td>
-                                    <Link to={'/penis'}>
-                                        Забронировать
+                                    <Link to={`/amenity-booking/${amenities.id}`}>
+                                        Заказать
                                     </Link>
                                 </td>
                             </tr>
