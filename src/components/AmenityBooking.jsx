@@ -5,7 +5,7 @@ import axios from "axios";
 import Navbar from "./Navbar.jsx";
 
 const AmenityBooking = () => {
-    const { amenityId } = useParams();
+    const { amenityId, bookingId } = useParams();
     const [guestId, setGuestId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,6 +13,8 @@ const AmenityBooking = () => {
         quantity: 1
     });
     const [amenity, setAmenity] = useState(null);
+
+    console.log(bookingId);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,6 +63,7 @@ const AmenityBooking = () => {
             const payload = {
                 amenityId: amenityId,
                 guestId: guestId,
+                roomBookingId: bookingId,
                 quantity: parseInt(form.quantity, 10)
             };
 

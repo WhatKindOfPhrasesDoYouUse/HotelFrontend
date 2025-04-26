@@ -66,7 +66,7 @@ const AmenityList = () => {
                                 <td>{amenities.description || 'Описание отсутствует'}</td>
                                 <td>{amenities.unitPrice}</td>
                                 <td>
-                                    <Link to={`/amenity-booking/${amenities.id}`}>
+                                    <Link to={`/amenity-booking/${amenities.id}/${bookingId}`}>
                                         Заказать
                                     </Link>
                                 </td>
