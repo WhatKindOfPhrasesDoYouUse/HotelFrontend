@@ -63,7 +63,7 @@ const styles = {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: '#D5D5D5',
+        backgroundColor: '#4a6bff',
         padding: '10px 20px',
         color: '#fff',
         zIndex: 1000,

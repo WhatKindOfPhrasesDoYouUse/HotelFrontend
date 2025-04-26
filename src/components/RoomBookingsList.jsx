@@ -10,9 +10,9 @@ const RoomBookingsList = () => {
     const [guestId, setGuestId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [timeLeft, setTimeLeft] = useState({});
+    const [confirmationTimeLeft, setConfirmationTimeLeft] = useState({});
+    const [paymentTimeLeft, setPaymentTimeLeft] = useState({});
     const [reviewsAvailability, setReviewsAvailability] = useState({});
-
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -73,7 +73,8 @@ const RoomBookingsList = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const updatedTimers = {};
+            const updatedConfirmationTimers = {};
+            const updatedPaymentTimers = {};
 
             roomBookings.forEach((booking) => {
                 if (!booking.isPayd && !booking.isConfirmed && booking.createdAt) {
@@ -85,14 +86,30 @@ const RoomBookingsList = () => {
                     if (diff > 0) {
                         const minutes = Math.floor(diff / 60000);
                         const seconds = Math.floor((diff % 60000) / 1000);
-                        updatedTimers[booking.roomBookingId] = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        updatedConfirmationTimers[booking.roomBookingId] = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                     } else {
-                        updatedTimers[booking.roomBookingId] = "время истекло";
+                        updatedConfirmationTimers[booking.roomBookingId] = "время истекло";
+                    }
+                }
+
+                if (booking.isConfirmed && !booking.isPayd && booking.confirmationTime) {
+                    const confirmationTime = new Date(booking.confirmationTime);
+                    const paymentDeadline = new Date(confirmationTime.getTime() + 15 * 60 * 1000);
+                    const now = new Date();
+                    const diff = paymentDeadline - now;
+
+                    if (diff > 0) {
+                        const minutes = Math.floor(diff / 60000);
+                        const seconds = Math.floor((diff % 60000) / 1000);
+                        updatedPaymentTimers[booking.roomBookingId] = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    } else {
+                        updatedPaymentTimers[booking.roomBookingId] = "время истекло";
                     }
                 }
             });
 
-            setTimeLeft(updatedTimers);
+            setConfirmationTimeLeft(updatedConfirmationTimers);
+            setPaymentTimeLeft(updatedPaymentTimers);
         }, 1000);
 
         return () => clearInterval(interval);
@@ -100,9 +117,13 @@ const RoomBookingsList = () => {
 
     const getStatus = (booking) => {
         if (booking.isConfirmed && booking.isPayd) return { text: "Подтверждено", icon: <FaCheck />, color: "#27ae60" };
-        if (booking.isConfirmed && !booking.isPayd) return { text: "Ожидает оплаты", icon: <FaClock />, color: "#e67e22" };
+        if (booking.isConfirmed && !booking.isPayd) {
+            return paymentTimeLeft[booking.roomBookingId] === "время истекло"
+                ? { text: "Отменено (не оплачено)", icon: <FaTimes />, color: "#e74c3c" }
+                : { text: "Ожидает оплаты", icon: <FaClock />, color: "#e67e22" };
+        }
         if (!booking.isConfirmed && !booking.isPayd) {
-            return timeLeft[booking.roomBookingId] === "время истекло"
+            return confirmationTimeLeft[booking.roomBookingId] === "время истекло"
                 ? { text: "Истекло время", icon: <FaTimes />, color: "#e74c3c" }
                 : { text: "Ожидает подтверждения", icon: <FaClock />, color: "#3498db" };
         }
@@ -194,7 +215,6 @@ const RoomBookingsList = () => {
                             <div className="booking-header">
                                 <div className="hotel-info">
                                     <h2>Номер {booking.roomNumber}</h2>
-                                    <p className="hotel-name">Отель "Три семерки"</p>
                                 </div>
                                 <div className="booking-status" style={{ backgroundColor: `${status.color}20`, color: status.color }}>
                                     {status.icon} {status.text}
@@ -207,7 +227,6 @@ const RoomBookingsList = () => {
                                         <FaCalendarAlt />
                                     </div>
                                     <div>
-                                        <p className="detail-label">Даты проживания</p>
                                         <p className="detail-value">
                                             {booking.checkInDate} - {booking.checkOutDate} ({nights} ночей)
                                         </p>
@@ -219,7 +238,6 @@ const RoomBookingsList = () => {
                                         <FaUser />
                                     </div>
                                     <div>
-                                        <p className="detail-label">Гости</p>
                                         <p className="detail-value">{booking.numberOfGuests} взрослых</p>
                                     </div>
                                 </div>
@@ -229,7 +247,6 @@ const RoomBookingsList = () => {
                                         <FaMoneyBillWave />
                                     </div>
                                     <div>
-                                        <p className="detail-label">Стоимость</p>
                                         <p className="detail-value">
                                             {totalPrice} ₽ ({booking.unitPrice} ₽ за ночь)
                                         </p>
@@ -244,10 +261,27 @@ const RoomBookingsList = () => {
                                         <div>
                                             <p className="detail-label">До автоматической отмены</p>
                                             <p className="detail-value" style={{
-                                                color: timeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#3498db",
+                                                color: confirmationTimeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#3498db",
                                                 fontWeight: "bold"
                                             }}>
-                                                {timeLeft[booking.roomBookingId] || "—"}
+                                                {confirmationTimeLeft[booking.roomBookingId] || "—"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {booking.isConfirmed && !booking.isPayd && (
+                                    <div className="timer">
+                                        <div className="icon-wrapper">
+                                            <FaClock />
+                                        </div>
+                                        <div>
+                                            <p className="detail-label">До автоматической отмены (оплата)</p>
+                                            <p className="detail-value" style={{
+                                                color: paymentTimeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#e67e22",
+                                                fontWeight: "bold"
+                                            }}>
+                                                {paymentTimeLeft[booking.roomBookingId] || "—"}
                                             </p>
                                         </div>
                                     </div>
@@ -272,13 +306,13 @@ const RoomBookingsList = () => {
                                     <button
                                         onClick={() => handleConfirm(booking.roomBookingId)}
                                         className="btn btn-primary"
-                                        disabled={timeLeft[booking.roomBookingId] === "время истекло"}
+                                        disabled={confirmationTimeLeft[booking.roomBookingId] === "время истекло"}
                                     >
                                         Подтвердить
                                     </button>
                                 )}
 
-                                {!booking.isPayd && booking.isConfirmed && (
+                                {!booking.isPayd && booking.isConfirmed && paymentTimeLeft[booking.roomBookingId] !== "время истекло" && (
                                     <Link
                                         to={`/payment-room-booking/${booking.roomBookingId}`}
                                         className="btn btn-primary"
@@ -296,14 +330,23 @@ const RoomBookingsList = () => {
                                     </Link>
                                 )}
 
-                                {(!booking.isConfirmed || !booking.isPayd) && (
+                                {(!booking.isConfirmed && !booking.isPayd) && (
                                     <button
                                         onClick={() => handleDelete(booking.roomBookingId)}
                                         className="btn btn-danger"
-                                        disabled={timeLeft[booking.roomBookingId] === "время истекло"}
+                                        disabled={confirmationTimeLeft[booking.roomBookingId] === "время истекло"}
                                     >
                                         Отменить
                                     </button>
+                                )}
+
+                                {booking.isPayd && booking.isConfirmed && (
+                                    <Link
+                                        to={`/amenity-list/${booking.roomBookingId}`}
+                                        className="btn btn-primary"
+                                    >
+                                        Просмотреть услуги
+                                    </Link>
                                 )}
                             </div>
                         </div>
@@ -365,7 +408,7 @@ const RoomBookingsList = () => {
                     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
                     padding: 25px;
                     margin-bottom: 25px;
-                    border-left: 4px solid #e74c3c;
+                    border-left: 4px solid #2980b9;
                     transition: transform 0.2s ease;
                 }
 

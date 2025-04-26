@@ -12,9 +12,9 @@ const SingleRoomBooking = () => {
         checkOutDate: "",
         checkInTime: "",
         checkOutTime: "",
-        guestId: "", // Этот ID будет получен с сервера
+        guestId: "",
         numberOfGuests: 1,
-        roomId: roomId, // ID комнаты
+        roomId: roomId,
     });
     const [error, setError] = useState(null);
 
@@ -69,7 +69,7 @@ const SingleRoomBooking = () => {
             checkOutDate: form.checkOutDate,
             checkInTime: formattedCheckInTime,
             checkOutTime: formattedCheckOutTime,
-            numberOfGuests: parseInt(form.numberOfGuests, 10),
+            numberOfGuests: 1,
             guestId: form.guestId,
             roomId: parseInt(form.roomId, 10),
         };

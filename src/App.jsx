@@ -15,12 +15,14 @@ import GroupRoomBooking from "./components/GroupRoomBooking.jsx";
 import PayRoomBooking from "./components/PayRoomBooking.jsx";
 import HotelReviewList from "./components/HotelReviewList.jsx";
 import WriteHotelReview from "./components/WriteHotelReview.jsx";
+import AmenityList from "./components/AmenityList.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+                    <Route path="/amenity-list/:bookingId" element={<AmenityList />} />
                     <Route path="/hotel-review/:bookingId" element={<WriteHotelReview />} />
                     <Route path="/hotels/:hotelId/reviews" element={<HotelReviewList />} />
                     <Route path="/payment-room-booking/:bookingId" element={<PayRoomBooking />} />
