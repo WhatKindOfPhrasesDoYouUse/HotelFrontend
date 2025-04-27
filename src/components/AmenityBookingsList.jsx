@@ -7,6 +7,7 @@ import {FaSpinner} from "react-icons/fa";
 const AmenityBookingsList = () => {
     const {bookingId} = useParams();
     const [amenityBookings, setAmenityBookings] = useState([]);
+/*    const [roomBookings, setRoomBookings] = useState([]);*/
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -22,7 +23,21 @@ const AmenityBookingsList = () => {
                 console.log(`Ошибка получения забронированныйх дополнительных услуг: ${err.message}`);
                 setError(err);
             })
-    })
+    }, [bookingId]);
+
+/*    useEffect(() => {
+        if (!bookingId) return;
+
+        axios.get(`http://localhost:5221/api/room-bookings/${bookingId}`)
+            .then(response => {
+                setRoomBookings(response.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(`Ошибка получения забронированных комнат: ${err.message}`);
+                setError(err);
+            })
+    }, [bookingId]);*/
 
     if (loading) return (
         <div className="container">

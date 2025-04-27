@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     const [userName, setUserName] = useState("");
+    const [userRole, setUserRole] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,12 +16,15 @@ const Navbar = () => {
                 try {
                     const decodedToken = jwtDecode(token);
                     setUserName(decodedToken.client_name);
+                    setUserRole(decodedToken.role || []);
                 } catch (error) {
                     console.error(`Ошибка декодирования токена ${error}`);
                     setUserName("");
+                    setUserRole(null);
                 }
             } else {
                 setUserName("");
+                setUserRole(null);
             }
         };
         getUserNameFromToken();
@@ -31,6 +35,8 @@ const Navbar = () => {
         setUserName("");
         navigate('/hotels');
     };
+
+    console.log(userRole)
 
     return (
         <nav style={styles.navbar}>
@@ -51,6 +57,15 @@ const Navbar = () => {
                     <Link to="/hotels" style={styles.navLinks}>Отель</Link>
                     <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
                     <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
+
+                    {userRole?.includes('Administrator') && (
+                        <Link to="/admin-panel" style={styles.navLinks}>Панель администратора</Link>
+                    )}
+
+                    {userRole?.includes('employee') && (
+                        <Link to="/employee-panel" style={styles.navLinks}>Панель сотрудника</Link>
+                    )}
+
                 </div>
             </div>
         </nav>
