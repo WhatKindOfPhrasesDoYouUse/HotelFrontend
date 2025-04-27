@@ -21,12 +21,15 @@ import AmenityBookingsList from "./components/AmenityBookingsList.jsx";
 import AdminProfile from "./components/admin/AdminProfile.jsx";
 import RegisterEmployee from "./components/admin/RegisterEmployee.jsx";
 import EmployeeProfile from "./components/employee/EmployeeProfile.jsx";
+import DoneTaskList from "./components/employee/DoneTaskList.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
+
+                    <Route path="/done-tasks" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
                     <Route path="/register-employee" element={<RegisterEmployee />} />

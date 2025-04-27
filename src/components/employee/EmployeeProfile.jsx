@@ -58,7 +58,7 @@ const EmployeeProfile = () => {
                 <br/>
                 <br/>
 
-                <Link to="/done-task">
+                <Link to="/done-tasks">
                     <button>Просмотреть архив</button>
                 </Link>
 
