@@ -53,16 +53,22 @@ const Navbar = () => {
                         <Link to="/login" style={styles.navLinks}>Авторизуйтесь</Link>
                     )}
 
-                    <Link to="/guest-profile" style={styles.navLinks}>Личный кабинет</Link>
+                    {userRole === 'guest' && (
+                        <Link to="/guest-profile" style={styles.navLinks}>Личный кабинет</Link>
+                    )}
+
                     <Link to="/hotels" style={styles.navLinks}>Отель</Link>
                     <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
-                    <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
+
+                    {userRole === 'guest' && (
+                        <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
+                    )}
 
                     {userRole?.includes('Administrator') && (
                         <Link to="/admin-panel" style={styles.navLinks}>Панель администратора</Link>
                     )}
 
-                    {userRole?.includes('employee') && (
+                    {userRole?.includes('employee') && !userRole?.includes('Administrator') && (
                         <Link to="/employee-panel" style={styles.navLinks}>Панель сотрудника</Link>
                     )}
 
