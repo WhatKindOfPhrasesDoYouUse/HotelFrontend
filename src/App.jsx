@@ -25,6 +25,7 @@ import DoneTaskList from "./components/employee/DoneTaskList.jsx";
 import TaskTracker from "./components/employee/TaskTracker.jsx";
 import PayAmenityBooking from "./components/PayAmenityBooking.jsx";
 import InProgressTask from "./components/employee/InProgressTask.jsx";
+import WriteAmenityReview from "./components/WriteAmenityReview.jsx";
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/register-employee" element={<RegisterEmployee />} />
                     <Route path="/admin-panel" element={<AdminProfile />} />
 
+                    <Route path="/amenity-review/:bookingId/:amenityId" element={<WriteAmenityReview />} />
                     <Route path="/amenity-payment/:amenityBookingId" element={<PayAmenityBooking />} />
                     <Route path="/myamenitys/:bookingId" element={<AmenityBookingsList />} />
                     <Route path="/amenity-booking/:amenityId/:bookingId" element={<AmenityBooking />} />

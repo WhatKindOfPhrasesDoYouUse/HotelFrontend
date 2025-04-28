@@ -148,6 +148,7 @@ const AmenityBookingsList = () => {
                         <th style={styles.tableHeader}>Количество</th>
                         <th style={styles.tableHeader}>Сотрудник</th>
                         <th style={styles.tableHeader}>Стоимость</th>
+                        <th style={styles.tableHeader}>Название услуги</th>
                         <th style={styles.tableHeader}>Статус оплаты</th>
                         <th style={styles.tableHeader}>Действия</th>
                     </tr>
@@ -162,6 +163,7 @@ const AmenityBookingsList = () => {
                             <td style={styles.tableCell}>{booking.quantity}</td>
                             <th style={styles.tableCell}>{booking.employeeName}</th>
                             <th style={styles.tableCell}>{booking.totalAmount}</th>
+                            <th style={styles.tableCell}>{booking.amenityName}</th>
                             <th style={styles.tableCell}>{booking.isPayd ? "Оплачено" : "Не оплачено"}</th>
                             <td style={styles.tableCell}>
                                 {!booking.isPayd && (
@@ -196,6 +198,26 @@ const AmenityBookingsList = () => {
                                     >
                                         Принять услугу
                                     </button>
+                                )}
+
+                                {booking.completionStatus === "Принята" && (
+                                    <Link
+                                        to={`/amenity-review/${booking.id}/${booking.amenityId}`}
+                                        style={{
+                                            display: 'inline-block',
+                                            padding: '6px 12px',
+                                            backgroundColor: '#4a6bff',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            textDecoration: 'none',
+                                            fontSize: '14px',
+                                            transition: 'background-color 0.2s'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#3a5bef'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#4a6bff'}
+                                    >
+                                        Оставить отзыв
+                                    </Link>
                                 )}
 
                             </td>
