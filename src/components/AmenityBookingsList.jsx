@@ -3,9 +3,12 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
 import {FaSpinner} from "react-icons/fa";
+import {jwtDecode} from "jwt-decode";
 
 const AmenityBookingsList = () => {
     const {bookingId} = useParams();
+    const [userData, setUserData] = useState(null);
+    const [guestData, setGuestData] = useState(null);
     const [amenityBookings, setAmenityBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,6 +61,27 @@ const AmenityBookingsList = () => {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Пользователь не авторизован");
+            setLoading(false);
+            return;
+        }
+
+        const decodedToken = jwtDecode(token);
+        axios.get(`http://localhost:5221/api/clients/${decodedToken.client_id}/guest`)
+            .then((response) => {
+                setUserData(response.data);
+                setGuestData(response.data.guest);
+            })
+            .catch((err) => {
+                setError("Ошибка загрузки данных");
+                console.error(err);
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    useEffect(() => {
         if (!bookingId) return;
 
         axios.get(`http://localhost:5221/api/amenity-bookings/${bookingId}/details/room-booking`)
@@ -71,6 +95,24 @@ const AmenityBookingsList = () => {
                 setLoading(false);
             })
     }, [bookingId]);
+
+    const handleConfirmationAmenityBooking = async (amenityId) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Пользователь авторизован");
+            return;
+        }
+
+        try {
+            await axios.patch(`http://localhost:5221/api/amenity-bookings/${amenityId}/${guestData.id}/confirmation-amenity`);
+
+            const response = await axios.get(`http://localhost:5221/api/amenity-bookings/${bookingId}/details/room-booking`)
+            setAmenityBookings(response.data);
+        } catch (err) {
+            setError("Ошибка при подтверждении услуги");
+            console.error(err);
+        }
+    }
 
     if (loading) return (
         <div style={styles.container}>
@@ -141,6 +183,21 @@ const AmenityBookingsList = () => {
                                         Оплатить
                                     </Link>
                                 )}
+
+                                {booking.completionStatus === "Задача выполнена" && (
+                                    <button
+                                        onClick={() => handleConfirmationAmenityBooking(booking.id)}
+                                        style={{
+                                            ...styles.button,
+                                            backgroundColor: '#4CAF50',
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#3e8e41'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#4CAF50'}
+                                    >
+                                        Принять услугу
+                                    </button>
+                                )}
+
                             </td>
                         </tr>
                     ))}
