@@ -52,14 +52,16 @@ const EmployeeProfile = () => {
                 <p><strong>Телефон:</strong> {userData.phoneNumber}</p>
                 <p><strong>Роль:</strong> {userData.role}</p>
 
-                <Link to="/task-tracker">
-                    <button>Просмотреть список задач</button>
+                <br/>
+
+                <Link to={`/task-tracker/${userData.id}`}>
+                    <button>Посмотреть запросы на оказание услуги</button>
                 </Link>
 
                 <br/>
                 <br/>
 
-                <Link to="/task-tracker">
+                <Link to={`/task-in-progress/${userData.id}`}>
                     <button>Задачи в работе</button>
                 </Link>
 

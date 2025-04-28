@@ -24,13 +24,15 @@ import EmployeeProfile from "./components/employee/EmployeeProfile.jsx";
 import DoneTaskList from "./components/employee/DoneTaskList.jsx";
 import TaskTracker from "./components/employee/TaskTracker.jsx";
 import PayAmenityBooking from "./components/PayAmenityBooking.jsx";
+import InProgressTask from "./components/employee/InProgressTask.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
-                    <Route path="/task-tracker" element={<TaskTracker />} />
+                    <Route path="/task-in-progress/:employeeId" element={<InProgressTask />} />
+                    <Route path="/task-tracker/:employeeId" element={<TaskTracker />} />
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 

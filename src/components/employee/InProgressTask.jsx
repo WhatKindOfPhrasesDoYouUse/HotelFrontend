@@ -99,7 +99,7 @@ const DoneTaskList = () => {
 
             try {
                 const response = await axios.get(
-                    `http://localhost:5221/api/amenity-bookings/${employeeType.id}/tasks-by-employee-type`,
+                    `http://localhost:5221/api/amenity-bookings/in-progress/employee/${employeeId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -118,7 +118,7 @@ const DoneTaskList = () => {
         fetchAmenities();
     }, [employeeType?.id]);
 
-    const handleTakeTask = async (amenityBookingId) => {
+    const handleDoneTask = async (amenityBookingId) => {
         const token = localStorage.getItem("token");
         if (!token) {
             setError("Пользователь не авторизован");
@@ -126,10 +126,10 @@ const DoneTaskList = () => {
         }
 
         try {
-            await axios.patch(`http://localhost:5221/api/amenity-bookings/${amenityBookingId}/${employeeId}/take-amenity-task`);
+            await axios.patch(`http://localhost:5221/api/amenity-bookings/${amenityBookingId}/${employeeId}/done-amenity-task`);
 
             const response = await axios.get(
-                `http://localhost:5221/api/amenity-bookings/${employeeType.id}/tasks-by-employee-type`,
+                `http://localhost:5221/api/amenity-bookings/in-progress/employee/${employeeId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -167,12 +167,13 @@ const DoneTaskList = () => {
                     <th style={styles.tableHeader}>ID</th>
                     <th style={styles.tableHeader}>Дата заказа</th>
                     <th style={styles.tableHeader}>Время заказа</th>
-                    <th style={styles.tableHeader}>Статус задачи</th>
-                    <th style={styles.tableHeader}>Количество единиц заказа</th>
+                    <th style={styles.tableHeader}>Статус</th>
+                    <th style={styles.tableHeader}>Количество</th>
+                    <th style={styles.tableHeader}>Название услуги</th>
+                    <th style={styles.tableHeader}>Цена</th>
+                    <th style={styles.tableHeader}>Статус оплаты</th>
                     <th style={styles.tableHeader}>Имя гостя</th>
-                    <th style={styles.tableHeader}>Комната</th>
-                    <th style={styles.tableHeader}>Оплата</th>
-                    <th style={styles.tableHeader}>Сумма услуги</th>
+                    <th style={styles.tableHeader}>Номер комнаты</th>
                     <th style={styles.tableHeader}>Действия</th>
                 </tr>
                 </thead>
@@ -180,17 +181,18 @@ const DoneTaskList = () => {
                 {amenities.map((amenity, index) => (
                     <tr key={amenity.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
                         <td style={styles.tableCell}>{amenity.id}</td>
-                        <th style={styles.tableCell}>{amenity.orderDate}</th>
-                        <th style={styles.tableCell}>{amenity.orderTime}</th>
-                        <th style={styles.tableCell}>{amenity.completionStatus}</th>
-                        <th style={styles.tableCell}>{amenity.quantity}</th>
-                        <th style={styles.tableCell}>{amenity.guestName}</th>
-                        <th style={styles.tableCell}>{amenity.roomNumber}</th>
+                        <td style={styles.tableCell}>{amenity.orderDate}</td>
+                        <td style={styles.tableCell}>{amenity.orderTime}</td>
+                        <td style={styles.tableCell}>{amenity.completionStatus}</td>
+                        <td style={styles.tableCell}>{amenity.quantity}</td>
+                        <td style={styles.tableCell}>{amenity.amenityName}</td>
+                        <td style={styles.tableCell}>{amenity.totalAmount}</td>
                         <th style={styles.tableCell}>{amenity.isPayd ? "Оплачено" : "Не оплачено"}</th>
-                        <th style={styles.tableCell}>{amenity.totalAmount}</th>
+                        <td style={styles.tableCell}>{amenity.guestName}</td>
+                        <td style={styles.tableCell}>{amenity.roomNumber}</td>
                         <th style={styles.tableCell}>
                             <button
-                                onClick={() => handleTakeTask(amenity.id)}
+                                onClick={() => handleDoneTask(amenity.id)}
                                 style={{
                                     padding: "5px 10px",
                                     backgroundColor: "#4CAF50",
@@ -200,7 +202,7 @@ const DoneTaskList = () => {
                                     cursor: "pointer"
                                 }}
                             >
-                                Взять
+                                Завершить
                             </button>
                         </th>
                     </tr>
