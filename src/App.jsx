@@ -22,19 +22,22 @@ import AdminProfile from "./components/admin/AdminProfile.jsx";
 import RegisterEmployee from "./components/admin/RegisterEmployee.jsx";
 import EmployeeProfile from "./components/employee/EmployeeProfile.jsx";
 import DoneTaskList from "./components/employee/DoneTaskList.jsx";
+import TaskTracker from "./components/employee/TaskTracker.jsx";
+import PayAmenityBooking from "./components/PayAmenityBooking.jsx";
 
 function App() {
     return (
         <Router>
             <div className="app-container">
                 <Routes>
-
+                    <Route path="/task-tracker" element={<TaskTracker />} />
                     <Route path="/done-tasks" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
                     <Route path="/register-employee" element={<RegisterEmployee />} />
                     <Route path="/admin-panel" element={<AdminProfile />} />
 
+                    <Route path="/amenity-payment/:amenityBookingId" element={<PayAmenityBooking />} />
                     <Route path="/myamenitys/:bookingId" element={<AmenityBookingsList />} />
                     <Route path="/amenity-booking/:amenityId/:bookingId" element={<AmenityBooking />} />
                     <Route path="/amenity-list/:bookingId" element={<AmenityList />} />

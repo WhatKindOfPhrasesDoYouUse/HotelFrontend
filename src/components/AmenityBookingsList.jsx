@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
@@ -107,6 +107,7 @@ const AmenityBookingsList = () => {
                         <th style={styles.tableHeader}>Сотрудник</th>
                         <th style={styles.tableHeader}>Стоимость</th>
                         <th style={styles.tableHeader}>Статус оплаты</th>
+                        <th style={styles.tableHeader}>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -119,7 +120,28 @@ const AmenityBookingsList = () => {
                             <td style={styles.tableCell}>{booking.quantity}</td>
                             <th style={styles.tableCell}>{booking.employeeName}</th>
                             <th style={styles.tableCell}>{booking.totalAmount}</th>
-                            <th style={styles.tableCell}>{booking.isPayd ? "Оплачено": "Не оплачено"}</th>
+                            <th style={styles.tableCell}>{booking.isPayd ? "Оплачено" : "Не оплачено"}</th>
+                            <td style={styles.tableCell}>
+                                {!booking.isPayd && (
+                                    <Link
+                                        to={`/amenity-payment/${booking.id}`}
+                                        style={{
+                                            display: 'inline-block',
+                                            padding: '6px 12px',
+                                            backgroundColor: '#4a6bff',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            textDecoration: 'none',
+                                            fontSize: '14px',
+                                            transition: 'background-color 0.2s'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#3a5bef'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#4a6bff'}
+                                    >
+                                        Оплатить
+                                    </Link>
+                                )}
+                            </td>
                         </tr>
                     ))}
                     </tbody>
