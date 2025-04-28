@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "../Navbar.jsx";
+import {useParams} from "react-router-dom";
 
 const DoneTaskList = () => {
+    const {employeeId} = useParams();
     const [employeeType, setEmployeeType] = useState(null);
-    const [doneAmenities, setDoneAmenities] = useState([]);
+    const [amenities, setAmenities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -89,7 +91,7 @@ const DoneTaskList = () => {
     }, []);
 
     useEffect(() => {
-        const fetchDoneAmenities = async () => {
+        const fetchAmenities = async () => {
             if (!employeeType?.id) return;
 
             setLoading(true);
@@ -97,14 +99,14 @@ const DoneTaskList = () => {
 
             try {
                 const response = await axios.get(
-                    `http://localhost:5221/api/amenity-bookings/${employeeType.id}/done-tasks-by-employee-type`,
+                    `http://localhost:5221/api/amenity-bookings/${employeeType.id}/tasks-by-employee-type`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         }
                     }
                 );
-                setDoneAmenities(response.data);
+                setAmenities(response.data);
             } catch (err) {
                 setError("Ошибка загрузки списка оказанных услуг");
                 console.error(err);
@@ -113,7 +115,7 @@ const DoneTaskList = () => {
             }
         };
 
-        fetchDoneAmenities();
+        fetchAmenities();
     }, [employeeType?.id]);
 
     if (loading) {
@@ -138,34 +140,30 @@ const DoneTaskList = () => {
                 <thead>
                 <tr>
                     <th style={styles.tableHeader}>ID</th>
-                    <th style={styles.tableHeader}>Услуга</th>
+                    <th style={styles.tableHeader}>ID брони комнаты</th>
                     <th style={styles.tableHeader}>Дата заказа</th>
                     <th style={styles.tableHeader}>Время заказа</th>
-                    <th style={styles.tableHeader}>Дата выполнения</th>
-                    <th style={styles.tableHeader}>Время выполнения</th>
-                    <th style={styles.tableHeader}>Статус</th>
-                    <th style={styles.tableHeader}>Количество</th>
-                    <th style={styles.tableHeader}>Сумма</th>
-                    <th style={styles.tableHeader}>Оплачено</th>
-                    <th style={styles.tableHeader}>Email гостя</th>
-                    <th style={styles.tableHeader}>ID брони комнаты</th>
+                    <th style={styles.tableHeader}>Статус задачи</th>
+                    <th style={styles.tableHeader}>Количество единиц заказа</th>
+                    <th style={styles.tableHeader}>Имя гостя</th>
+                    <th style={styles.tableHeader}>Комната</th>
+                    <th style={styles.tableHeader}>Оплата</th>
+                    <th style={styles.tableHeader}>Сумма услуги</th>
                 </tr>
                 </thead>
                 <tbody>
-                {doneAmenities.map((amenity, index) => (
+                {amenities.map((amenity, index) => (
                     <tr key={amenity.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
                         <td style={styles.tableCell}>{amenity.id}</td>
-                        <td style={styles.tableCell}>{amenity.amenityName}</td>
-                        <td style={styles.tableCell}>{amenity.orderDate}</td>
-                        <td style={styles.tableCell}>{amenity.orderTime.split('.')[0]}</td>
-                        <td style={styles.tableCell}>{amenity.readyDate}</td>
-                        <td style={styles.tableCell}>{amenity.readyTime.split('.')[0]}</td>
-                        <td style={styles.tableCell}>{amenity.completionStatus}</td>
-                        <td style={styles.tableCell}>{amenity.quantity}</td>
-                        <td style={styles.tableCell}>{amenity.amount} ₽</td>
-                        <td style={styles.tableCell}>{amenity.isPayd}</td>
-                        <td style={styles.tableCell}>{amenity.guestEmail}</td>
-                        <td style={styles.tableCell}>{amenity.roomBookingId}</td>
+                        <th style={styles.tableCell}>{amenity.roomBookingId}</th>
+                        <th style={styles.tableCell}>{amenity.orderDate}</th>
+                        <th style={styles.tableCell}>{amenity.orderTime}</th>
+                        <th style={styles.tableCell}>{amenity.completionStatus}</th>
+                        <th style={styles.tableCell}>{amenity.quantity}</th>
+                        <th style={styles.tableCell}>{amenity.guestName}</th>
+                        <th style={styles.tableCell}>{amenity.roomNumber}</th>
+                        <th style={styles.tableCell}>{amenity.isPayd ? "Оплачено" : "Не оплачено"}</th>
+                        <th style={styles.tableCell}>{amenity.totalAmount}</th>
                     </tr>
                 ))}
                 </tbody>

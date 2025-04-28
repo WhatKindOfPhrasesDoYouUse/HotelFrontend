@@ -44,8 +44,9 @@ const EmployeeProfile = () => {
     return (
         <div className="admin-profile">
             <Navbar />
-            <h1>Профиль администратора</h1>
+            <h1>Профиль сотрудника</h1>
             <div className="profile-info">
+                <p><strong>Id:</strong> {userData.id}</p>
                 <p><strong>ФИО:</strong> {userData.surname} {userData.name} {userData.patronymic}</p>
                 <p><strong>Email:</strong> {userData.email}</p>
                 <p><strong>Телефон:</strong> {userData.phoneNumber}</p>
@@ -58,7 +59,14 @@ const EmployeeProfile = () => {
                 <br/>
                 <br/>
 
-                <Link to="/done-tasks">
+                <Link to="/task-tracker">
+                    <button>Задачи в работе</button>
+                </Link>
+
+                <br/>
+                <br/>
+
+                <Link to={`/done-tasks/${userData.id}`}>
                     <button>Просмотреть архив</button>
                 </Link>
 

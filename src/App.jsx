@@ -31,7 +31,7 @@ function App() {
             <div className="app-container">
                 <Routes>
                     <Route path="/task-tracker" element={<TaskTracker />} />
-                    <Route path="/done-tasks" element={<DoneTaskList />} />
+                    <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
                     <Route path="/register-employee" element={<RegisterEmployee />} />
