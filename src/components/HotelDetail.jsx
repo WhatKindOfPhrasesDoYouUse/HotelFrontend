@@ -197,7 +197,6 @@ const HotelDetail = () => {
                     position: relative;
                     height: 400px;
                     overflow: hidden;
-                    margin-top: 64px;
                 }
                 
                 .hotel-main-image {
