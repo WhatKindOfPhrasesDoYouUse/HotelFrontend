@@ -36,42 +36,39 @@ const Navbar = () => {
         navigate('/hotels');
     };
 
-    console.log(userRole)
-
     return (
         <nav style={styles.navbar}>
             <div style={styles.navContainer}>
+                <Link to="/" style={styles.logo}>HotelBooking</Link>
                 <div style={styles.navItems}>
-                    {userName ? (
+                    <Link to="/hotels" style={styles.navLink}>Отели</Link>
+                    <Link to="/hotels/1/rooms" style={styles.navLink}>Комнаты</Link>
+
+                    {userRole === 'guest' && (
                         <>
-                            <span style={styles.greeting}>{`Здравствуйте, ${userName}`}</span>
-                            <button onClick={handleLogout} style={styles.logoutButton}>
-                                Выйти
-                            </button>
+                            <Link to="/guest-profile" style={styles.navLink}>Личный кабинет</Link>
+                            <Link to="/mybookings" style={styles.navLink}>Мои бронирования</Link>
                         </>
-                    ) : (
-                        <Link to="/login" style={styles.navLinks}>Авторизуйтесь</Link>
-                    )}
-
-                    {userRole === 'guest' && (
-                        <Link to="/guest-profile" style={styles.navLinks}>Личный кабинет</Link>
-                    )}
-
-                    <Link to="/hotels" style={styles.navLinks}>Отель</Link>
-                    <Link to="/hotels/1/rooms" style={styles.navLinks}>Комнаты</Link>
-
-                    {userRole === 'guest' && (
-                        <Link to="/mybookings" style={styles.navLinks}>Мои бронирования</Link>
                     )}
 
                     {userRole?.includes('Administrator') && (
-                        <Link to="/admin-panel" style={styles.navLinks}>Панель администратора</Link>
+                        <Link to="/admin-panel" style={styles.navLink}>Панель администратора</Link>
                     )}
 
                     {userRole?.includes('employee') && !userRole?.includes('Administrator') && (
-                        <Link to="/employee-panel" style={styles.navLinks}>Панель сотрудника</Link>
+                        <Link to="/employee-panel" style={styles.navLink}>Панель сотрудника</Link>
                     )}
+                </div>
 
+                <div style={styles.userSection}>
+                    {userName ? (
+                        <>
+                            <span style={styles.greeting}>{`Здравствуйте, ${userName}`}</span>
+                            <button onClick={handleLogout} style={styles.logoutButton}>Выйти</button>
+                        </>
+                    ) : (
+                        <Link to="/login" style={styles.loginButton}>Войти</Link>
+                    )}
                 </div>
             </div>
         </nav>
@@ -84,49 +81,70 @@ const styles = {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: '#4a6bff',
-        padding: '10px 20px',
-        color: '#fff',
+        backgroundColor: '#ffffff',
+        padding: '12px 32px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         zIndex: 1000,
     },
     navContainer: {
         display: 'flex',
         alignItems: 'center',
-        width: '100%',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
+        maxWidth: '1200px',
+        margin: '0 auto',
+    },
+    logo: {
+        fontSize: '22px',
+        fontWeight: 'bold',
+        color: '#4a6bff',
+        textDecoration: 'none',
     },
     navItems: {
         display: 'flex',
-        alignItems: 'center',
         gap: '20px',
     },
-    navLinks: {
-        color: '#fff',
+    navLink: {
+        color: '#333',
         textDecoration: 'none',
         fontSize: '16px',
         padding: '8px 12px',
-        borderRadius: '4px',
-        transition: 'background-color 0.2s',
+        borderRadius: '6px',
+        transition: 'background-color 0.3s ease',
+        fontWeight: '500',
         ':hover': {
-            backgroundColor: 'rgba(255,255,255,0.2)',
+            backgroundColor: '#f0f0f0',
         }
+    },
+    userSection: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
     },
     greeting: {
-        color: '#fff',
-        fontSize: '16px',
+        color: '#555',
+        fontSize: '15px',
+        fontWeight: '500',
     },
     logoutButton: {
-        backgroundColor: 'transparent',
+        backgroundColor: '#ff4d4f',
         color: '#fff',
-        border: '1px solid #fff',
-        borderRadius: '4px',
-        padding: '8px 16px',
-        fontSize: '16px',
+        border: 'none',
+        borderRadius: '6px',
+        padding: '8px 14px',
+        fontSize: '14px',
+        fontWeight: '500',
         cursor: 'pointer',
-        transition: 'all 0.2s',
-        ':hover': {
-            backgroundColor: 'rgba(255,255,255,0.1)',
-        }
+        transition: 'background-color 0.3s ease',
+    },
+    loginButton: {
+        backgroundColor: '#4a6bff',
+        color: '#fff',
+        textDecoration: 'none',
+        padding: '8px 14px',
+        borderRadius: '6px',
+        fontSize: '14px',
+        fontWeight: '500',
+        transition: 'background-color 0.3s ease',
     }
 };
 
