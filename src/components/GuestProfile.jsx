@@ -78,7 +78,7 @@ const GuestProfile = () => {
 
     return (
         <div className="profile-container">
-            <Navbar />
+            <Navbar/>
 
             <div className="profile-header">
                 <div className="avatar-container">
@@ -93,33 +93,34 @@ const GuestProfile = () => {
 
             <div className="profile-content">
                 <div className="personal-info-section">
-                    <h2 className="section-title"><FaUser /> Персональная информация</h2>
+                    <h2 className="section-title"><FaUser/> Персональная информация</h2>
 
                     <div className="info-grid">
                         <div className="info-pair">
-                            <span className="info-label"><FaUser /> ФИО</span>
-                            <span className="info-value">{userData?.name} {userData?.surname} {userData?.patronymic}</span>
+                            <span className="info-label"><FaUser/> ФИО</span>
+                            <span
+                                className="info-value">{userData?.name} {userData?.surname} {userData?.patronymic}</span>
                         </div>
                         <div className="info-pair">
-                            <span className="info-label"><FaEnvelope /> Email</span>
+                            <span className="info-label"><FaEnvelope/> Email</span>
                             <span className="info-value">{userData?.email}</span>
                         </div>
                         <div className="info-pair">
-                            <span className="info-label"><FaPhone /> Телефон</span>
+                            <span className="info-label"><FaPhone/> Телефон</span>
                             <span className="info-value">{userData?.phoneNumber}</span>
                         </div>
                         <div className="info-pair">
-                            <span className="info-label"><FaCity /> Город проживания</span>
+                            <span className="info-label"><FaCity/> Город проживания</span>
                             <span className="info-value">{guestData?.cityOfResidence}</span>
                         </div>
                         <div className="info-pair">
-                            <span className="info-label"><FaBirthdayCake /> Дата рождения</span>
+                            <span className="info-label"><FaBirthdayCake/> Дата рождения</span>
                             <span className="info-value">
                                 {guestData?.dateOfBirth ? new Date(guestData.dateOfBirth).toLocaleDateString() : '-'}
                             </span>
                         </div>
                         <div className="info-pair">
-                            <span className="info-label"><FaIdCard /> Паспорт</span>
+                            <span className="info-label"><FaIdCard/> Паспорт</span>
                             <span className="info-value">
                                 {guestData?.passportSeriesHash} {guestData?.passportNumberHash}
                             </span>
@@ -128,16 +129,16 @@ const GuestProfile = () => {
 
                     <div className="actions">
                         <Link to="/edit-guest-profile" className="btn btn-edit">
-                            <FaEdit /> Редактировать профиль
+                            <FaEdit/> Редактировать профиль
                         </Link>
                         <Link to={`/delete-client/${guestData?.id}/${userData?.id}`} className="btn btn-delete">
-                            <FaTrash /> Удалить аккаунт
+                            <FaTrash/> Удалить аккаунт
                         </Link>
                     </div>
                 </div>
 
                 <div className="card-section">
-                    <h2 className="section-title"><FaCreditCard /> Банковская карта</h2>
+                    <h2 className="section-title"><FaCreditCard/> Банковская карта</h2>
 
                     {cardData ? (
                         <>
@@ -160,10 +161,10 @@ const GuestProfile = () => {
 
                             <div className="card-actions">
                                 <Link to={`/edit-card/${cardData.id}`} className="btn btn-edit">
-                                    <FaSync /> Обновить
+                                    <FaSync/> Обновить
                                 </Link>
                                 <button onClick={handleDeleteCard} className="btn btn-delete">
-                                    <FaUnlink /> Отвязать
+                                    <FaUnlink/> Отвязать
                                 </button>
                             </div>
                         </>
@@ -171,7 +172,7 @@ const GuestProfile = () => {
                         <div className="no-card">
                             <p>Карта пока не привязана</p>
                             <Link to="/add-card" className="btn btn-edit">
-                                <FaPlus /> Привязать карту
+                                <FaPlus/> Привязать карту
                             </Link>
                         </div>
                     )}
@@ -180,216 +181,162 @@ const GuestProfile = () => {
 
             <style jsx>{`
                 .profile-container {
-                    max-width: 800px;
+                    max-width: 960px;
                     margin: 0 auto;
-                    padding: 20px;
+                    padding: 24px;
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 }
-                
-                .loading-container {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100vh;
-                }
-                
-                .spinner {
-                    border: 5px solid #f3f3f3;
-                    border-top: 5px solid #4a6bff;
-                    border-radius: 50%;
-                    width: 50px;
-                    height: 50px;
-                    animation: spin 1s linear infinite;
-                    margin-bottom: 20px;
-                }
-                
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                
-                .error-container {
-                    text-align: center;
-                    padding: 40px;
-                    color: #e74c3c;
-                }
-                
+
                 .profile-header {
                     text-align: center;
-                    margin: 30px 0;
+                    margin: 40px 0;
                 }
-                
-                .avatar-container {
-                    display: flex;
-                    justify-content: center;
-                    margin-bottom: 20px;
-                }
-                
+
                 .avatar-circle {
-                    width: 80px;
-                    height: 80px;
-                    border-radius: 50%;
+                    width: 90px;
+                    height: 90px;
                     background-color: #4a6bff;
+                    color: white;
+                    font-size: 30px;
+                    font-weight: bold;
+                    border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    color: white;
-                    font-size: 28px;
-                    font-weight: bold;
-                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    margin: 0 auto 15px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 }
-                
-                .avatar-initials {
-                    line-height: 1;
-                }
-                
+
                 .profile-title h1 {
-                    font-size: 2rem;
+                    font-size: 1.8rem;
+                    font-weight: 700;
                     color: #2c3e50;
-                    margin-bottom: 5px;
                 }
-                
-                .loyalty-badge {
-                    display: inline-block;
-                    padding: 5px 15px;
-                    background-color: #e3f2fd;
-                    color: #4a6bff;
-                    border-radius: 20px;
-                    font-weight: 500;
-                }
-                
+
                 .profile-content {
                     display: flex;
                     flex-direction: column;
                     gap: 30px;
                 }
-                
+
                 .personal-info-section,
                 .card-section {
-                    background: white;
-                    border-radius: 15px;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                    padding: 30px;
+                    background: #fff;
+                    border-radius: 16px;
+                    padding: 28px;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+                    transition: transform 0.2s ease;
                 }
-                
+
+                .personal-info-section:hover,
+                .card-section:hover {
+                    transform: translateY(-3px);
+                }
+
                 .section-title {
-                    font-size: 1.5rem;
-                    color: #2c3e50;
+                    font-size: 1.4rem;
+                    font-weight: 600;
+                    color: #374151;
+                    border-left: 5px solid #4a6bff;
+                    padding-left: 12px;
                     margin-bottom: 25px;
-                    padding-bottom: 10px;
-                    border-bottom: 2px solid #4a6bff;
                     display: flex;
                     align-items: center;
                     gap: 10px;
                 }
-                
+
                 .info-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                    gap: 20px;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 18px;
                 }
-                
+
                 .info-pair {
                     display: flex;
                     flex-direction: column;
-                    margin-bottom: 15px;
                 }
-                
+
                 .info-label {
-                    font-weight: 600;
+                    font-size: 0.95rem;
                     color: #6c757d;
-                    margin-bottom: 5px;
+                    font-weight: 600;
+                    margin-bottom: 4px;
                     display: flex;
                     align-items: center;
-                    gap: 8px;
+                    gap: 6px;
                 }
-                
+
                 .info-value {
-                    font-size: 1.1rem;
-                    padding: 8px 0;
-                    border-bottom: 1px solid #eee;
+                    font-size: 1.05rem;
+                    border-bottom: 1px dashed #dee2e6;
+                    padding-bottom: 6px;
+                    color: #212529;
                 }
-                
-                .card-number {
-                    font-family: 'Courier New', monospace;
-                    letter-spacing: 1px;
-                }
-                
-                .actions {
+
+                .actions, .card-actions {
                     display: flex;
-                    gap: 15px;
-                    margin-top: 30px;
                     flex-wrap: wrap;
+                    gap: 12px;
+                    margin-top: 25px;
                 }
-                
+
                 .btn {
-                    padding: 12px 20px;
-                    border-radius: 8px;
+                    padding: 10px 18px;
+                    border-radius: 10px;
+                    font-size: 0.95rem;
                     font-weight: 600;
                     text-decoration: none;
                     display: inline-flex;
                     align-items: center;
                     gap: 8px;
-                    transition: all 0.3s ease;
+                    transition: background-color 0.3s ease, transform 0.2s ease;
                     cursor: pointer;
                     border: none;
-                    font-size: 1rem;
                 }
-                
+
                 .btn-edit {
                     background-color: #4a6bff;
                     color: white;
                 }
-                
+
                 .btn-edit:hover {
-                    background-color: #3a5bef;
+                    background-color: #3750db;
                     transform: translateY(-2px);
-                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
                 }
-                
+
                 .btn-delete {
                     background-color: #e74c3c;
                     color: white;
                 }
-                
+
                 .btn-delete:hover {
                     background-color: #c0392b;
                     transform: translateY(-2px);
-                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
                 }
-                
-                .card-info {
-                    margin-bottom: 20px;
+
+                .card-number {
+                    font-family: 'Courier New', Courier, monospace;
+                    letter-spacing: 1px;
                 }
-                
-                .card-actions {
-                    display: flex;
-                    gap: 15px;
-                }
-                
+
                 .no-card {
                     text-align: center;
-                    padding: 20px;
                     color: #6c757d;
+                    font-size: 1rem;
                 }
-                
-                @media (max-width: 768px) {
+
+                @media (max-width: 600px) {
                     .info-grid {
                         grid-template-columns: 1fr;
                     }
-                    
+
                     .actions, .card-actions {
                         flex-direction: column;
                     }
-                    
-                    .profile-container {
-                        padding: 10px;
-                    }
-                    
-                    .personal-info-section,
-                    .card-section {
-                        padding: 20px;
+
+                    .btn {
+                        width: 100%;
+                        justify-content: center;
                     }
                 }
             `}</style>
