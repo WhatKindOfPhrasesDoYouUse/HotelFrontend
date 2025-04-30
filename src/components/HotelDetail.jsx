@@ -188,18 +188,23 @@ const HotelDetail = () => {
 
             <style jsx>{`
                 .hotel-detail-container {
-                    max-width: 1200px;
-                    margin: 0 auto;
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    width: 100%;
                 }
                 
                 .hotel-header {
                     position: relative;
-                    height: 400px;
+                    left: 50%;
+                    right: 50%;
+                    margin-left: -50vw;
+                    margin-right: -50vw;
+                    width: 100vw;
+                    height: 600px;
                     overflow: hidden;
                 }
                 
                 .hotel-main-image {
+                    display: block;
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
@@ -214,6 +219,12 @@ const HotelDetail = () => {
                     padding: 2rem;
                     background: linear-gradient(transparent, rgba(0,0,0,0.7));
                     color: white;
+                }
+
+                body {
+                    margin: 0;
+                    padding: 0;
+                    overflow-x: hidden;
                 }
                 
                 .hotel-title-overlay h1 {
