@@ -147,17 +147,9 @@ const HotelDetail = () => {
                 </div>
 
                 <aside className="hotel-sidebar">
-                    <div className="hotel-quick-info">
-                        <h3>Краткая информация</h3>
-                        <ul>
-                            <li><strong>Год постройки:</strong> {hotel.yearOfConstruction}</li>
-                            <li><strong>Телефон:</strong> {hotel.phoneNumber}</li>
-                            <li><strong>Email:</strong> {hotel.email}</li>
-                        </ul>
-                    </div>
 
                     <div className="hotel-contacts">
-                        <h3>Контакты</h3>
+                        <h3>Контактная информация</h3>
                         <div className="contact-item">
                             <FaPhone />
                             <span>{hotel.phoneNumber}</span>
@@ -213,12 +205,13 @@ const HotelDetail = () => {
                 
                 .hotel-title-overlay {
                     position: absolute;
-                    bottom: 0;
-                    left: 0;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
                     width: 100%;
                     padding: 2rem;
-                    background: linear-gradient(transparent, rgba(0,0,0,0.7));
                     color: white;
+                    text-align: center;
                 }
 
                 body {
@@ -233,10 +226,12 @@ const HotelDetail = () => {
                 }
                 
                 .hotel-rating {
+                    position: absolute;
+                    bottom: 10px;      
+                    left: 10px;         
                     display: flex;
                     align-items: center;
                     gap: 10px;
-                    margin-bottom: 0.5rem;
                 }
                 
                 .stars {
