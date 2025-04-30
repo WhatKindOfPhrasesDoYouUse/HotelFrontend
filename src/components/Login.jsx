@@ -156,7 +156,7 @@ function Login() {
                         type="button"
                         className="btn btn-secondary"
                         onClick={handleViewHotels}
-                        color="green"
+                        color="black"
                         disabled={loading}
                     >
                         <FaHotel/>
@@ -257,6 +257,8 @@ function Login() {
                     border-radius: 8px;
                     font-size: 1rem;
                     transition: all 0.3s ease;
+                    background-color: white;
+                    color: black;
                 }
                 
                 .form-control.is-invalid {
