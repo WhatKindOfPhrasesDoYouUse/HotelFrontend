@@ -223,38 +223,43 @@ const HotelDetail = () => {
                 .hotel-title-overlay h1 {
                     font-size: 2.5rem;
                     margin-bottom: 0.5rem;
+                    text-align: center;
                 }
                 
                 .hotel-rating {
-                    position: absolute;
-                    bottom: 10px;      
-                    left: 10px;         
                     display: flex;
                     align-items: center;
                     gap: 10px;
+                    justify-content: center;
+                    margin-top: 1rem;
                 }
                 
                 .stars {
                     display: flex;
                     gap: 3px;
+                    align-items: center;
                 }
                 
                 .star-filled {
                     color: #ffd700;
+                    margin-top: auto;
                 }
                 
                 .star-empty {
                     color: #ccc;
+                    margin-top: auto;
                 }
                 
                 .rating-value {
                     font-weight: bold;
+                    margin-top: auto;
                 }
                 
                 .hotel-location {
                     display: flex;
                     align-items: center;
                     gap: 5px;
+                    justify-content: center;
                 }
                 
                 .hotel-content {
