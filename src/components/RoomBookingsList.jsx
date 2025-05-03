@@ -228,7 +228,7 @@ const RoomBookingsList = () => {
                                     </div>
                                     <div>
                                         <p className="detail-value">
-                                            {booking.checkInDate} - {booking.checkOutDate} ({nights} ночей)
+                                            Даты проживания: {booking.checkInDate} - {booking.checkOutDate} ({nights} ночей)
                                         </p>
                                     </div>
                                 </div>
@@ -238,7 +238,7 @@ const RoomBookingsList = () => {
                                         <FaUser />
                                     </div>
                                     <div>
-                                        <p className="detail-value">{booking.numberOfGuests} взрослых</p>
+                                        <p className="detail-value">Гостей: {booking.numberOfGuests} взрослых</p>
                                     </div>
                                 </div>
 
@@ -248,7 +248,7 @@ const RoomBookingsList = () => {
                                     </div>
                                     <div>
                                         <p className="detail-value">
-                                            {totalPrice} ₽ ({booking.unitPrice} ₽ за ночь)
+                                            Цена: {totalPrice} ₽ ({booking.unitPrice} ₽ за ночь)
                                         </p>
                                     </div>
                                 </div>
@@ -259,12 +259,11 @@ const RoomBookingsList = () => {
                                             <FaClock />
                                         </div>
                                         <div>
-                                            <p className="detail-label">До автоматической отмены</p>
                                             <p className="detail-value" style={{
                                                 color: confirmationTimeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#3498db",
                                                 fontWeight: "bold"
                                             }}>
-                                                {confirmationTimeLeft[booking.roomBookingId] || "—"}
+                                                До автоматической отмены: {confirmationTimeLeft[booking.roomBookingId] || "—"}
                                             </p>
                                         </div>
                                     </div>
@@ -276,12 +275,11 @@ const RoomBookingsList = () => {
                                             <FaClock />
                                         </div>
                                         <div>
-                                            <p className="detail-label">До автоматической отмены (оплата)</p>
                                             <p className="detail-value" style={{
                                                 color: paymentTimeLeft[booking.roomBookingId] === "время истекло" ? "#e74c3c" : "#e67e22",
                                                 fontWeight: "bold"
                                             }}>
-                                                {paymentTimeLeft[booking.roomBookingId] || "—"}
+                                                До автоматической отмены (оплата): {paymentTimeLeft[booking.roomBookingId] || "—"}
                                             </p>
                                         </div>
                                     </div>
