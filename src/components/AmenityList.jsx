@@ -1,67 +1,14 @@
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
-import {FaSpinner, FaTrash} from "react-icons/fa";
+import { FaSpinner, FaMoneyBillWave, FaInfoCircle, FaPlusCircle } from "react-icons/fa";
 
 const AmenityList = () => {
-    const {bookingId} = useParams();
+    const { bookingId } = useParams();
     const [amenities, setAmenities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const styles = {
-        container: {
-            padding: "20px",
-            fontFamily: "Arial, sans-serif",
-            maxWidth: "1200px",
-            margin: "0 auto"
-        },
-        title: {
-            color: "#333",
-            marginBottom: "20px",
-            textAlign: "center"
-        },
-        table: {
-            width: "100%",
-            borderCollapse: "collapse",
-            border: "1px solid #ddd",
-            boxShadow: "0 2px 3px rgba(0,0,0,0.1)",
-            marginBottom: "20px"
-        },
-        tableHeader: {
-            backgroundColor: "#f5f5f5",
-            border: "1px solid #ddd",
-            padding: "12px",
-            textAlign: "left",
-            fontWeight: "bold",
-            color: "#333"
-        },
-        tableCell: {
-            border: "1px solid #ddd",
-            padding: "10px",
-            textAlign: "left"
-        },
-        evenRow: {
-            backgroundColor: "#f9f9f9"
-        },
-        oddRow: {
-            backgroundColor: "#fff"
-        },
-        loading: {
-            textAlign: "center",
-            padding: "20px",
-            color: "#666"
-        },
-        error: {
-            color: "#d32f2f",
-            padding: "20px",
-            textAlign: "center",
-            backgroundColor: "#fdecea",
-            borderRadius: "4px",
-            margin: "20px 0"
-        }
-    };
 
     useEffect(() => {
         axios.get(`http://localhost:5221/api/amenities/${bookingId}/room-booking`)
@@ -72,10 +19,8 @@ const AmenityList = () => {
             .catch((err) => {
                 setError(`Ошибка при получении данных дополнительных услуг: ${err.message}`);
                 setLoading(false);
-            })
-    }, []);
-
-    console.log(amenities);
+            });
+    }, [bookingId]);
 
     if (loading) return (
         <div className="container">
@@ -97,41 +42,237 @@ const AmenityList = () => {
     );
 
     return (
-        <div style={styles.container}>
+        <div className="container">
             <Navbar />
-            <h2 style={styles.title}>Дополнительные услуги для бронирования #{bookingId}</h2>
-            {amenities.length > 0 ? (
-                <table style={styles.table}>
-                    <thead>
-                    <tr>
-                        <th style={styles.tableHeader}>ID</th>
-                        <th style={styles.tableHeader}>Название</th>
-                        <th style={styles.tableHeader}>Описание</th>
-                        <th style={styles.tableHeader}>Цена за единицу</th>
-                        <th style={styles.tableHeader}>Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {amenities.map(amenity => (
-                        <tr key={amenity.id}>
-                            <td style={styles.tableCell}>{amenity.id}</td>
-                            <td style={styles.tableCell}>{amenity.name}</td>
-                            <td style={styles.tableCell}>{amenity.description || 'Описание отсутствует'}</td>
-                            <td style={styles.tableCell}>{amenity.unitPrice}</td>
-                            <td style={styles.tableCell}>
-                                <Link to={`/amenity-booking/${amenity.id}/${bookingId}`}>
-                                    Заказать
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+            <h1>Дополнительные услуги для бронирования #{bookingId}</h1>
+
+            {amenities.length === 0 ? (
+                <div className="no-amenities">
+                    <FaInfoCircle size={50} />
+                    <p>Нет доступных дополнительных услуг</p>
+                </div>
             ) : (
-                <p></p>
+                <div className="amenities-grid">
+                    {amenities.map(amenity => (
+                        <div key={amenity.id} className="amenity-card">
+                            <div className="amenity-header">
+                                <h3>{amenity.name}</h3>
+                            </div>
+
+                            <div className="amenity-details">
+                                <div className="detail-item">
+                                    <div className="icon-wrapper">
+                                        <FaInfoCircle />
+                                    </div>
+                                    <div>
+                                        <p className="detail-value">
+                                            {amenity.description || 'Описание отсутствует'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="detail-item">
+                                    <div className="icon-wrapper">
+                                        <FaMoneyBillWave />
+                                    </div>
+                                    <div>
+                                        <p className="detail-value">
+                                            {amenity.unitPrice} ₽
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="amenity-actions">
+                                <Link
+                                    to={`/amenity-booking/${amenity.id}/${bookingId}`}
+                                    className="btn btn-primary"
+                                >
+                                    <FaPlusCircle /> Заказать
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
+
+            <style jsx>{`
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                }
+
+                h1 {
+                    color: #2c3e50;
+                    text-align: center;
+                    margin-bottom: 30px;
+                    font-weight: 600;
+                    font-size: 28px;
+                }
+
+                .loading-spinner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 200px;
+                }
+
+                .spinner {
+                    animation: spin 1s linear infinite;
+                    font-size: 40px;
+                    margin-bottom: 15px;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .no-amenities {
+                    text-align: center;
+                    padding: 40px 20px;
+                    background-color: #f8f9fa;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                }
+
+                .no-amenities p {
+                    margin: 15px 0;
+                    color: #6c757d;
+                }
+
+                .amenities-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 20px;
+                    margin-top: 20px;
+                }
+
+                .amenity-card {
+                    background: white;
+                    border-radius: 10px;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+                    padding: 20px;
+                    border-left: 4px solid #3498db;
+                    transition: transform 0.2s ease;
+                    min-height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .amenity-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                }
+
+                .amenity-header {
+                    margin-bottom: 15px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid #eee;
+                }
+
+                .amenity-header h3 {
+                    font-size: 1.2rem;
+                    color: #2c3e50;
+                    margin: 0;
+                }
+
+                .amenity-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                    flex-grow: 1;
+                }
+
+                .detail-item {
+                    display: flex;
+                    gap: 15px;
+                    align-items: flex-start;
+                }
+
+                .icon-wrapper {
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #7f8c8d;
+                    margin-top: 3px;
+                }
+
+                .detail-value {
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    color: #2d3436;
+                    margin: 0;
+                }
+
+                .amenity-actions {
+                    display: flex;
+                    justify-content: flex-end;
+                    padding-top: 15px;
+                    border-top: 1px solid #eee;
+                }
+
+                .btn {
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.2s;
+                    font-size: 0.9rem;
+                }
+
+                .btn-primary {
+                    background-color: #3498db;
+                    color: white;
+                }
+
+                .btn-primary:hover {
+                    background-color: #2980b9;
+                }
+
+                .error-message {
+                    background-color: #fdecea;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin: 20px 0;
+                    text-align: center;
+                }
+
+                @media (max-width: 1200px) {
+                    .amenities-grid {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+                }
+
+                @media (max-width: 900px) {
+                    .amenities-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+
+                @media (max-width: 600px) {
+                    .amenities-grid {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .amenity-card {
+                        min-height: auto;
+                    }
+                }
+            `}</style>
         </div>
     );
-}
+};
 
 export default AmenityList;
