@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaHotel } from "react-icons/fa";
 
 const Navbar = () => {
     const [userName, setUserName] = useState("");
@@ -39,7 +40,9 @@ const Navbar = () => {
     return (
         <nav style={styles.navbar}>
             <div style={styles.navContainer}>
-                <Link to="/" style={styles.logo}>HotelBooking</Link>
+                <Link to="/" style={styles.logo}>
+                    <FaHotel style={{ marginRight: '8px' }} /> HotelBooking
+                </Link>
                 <div style={styles.navItems}>
                     <Link to="/hotels" style={styles.navLink}>Отели</Link>
                     <Link to="/hotels/1/rooms" style={styles.navLink}>Комнаты</Link>
@@ -145,6 +148,14 @@ const styles = {
         fontSize: '14px',
         fontWeight: '500',
         transition: 'background-color 0.3s ease',
+    },
+    hotelLogo: {
+        display: 'flex',
+        alignItems: 'center',
+        textDecoration: 'none',
+        color: 'inherit',
+        fontSize: '1.2rem',
+        fontWeight: 'bold'
     }
 };
 
