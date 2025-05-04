@@ -20,16 +20,15 @@ const SingleRoomBooking = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [roomDetails, setRoomDetails] = useState(null);
+    const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Получаем данные о комнате
                 const roomRes = await axios.get(`http://localhost:5221/api/rooms/${roomId}`);
                 setRoomDetails(roomRes.data);
 
-                // Получаем ID гостя
                 const token = localStorage.getItem("token");
                 if (!token) {
                     setError("Пользователь не авторизован");
@@ -51,16 +50,79 @@ const SingleRoomBooking = () => {
         fetchData();
     }, [roomId]);
 
+    const validateDates = () => {
+        const errors = {};
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (!form.checkInDate) {
+            errors.checkInDate = "Укажите дату заезда";
+        } else {
+            const checkInDate = new Date(form.checkInDate);
+            if (checkInDate < today) {
+                errors.checkInDate = "Дата заезда не может быть в прошлом";
+            }
+        }
+
+        if (!form.checkOutDate) {
+            errors.checkOutDate = "Укажите дату выезда";
+        } else if (form.checkInDate) {
+            const checkInDate = new Date(form.checkInDate);
+            const checkOutDate = new Date(form.checkOutDate);
+
+            if (checkOutDate < checkInDate) {
+                errors.checkOutDate = "Дата выезда не может быть раньше даты заезда";
+            } else if (checkOutDate.getTime() === checkInDate.getTime()) {
+                const checkInTime = form.checkInTime.split(':').map(Number);
+                const checkOutTime = form.checkOutTime.split(':').map(Number);
+
+                if (checkOutTime[0] < checkInTime[0] ||
+                    (checkOutTime[0] === checkInTime[0] && checkOutTime[1] <= checkInTime[1])) {
+                    errors.checkOutTime = "Время выезда должно быть позже времени заезда";
+                }
+            }
+        }
+
+        if (form.checkInDate === new Date().toISOString().split('T')[0]) {
+            const now = new Date();
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+
+            const [selectedHours, selectedMinutes] = form.checkInTime.split(':').map(Number);
+
+            if (selectedHours < currentHours ||
+                (selectedHours === currentHours && selectedMinutes < currentMinutes)) {
+                errors.checkInTime = "Время заезда не может быть в прошлом";
+            }
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({
             ...prev,
             [name]: value,
         }));
+
+        if (validationErrors[name]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateDates()) {
+            return;
+        }
+
         setLoading(true);
         setError(null);
 
@@ -73,7 +135,8 @@ const SingleRoomBooking = () => {
 
         try {
             const response = await axios.post("http://localhost:5221/api/room-bookings/single-booking", payload);
-            navigate(`/booking-confirmation/${response.data.id}`);
+            console.log(response.message);
+            navigate(`/mybookings`);
         } catch (err) {
             console.error("Ошибка при создании бронирования:", err);
             setError(err.response?.data?.message || "Не удалось создать бронирование");
@@ -157,6 +220,9 @@ const SingleRoomBooking = () => {
                             required
                             min={new Date().toISOString().split('T')[0]}
                         />
+                        {validationErrors.checkInDate && (
+                            <div className="validation-error">{validationErrors.checkInDate}</div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -170,6 +236,9 @@ const SingleRoomBooking = () => {
                             onChange={handleChange}
                             required
                         />
+                        {validationErrors.checkInTime && (
+                            <div className="validation-error">{validationErrors.checkInTime}</div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -184,6 +253,9 @@ const SingleRoomBooking = () => {
                             required
                             min={form.checkInDate || new Date().toISOString().split('T')[0]}
                         />
+                        {validationErrors.checkOutDate && (
+                            <div className="validation-error">{validationErrors.checkOutDate}</div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -197,6 +269,9 @@ const SingleRoomBooking = () => {
                             onChange={handleChange}
                             required
                         />
+                        {validationErrors.checkOutTime && (
+                            <div className="validation-error">{validationErrors.checkOutTime}</div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -382,6 +457,18 @@ const SingleRoomBooking = () => {
                     outline: none;
                     border-color: #3498db;
                     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+                }
+
+                .validation-error {
+                    background-color: #fdecea;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    color: #e74c3c;
+                    margin-top: 5px;
+                    font-size: 0.85rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                 }
 
                 .form-actions {
