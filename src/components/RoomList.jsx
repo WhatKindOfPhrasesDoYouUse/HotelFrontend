@@ -229,10 +229,22 @@ const RoomList = () => {
                                 <p>Загрузка удобств...</p>
                             )}
 
+                            <Link
+                                to={`/amenity-review/${room.id}`}
+                                style={{textDecoration: "none"}}
+                            >
+                                <button style={styles.navLinks}>
+                                    Посмотреть отзывы на услуги
+                                </button>
+                            </Link>
+
+                            <br/>
+                            <br/>
+
                             {room.capacity === 1 ? (
                                 <Link
                                     to={`/single-room-booking/${room.id}`}
-                                    style={{ textDecoration: "none" }}
+                                    style={{textDecoration: "none"}}
                                 >
                                     <button style={styles.navLinks}>
                                         Забронировать одиночную
@@ -241,7 +253,7 @@ const RoomList = () => {
                             ) : (
                                 <Link
                                     to={`/group-room-booking/${room.id}`}
-                                    style={{ textDecoration: "none" }}
+                                    style={{textDecoration: "none"}}
                                 >
                                     <button style={styles.navLinks}>
                                         Забронировать для группы
