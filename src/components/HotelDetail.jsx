@@ -56,8 +56,7 @@ const HotelDetail = () => {
 
     if (!hotel) return (
         <div className="error-message">
-            <h2>Отель не найден</h2>
-            <p>Попробуйте выбрать другой отель</p>
+            <h2>Гостиница не найдена</h2>
         </div>
     );
 
@@ -95,12 +94,12 @@ const HotelDetail = () => {
             <main className="hotel-content">
                 <div className="hotel-main-info">
                     <section className="hotel-description">
-                        <h2>Об отеле</h2>
+                        <h2>Об гостинице</h2>
                         <p>{hotel.description}</p>
                     </section>
 
                     <section className="hotel-features">
-                        <h2>Удобства отеля</h2>
+                        <h2>Удобства гостиницы</h2>
                         <div className="features-grid">
                             <div className="feature">
                                 <FaWifi />

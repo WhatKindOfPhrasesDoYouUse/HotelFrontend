@@ -101,7 +101,7 @@ const HotelReviewList = () => {
                         </div>
 
                         <div className="review-hotel">
-                            <strong>Отель:</strong> {review.hotel.name}
+                            <strong>Гостиница:</strong> {review.hotel.name}
                         </div>
 
                         <div className="review-rating">

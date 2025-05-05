@@ -44,7 +44,7 @@ const Navbar = () => {
                     <FaHotel style={{ marginRight: '8px' }} /> HotelBooking
                 </Link>
                 <div style={styles.navItems}>
-                    <Link to="/hotels" style={styles.navLink}>Отели</Link>
+                    <Link to="/hotels" style={styles.navLink}>Гостиница</Link>
                     <Link to="/hotels/1/rooms" style={styles.navLink}>Комнаты</Link>
 
                     {userRole === 'guest' && (
