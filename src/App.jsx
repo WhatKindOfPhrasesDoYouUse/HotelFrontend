@@ -27,6 +27,7 @@ import PayAmenityBooking from "./components/PayAmenityBooking.jsx";
 import InProgressTask from "./components/employee/InProgressTask.jsx";
 import WriteAmenityReview from "./components/WriteAmenityReview.jsx";
 import AmenityReviewList from "./components/AmenityReviewList.jsx";
+import ChangePassword from "./components/ChangePassword.jsx";
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                     <Route path="/register-employee" element={<RegisterEmployee />} />
                     <Route path="/admin-panel" element={<AdminProfile />} />
 
+                    <Route path="/change-password" element={<ChangePassword />} />
                     <Route path="/amenity-review/:roomId" element={<AmenityReviewList />} />
                     <Route path="/amenity-review/:bookingId/:amenityId" element={<WriteAmenityReview />} />
                     <Route path="/amenity-payment/:amenityBookingId" element={<PayAmenityBooking />} />

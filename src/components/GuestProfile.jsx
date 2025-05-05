@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
 import { Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaPhone, FaCity, FaBirthdayCake, FaIdCard, FaCreditCard, FaEdit, FaTrash, FaSync, FaUnlink, FaPlus } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaCity, FaBirthdayCake, FaIdCard, FaCreditCard, FaEdit, FaTrash, FaSync, FaUnlink, FaPlus, FaKey } from "react-icons/fa";
 
 const GuestProfile = () => {
     const [userData, setUserData] = useState(null);
@@ -130,6 +130,9 @@ const GuestProfile = () => {
                     <div className="actions">
                         <Link to="/edit-guest-profile" className="btn btn-edit">
                             <FaEdit/> Редактировать профиль
+                        </Link>
+                        <Link to="/change-password" className="btn btn-change-password">
+                            <FaKey/> Сменить пароль
                         </Link>
                         <Link to={`/delete-client/${guestData?.id}/${userData?.id}`} className="btn btn-delete">
                             <FaTrash/> Удалить аккаунт
@@ -313,7 +316,16 @@ const GuestProfile = () => {
                     background-color: #c0392b;
                     transform: translateY(-2px);
                 }
+                
+                .btn-change-password {
+                    background-color: #6c757d;
+                    color: white;
+                    margin: 0 10px;
+                }
 
+                .btn-change-password:hover {
+                    background-color: #5a6268;
+                }
                 .card-number {
                     font-family: 'Courier New', Courier, monospace;
                     letter-spacing: 1px;
