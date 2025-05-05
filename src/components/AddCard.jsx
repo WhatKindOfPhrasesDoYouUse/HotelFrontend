@@ -18,11 +18,7 @@ const AddCard = () => {
     const [loading, setLoading] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
     const [success, setSuccess] = useState(false);
-    const [touched, setTouched] = useState({
-        cardNumber: false,
-        cardDate: false,
-        bankId: false,
-    });
+    const [submitAttempted, setSubmitAttempted] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,19 +36,12 @@ const AddCard = () => {
         return cleaned.match(/.{1,4}/g)?.join(' ') || cleaned;
     };
 
-    const handleBlur = (e) => {
-        const { name } = e.target;
-        setTouched(prev => ({ ...prev, [name]: true }));
-        validateField(name, cardData[name]);
-    };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
 
         if (name === 'cardNumber') {
             const formattedValue = formatCardNumber(value);
             setCardData(prev => ({ ...prev, [name]: formattedValue }));
-            if (touched.cardNumber) validateField(name, formattedValue);
         }
         else if (name === 'cardDate') {
             let cleanedValue = value.replace(/\D/g, '');
@@ -60,57 +49,36 @@ const AddCard = () => {
                 cleanedValue = cleanedValue.substring(0, 2) + '/' + cleanedValue.substring(2, 4);
             }
             setCardData(prev => ({ ...prev, [name]: cleanedValue }));
-            if (touched.cardDate) validateField(name, cleanedValue);
         }
         else {
             setCardData(prev => ({ ...prev, [name]: value }));
-            if (touched[name]) validateField(name, value);
-        }
-
-        if (validationErrors[name]) {
-            setValidationErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
         }
     };
 
-    const validateField = (fieldName, value) => {
-        let error = "";
+    const validateForm = () => {
+        const errors = {};
+        let isValid = true;
 
-        switch (fieldName) {
-            case 'cardNumber':
-                if (!value) {
-                    error = "Номер карты обязателен";
-                } else if (!/^[0-9]{16}$/.test(value.replace(/\s/g, ''))) {
-                    error = "Номер карты должен содержать ровно 16 цифр";
-                }
-                break;
-            case 'cardDate':
-                if (!value) {
-                    error = "Срок действия обязателен";
-                } else if (!/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(value)) {
-                    error = "Укажите срок в формате ММ/ГГ (например, 05/25)";
-                } else if (!isValidExpiryDate(value)) {
-                    error = "Срок действия карты истек или неверен";
-                }
-                break;
-            case 'bankId':
-                if (!value) {
-                    error = "Выберите банк";
-                }
-                break;
-            default:
-                break;
+        if (!cardData.cardNumber || !/^[0-9]{16}$/.test(cardData.cardNumber.replace(/\s/g, ''))) {
+            errors.cardNumber = "Номер карты должен содержать ровно 16 цифр";
+            isValid = false;
         }
 
-        setValidationErrors(prev => ({
-            ...prev,
-            [fieldName]: error
-        }));
+        if (!cardData.cardDate || !/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(cardData.cardDate)) {
+            errors.cardDate = "Укажите срок действия в формате ММ/ГГ (например, 05/25)";
+            isValid = false;
+        } else if (!isValidExpiryDate(cardData.cardDate)) {
+            errors.cardDate = "Срок действия карты истек или неверен";
+            isValid = false;
+        }
 
-        return !error;
+        if (!cardData.bankId) {
+            errors.bankId = "Выберите банк";
+            isValid = false;
+        }
+
+        setValidationErrors(errors);
+        return isValid;
     };
 
     // Проверка срока действия карты
@@ -130,50 +98,9 @@ const AddCard = () => {
         return expiry > currentDate;
     };
 
-    const validateForm = () => {
-        const errors = {};
-        let isValid = true;
-
-        // Проверка номера карты
-        if (!cardData.cardNumber) {
-            errors.cardNumber = "Номер карты обязателен";
-            isValid = false;
-        } else if (!/^[0-9]{16}$/.test(cardData.cardNumber.replace(/\s/g, ''))) {
-            errors.cardNumber = "Номер карты должен содержать ровно 16 цифр";
-            isValid = false;
-        }
-
-        // Проверка срока действия
-        if (!cardData.cardDate) {
-            errors.cardDate = "Срок действия обязателен";
-            isValid = false;
-        } else if (!/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(cardData.cardDate)) {
-            errors.cardDate = "Укажите срок в формате ММ/ГГ (например, 05/25)";
-            isValid = false;
-        } else if (!isValidExpiryDate(cardData.cardDate)) {
-            errors.cardDate = "Срок действия карты истек или неверен";
-            isValid = false;
-        }
-
-        // Проверка банка
-        if (!cardData.bankId) {
-            errors.bankId = "Выберите банк";
-            isValid = false;
-        }
-
-        setValidationErrors(errors);
-        return isValid;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Помечаем все поля как "тронутые" для отображения ошибок
-        setTouched({
-            cardNumber: true,
-            cardDate: true,
-            bankId: true,
-        });
+        setSubmitAttempted(true);
 
         if (!validateForm()) {
             return;
@@ -250,12 +177,11 @@ const AddCard = () => {
                             name="cardNumber"
                             value={cardData.cardNumber}
                             onChange={handleChange}
-                            onBlur={handleBlur}
                             placeholder="0000 0000 0000 0000"
                             maxLength={19}
-                            className={touched.cardNumber && validationErrors.cardNumber ? "input-error" : ""}
+                            className={submitAttempted && validationErrors.cardNumber ? "input-error" : ""}
                         />
-                        {touched.cardNumber && validationErrors.cardNumber && (
+                        {submitAttempted && validationErrors.cardNumber && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.cardNumber}
                             </div>
@@ -271,12 +197,11 @@ const AddCard = () => {
                             name="cardDate"
                             value={cardData.cardDate}
                             onChange={handleChange}
-                            onBlur={handleBlur}
                             placeholder="ММ/ГГ"
                             maxLength={5}
-                            className={touched.cardDate && validationErrors.cardDate ? "input-error" : ""}
+                            className={submitAttempted && validationErrors.cardDate ? "input-error" : ""}
                         />
-                        {touched.cardDate && validationErrors.cardDate && (
+                        {submitAttempted && validationErrors.cardDate && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.cardDate}
                             </div>
@@ -292,8 +217,7 @@ const AddCard = () => {
                                 name="bankId"
                                 value={cardData.bankId || ""}
                                 onChange={handleChange}
-                                onBlur={handleBlur}
-                                className={touched.bankId && validationErrors.bankId ? "input-error" : ""}
+                                className={submitAttempted && validationErrors.bankId ? "input-error" : ""}
                             >
                                 <option value="">Выберите банк</option>
                                 {banks.map((bank) => (
@@ -303,7 +227,7 @@ const AddCard = () => {
                                 ))}
                             </select>
                         </div>
-                        {touched.bankId && validationErrors.bankId && (
+                        {submitAttempted && validationErrors.bankId && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.bankId}
                             </div>
@@ -443,6 +367,7 @@ const AddCard = () => {
                     appearance: none;
                     -webkit-appearance: none;
                     -moz-appearance: none;
+                    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
                     background-repeat: no-repeat;
                     background-position: right 15px center;
                     background-size: 1em;

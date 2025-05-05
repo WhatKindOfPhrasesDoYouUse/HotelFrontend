@@ -18,6 +18,11 @@ const EditCard = () => {
     const [loading, setLoading] = useState(true);
     const [validationErrors, setValidationErrors] = useState({});
     const [success, setSuccess] = useState(false);
+    const [touched, setTouched] = useState({
+        cardNumber: false,
+        cardDate: false,
+        bankId: false,
+    });
 
     useEffect(() => {
         const fetchCardData = async () => {
@@ -90,6 +95,11 @@ const EditCard = () => {
         return isValid;
     };
 
+    const handleBlur = (e) => {
+        const { name } = e.target;
+        setTouched(prev => ({ ...prev, [name]: true }));
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -98,7 +108,6 @@ const EditCard = () => {
             const formattedValue = cleanedValue.match(/.{1,4}/g)?.join(' ') || cleanedValue;
             setEditData(prev => ({ ...prev, [name]: formattedValue }));
         }
-
         else if (name === 'cardDate') {
             let cleanedValue = value.replace(/\D/g, '');
             if (cleanedValue.length > 2) {
@@ -121,6 +130,13 @@ const EditCard = () => {
 
     const handleSaveData = async (e) => {
         e.preventDefault();
+
+        // Помечаем все поля как "тронутые" для отображения ошибок
+        setTouched({
+            cardNumber: true,
+            cardDate: true,
+            bankId: true,
+        });
 
         if (!validateForm()) {
             return;
@@ -190,10 +206,12 @@ const EditCard = () => {
                             name="cardNumber"
                             value={editData.cardNumber}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             placeholder="0000 0000 0000 0000"
                             maxLength={19}
+                            className={touched.cardNumber && validationErrors.cardNumber ? "input-error" : ""}
                         />
-                        {validationErrors.cardNumber && (
+                        {touched.cardNumber && validationErrors.cardNumber && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.cardNumber}
                             </div>
@@ -209,10 +227,12 @@ const EditCard = () => {
                             name="cardDate"
                             value={editData.cardDate}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                             placeholder="ММ/ГГ"
                             maxLength={5}
+                            className={touched.cardDate && validationErrors.cardDate ? "input-error" : ""}
                         />
-                        {validationErrors.cardDate && (
+                        {touched.cardDate && validationErrors.cardDate && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.cardDate}
                             </div>
@@ -227,6 +247,8 @@ const EditCard = () => {
                             name="bankId"
                             value={editData.bankId}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={touched.bankId && validationErrors.bankId ? "input-error" : ""}
                         >
                             <option value="">Выберите банк</option>
                             {banks.map((bank) => (
@@ -235,7 +257,7 @@ const EditCard = () => {
                                 </option>
                             ))}
                         </select>
-                        {validationErrors.bankId && (
+                        {touched.bankId && validationErrors.bankId && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.bankId}
                             </div>
@@ -358,6 +380,12 @@ const EditCard = () => {
                     transition: border 0.2s;
                     background-color: white;
                     color: black;
+                }
+
+                .form-group input.input-error,
+                .form-group select.input-error {
+                    border-color: #e74c3c;
+                    background-color: #fff9f9;
                 }
 
                 .form-group input:focus,
