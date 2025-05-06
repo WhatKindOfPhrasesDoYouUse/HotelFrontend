@@ -87,6 +87,21 @@ const AmenityBookingsList = () => {
         }
     };
 
+    const handleDeleteAmenityBooking = async (amenityId) => {
+        if (!window.confirm("Вы уверены, что хотите удалить это бронирование?")) {
+            return;
+        }
+
+        try {
+            await axios.delete(`http://localhost:5221/api/amenity-bookings/${amenityId}`);
+            const response = await axios.get(`http://localhost:5221/api/amenity-bookings/${bookingId}/details/room-booking`);
+            setAmenityBookings(response.data);
+        } catch (err) {
+            setError(`Не удалось удалить бронирование: ${err.message}`);
+            console.error(err);
+        }
+    }
+
     if (loading) return (
         <div className="container">
             <Navbar />
@@ -204,6 +219,17 @@ const AmenityBookingsList = () => {
                                         Оставить отзыв
                                     </Link>
                                 )}
+
+                                {booking.completionStatus === "В ожидании подтверждения" && (
+                                    <button
+                                        onClick={() => handleDeleteAmenityBooking(booking.id)}
+                                        className="btn btn-danger"
+                                        style={{ backgroundColor: '#e74c3c', color: 'white' }}
+                                    >
+                                        Отменить
+                                    </button>
+                                )}
+
                             </div>
                         </div>
                     );
@@ -385,6 +411,15 @@ const AmenityBookingsList = () => {
                     border-radius: 6px;
                     margin: 20px 0;
                     text-align: center;
+                }
+
+                .btn-danger {
+                    background-color: #e74c3c;
+                    color: white;
+                }
+
+                .btn-danger:hover {
+                    background-color: #c0392b;
                 }
 
                 @media (max-width: 600px) {

@@ -94,7 +94,7 @@ const WriteAmenityReview = () => {
 
             await axios.post('http://localhost:5221/api/amenity-reviews', payload);
             setSuccess(true);
-            setTimeout(() => navigate(`/amenities/${amenityId}/reviews`), 2000);
+            setTimeout(() => navigate(`/hotels/1/rooms`), 2000);
         } catch (err) {
             setError(err.response?.data?.message || "Не удалось сохранить отзыв");
             console.error(err);

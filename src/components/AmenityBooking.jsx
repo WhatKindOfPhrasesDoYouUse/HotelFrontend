@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -14,6 +14,8 @@ const AmenityBooking = () => {
         quantity: 1
     });
     const [amenity, setAmenity] = useState(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -69,6 +71,7 @@ const AmenityBooking = () => {
 
             await axios.post('http://localhost:5221/api/amenity-bookings', payload);
             alert("Услуга успешно заказана!");
+            navigate(`/myamenitys/${bookingId}`);
         } catch (err) {
             console.error("Ошибка при заказе услуги:", err);
             setError(err.response?.data?.message || "Произошла ошибка при заказе услуги");
