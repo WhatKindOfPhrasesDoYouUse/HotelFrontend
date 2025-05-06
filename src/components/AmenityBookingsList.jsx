@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
-import { FaSpinner, FaCheck, FaTimes, FaMoneyBillWave, FaCalendarAlt, FaUserTie, FaConciergeBell } from "react-icons/fa";
+import { FaSpinner, FaCheck, FaTimes, FaMoneyBillWave, FaCalendarAlt, FaUserTie, FaConciergeBell} from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 
 const AmenityBookingsList = () => {
@@ -11,6 +11,7 @@ const AmenityBookingsList = () => {
     const [amenityBookings, setAmenityBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [reviewAvailabilities, setReviewAvailabilities] = useState({});
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -38,6 +39,13 @@ const AmenityBookingsList = () => {
             .then(response => {
                 setAmenityBookings(response.data);
                 setLoading(false);
+
+                response.data.forEach(booking => {
+                    if (booking.completionStatus === "Принята") {
+                        checkReviewAvailability(booking.id);
+                    }
+                });
+
             })
             .catch((err) => {
                 console.log(`Ошибка получения забронированных дополнительных услуг: ${err.message}`);
@@ -61,6 +69,22 @@ const AmenityBookingsList = () => {
         if (booking.completionStatus === "Принята") return { text: "Принята", icon: <FaCheck />, color: "#27ae60" };
         if (booking.completionStatus === "Задача выполнена") return { text: "Ожидает подтверждения", icon: <FaCheck />, color: "#3498db" };
         return { text: booking.completionStatus || "Неизвестный статус", icon: <FaTimes />, color: "#7f8c8d" };
+    };
+
+    const checkReviewAvailability = async (amenityBookingId) => {
+        try {
+            const response = await axios.get(`http://localhost:5221/api/amenity-reviews/${amenityBookingId}/availability`);
+            setReviewAvailabilities(prev => ({
+                ...prev,
+                [amenityBookingId]: response.data
+            }));
+        } catch (err) {
+            console.error("Ошибка при проверке доступности отзыва:", err);
+            setReviewAvailabilities(prev => ({
+                ...prev,
+                [amenityBookingId]: false
+            }));
+        }
     };
 
     if (loading) return (
@@ -172,7 +196,7 @@ const AmenityBookingsList = () => {
                                     </button>
                                 )}
 
-                                {booking.completionStatus === "Принята" && (
+                                {booking.completionStatus === "Принята" && reviewAvailabilities[booking.id] && (
                                     <Link
                                         to={`/amenity-review/${booking.id}/${booking.amenityId}`}
                                         className="btn btn-secondary"
