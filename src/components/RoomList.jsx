@@ -11,10 +11,11 @@ import {
     FaInfoCircle,
     FaStar,
     FaSearch,
-    FaTimes,
     FaExclamationTriangle,
     FaChevronUp,
-    FaChevronDown
+    FaChevronDown,
+    FaCheckCircle,
+    FaCalendarAlt
 } from "react-icons/fa";
 
 const RoomList = () => {
@@ -35,6 +36,9 @@ const RoomList = () => {
     const [selectedComforts, setSelectedComforts] = useState([]);
 
     const [showFilters, setShowFilters] = useState(true);
+
+    const [roomAvailability, setRoomAvailability] = useState({});
+    const [nextAvailableDates, setNextAvailableDates] = useState({});
 
     const fetchRoomComforts = async (roomId) => {
         try {
@@ -86,6 +90,7 @@ const RoomList = () => {
 
                 data.forEach((room) => {
                     fetchRoomComforts(room.id);
+                    checkRoomAvailability(room.id);
                 });
 
             } catch (error) {
@@ -178,6 +183,37 @@ const RoomList = () => {
     const clearAllComforts = () => {
         setSelectedComforts([]);
     };
+
+    const checkRoomAvailability = async (roomId) => {
+        try {
+            const response = await fetch(`http://localhost:5221/api/rooms/${roomId}/has-room-is-available`)
+
+            if (!response.ok) {
+                throw new Error('Ошибка при проверке доступности комнаты');
+            }
+            const isAvailable = await response.json();
+
+            setRoomAvailability(prev => ({
+                ...prev,
+                [roomId]: isAvailable
+            }));
+
+            if (!isAvailable) {
+                const getDateResponse = await fetch(`http://localhost:5221/api/rooms/${roomId}/next-available-date`);
+                if (!getDateResponse) {
+                    throw new Error('Ошибка при получении даты доступности');
+                }
+                const availableDate = await getDateResponse.json();
+
+                setNextAvailableDates(prev => ({
+                    ...prev,
+                    [roomId]: availableDate
+                }));
+            }
+        } catch (error) {
+            console.error(`Ошибка при проверке доступности комнаты: ${error.message}`);
+        }
+    }
 
     if (loading) return (
         <div className="loading-container">
@@ -364,10 +400,23 @@ const RoomList = () => {
 
                                     <div className="room-details">
                                         <p className="description">
-                                            <FaInfoCircle /> {room.description}
+                                            <FaInfoCircle/> {room.description}
                                         </p>
                                         <div className="capacity">
-                                            <FaUsers /> Вместимость: {room.capacity} чел.
+                                            <FaUsers/> Вместимость: {room.capacity} чел.
+                                        </div>
+
+                                        <div className="availability-status">
+                                            {roomAvailability[room.id] ? (
+                                                <div className="available">
+                                                    <FaCheckCircle/> Статус: <span>Свободна</span>
+                                                </div>
+                                            ) : (
+                                                <div className="not-available">
+                                                    <FaCalendarAlt/> Ближайшая доступная
+                                                    дата: <span>{new Date(nextAvailableDates[room.id]).toLocaleDateString()}</span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="comforts-section">
@@ -396,7 +445,7 @@ const RoomList = () => {
                                                 `/group-room-booking/${room.id}`}
                                             className="action-btn primary"
                                         >
-                                            Бронировать
+                                        Бронировать
                                         </Link>
                                     </div>
                                 </div>
@@ -862,6 +911,30 @@ const RoomList = () => {
                     gap: 10px;
                     justify-content: center;
                     margin-top: 50px;
+                }
+
+                .availability-status {
+                    margin: 15px 0;
+                    font-size: 14px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .available {
+                    color: #27ae60;
+                }
+
+                .available span {
+                    font-weight: bold;
+                }
+
+                .not-available {
+                    color: #e74c3c;
+                }
+
+                .not-available span {
+                    font-weight: bold;
                 }
 
                 @media (max-width: 992px) {
