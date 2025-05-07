@@ -50,8 +50,12 @@ const RoomBookingsList = () => {
                 setReviewsAvailability(availabilityMap);
             })
             .catch((err) => {
+                if (err.response && err.response.status === 404) {
+                    setRoomBookings([]);
+                    return;
+                }
                 setError(`Ошибка при загрузке данных забронированных комнат: ${err.message}`);
-                setRoomBookings(null);
+                setRoomBookings([]);
             });
     }, [guestId]);
 
@@ -64,6 +68,10 @@ const RoomBookingsList = () => {
                     setRoomBookings(response.data);
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 404) {
+                        setRoomBookings([]);
+                        return;
+                    }
                     setError(`Ошибка при обновлении списка: ${err.message}`);
                 });
         }, 15000);
@@ -176,8 +184,6 @@ const RoomBookingsList = () => {
         const currentDateTime = new Date();
         const timeLeft = checkInDateTime - currentDateTime;
 
-        // время до заезда должно быть больше суток
-        // в мс
         return timeLeft > 86400000;
     }
 
@@ -191,7 +197,7 @@ const RoomBookingsList = () => {
         </div>
     );
 
-    if (error) return (
+    if (error && roomBookings === null) return (
         <div className="container">
             <Navbar />
             <div className="error-message">
@@ -366,7 +372,6 @@ const RoomBookingsList = () => {
                                         Посмотреть заказанные услуги
                                     </Link>
                                 )}
-
                             </div>
                         </div>
                     );
@@ -451,12 +456,6 @@ const RoomBookingsList = () => {
                     margin: 0 0 5px 0;
                 }
 
-                .hotel-name {
-                    color: #636e72;
-                    margin: 0;
-                    font-size: 0.95rem;
-                }
-
                 .booking-status {
                     padding: 8px 15px;
                     border-radius: 18px;
@@ -489,13 +488,6 @@ const RoomBookingsList = () => {
                     justify-content: center;
                     color: #7f8c8d;
                     margin-top: 3px;
-                }
-
-                .detail-label {
-                    font-weight: 500;
-                    color: #7f8c8d;
-                    font-size: 0.9rem;
-                    margin-bottom: 5px;
                 }
 
                 .detail-value {
@@ -596,6 +588,14 @@ const RoomBookingsList = () => {
                 .btn-secondary:hover {
                     background-color: #95a5a6;
                     color: white;
+                }
+
+                .error-message {
+                    background-color: #fdecea;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin: 20px 0;
+                    text-align: center;
                 }
 
                 @media (max-width: 600px) {

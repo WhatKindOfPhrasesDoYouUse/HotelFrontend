@@ -130,6 +130,9 @@ const AmenityBookingsList = () => {
                 <div className="no-bookings">
                     <FaConciergeBell size={50} />
                     <p>Нет забронированных дополнительных услуг</p>
+                    <Link to={`/amenity-list/${bookingId}`} className="btn btn-primary">
+                        Забронировать услугу
+                    </Link>
                 </div>
             ) : (
                 amenityBookings.map((booking) => {
