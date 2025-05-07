@@ -169,6 +169,18 @@ const RoomBookingsList = () => {
         }
     }
 
+    const canCancelBooking = (booking) => {
+        if (!booking.checkInDate || !booking.checkInTime) return false;
+
+        const checkInDateTime = new Date(`${booking.checkInDate}T${booking.checkInTime}`);
+        const currentDateTime = new Date();
+        const timeLeft = checkInDateTime - currentDateTime;
+
+        // время до заезда должно быть больше суток
+        // в мс
+        return timeLeft > 86400000;
+    }
+
     if (loading) return (
         <div className="container">
             <Navbar />
@@ -328,11 +340,10 @@ const RoomBookingsList = () => {
                                     </Link>
                                 )}
 
-                                {(!booking.isConfirmed && !booking.isPayd) && (
+                                {canCancelBooking(booking) && (
                                     <button
                                         onClick={() => handleDelete(booking.roomBookingId)}
                                         className="btn btn-danger"
-                                        disabled={confirmationTimeLeft[booking.roomBookingId] === "время истекло"}
                                     >
                                         Отменить
                                     </button>
