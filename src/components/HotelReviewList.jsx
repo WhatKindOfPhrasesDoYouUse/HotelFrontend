@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar.jsx";
+import { Link } from "react-router-dom";
+import { FaSpinner, FaCommentAlt, FaPenAlt } from "react-icons/fa";
 
 const HotelReviewList = () => {
     const [hotelReviews, setHotelReviews] = useState([]);
@@ -41,18 +43,23 @@ const HotelReviewList = () => {
 
     if (loading) return (
         <div className="reviews-container">
+            <Navbar />
             <div className="reviews-header">
                 <h1>Отзывы наших клиентов</h1>
                 <p>Узнайте, что говорят о нас наши гости</p>
             </div>
             <div className="reviews-content">
-                <p>Загрузка отзывов...</p>
+                <div className="loading-spinner">
+                    <FaSpinner className="spinner" />
+                    <p>Загрузка отзывов...</p>
+                </div>
             </div>
         </div>
     );
 
     if (error) return (
         <div className="reviews-container">
+            <Navbar />
             <div className="reviews-header">
                 <h1>Отзывы наших клиентов</h1>
                 <p>Узнайте, что говорят о нас наши гости</p>
@@ -65,12 +72,19 @@ const HotelReviewList = () => {
 
     if (hotelReviews.length === 0) return (
         <div className="reviews-container">
+            <Navbar />
             <div className="reviews-header">
                 <h1>Отзывы наших клиентов</h1>
                 <p>Узнайте, что говорят о нас наши гости</p>
             </div>
             <div className="reviews-content">
-                <div className="no-reviews">Отзывов пока нет</div>
+                <div className="no-reviews">
+                    <FaCommentAlt size={50} />
+                    <p>Отзывов пока нет</p>
+                    <Link to="/add-review" className="btn btn-primary">
+                        <FaPenAlt /> Написать отзыв
+                    </Link>
+                </div>
             </div>
         </div>
     );
@@ -164,7 +178,7 @@ const HotelReviewList = () => {
             </div>
 
             <div className="reviews-footer">
-                Хотите оставить отзыв? <a href="/add-review">Напишите нам</a>
+                Хотите оставить отзыв? <Link to="/add-review">Напишите нам</Link>
             </div>
 
             <style jsx>{`
@@ -177,28 +191,29 @@ const HotelReviewList = () => {
                     overflow: hidden;
                     margin: 20px auto;
                 }
-                
+
                 .reviews-header {
                     background: linear-gradient(135deg, #4a6bff, #3a5bef);
                     color: white;
                     padding: 30px;
                     text-align: center;
                 }
-                
+
                 .reviews-header h1 {
                     font-size: 1.8rem;
                     margin-bottom: 10px;
                 }
-                
+
                 .reviews-header p {
                     opacity: 0.9;
                     font-size: 0.95rem;
                 }
-                
+
                 .reviews-content {
                     padding: 30px;
+                    min-height: 300px;
                 }
-                
+
                 .auth-error {
                     background-color: #f8d7da;
                     color: #721c24;
@@ -208,22 +223,54 @@ const HotelReviewList = () => {
                     border: 1px solid #f5c6cb;
                     font-size: 0.9rem;
                 }
-                
+
+                .loading-spinner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 200px;
+                }
+
+                .spinner {
+                    animation: spin 1s linear infinite;
+                    font-size: 40px;
+                    margin-bottom: 15px;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .no-reviews {
+                    text-align: center;
+                    padding: 40px 20px;
+                    background-color: #f8f9fa;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                }
+
+                .no-reviews p {
+                    margin: 15px 0;
+                    color: #6c757d;
+                }
+
                 .review {
                     border-bottom: 1px solid #edf2f7;
                     padding: 20px 0;
                 }
-                
+
                 .review:last-child {
                     border-bottom: none;
                 }
-                
+
                 .review-header {
                     display: flex;
                     align-items: center;
                     margin-bottom: 15px;
                 }
-                
+
                 .review-avatar {
                     width: 50px;
                     height: 50px;
@@ -237,40 +284,40 @@ const HotelReviewList = () => {
                     font-size: 20px;
                     margin-right: 15px;
                 }
-                
+
                 .review-author {
                     font-weight: 600;
                     font-size: 1.1rem;
                     margin-bottom: 5px;
                 }
-                
+
                 .review-date {
                     color: #718096;
                     font-size: 0.85rem;
                 }
-                
+
                 .review-hotel {
                     margin-bottom: 10px;
                     font-size: 0.95rem;
                     color: #4a5568;
                 }
-                
+
                 .review-rating {
                     color: #f6ad55;
                     font-weight: bold;
                     margin-bottom: 10px;
                     font-size: 1.2rem;
                 }
-                
+
                 .review-rating .filled {
                     color: #f6ad55;
                 }
-                
+
                 .review-text {
                     line-height: 1.6;
                     color: #4a5568;
                 }
-                
+
                 .pagination {
                     display: flex;
                     justify-content: center;
@@ -278,7 +325,7 @@ const HotelReviewList = () => {
                     gap: 5px;
                     flex-wrap: wrap;
                 }
-                
+
                 .pagination-button {
                     padding: 8px 15px;
                     border-radius: 5px;
@@ -291,7 +338,7 @@ const HotelReviewList = () => {
                     cursor: pointer;
                     font-size: 1rem;
                 }
-                
+
                 .pagination-button:hover:not(:disabled) {
                     background-color: #4a6bff;
                     color: white;
@@ -299,18 +346,18 @@ const HotelReviewList = () => {
                     transform: translateY(-2px);
                     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                 }
-                
+
                 .pagination-button:disabled {
                     opacity: 0.5;
                     cursor: not-allowed;
                 }
-                
+
                 .pagination-button.current {
                     background-color: #4a6bff;
                     color: white;
                     border: 1px solid #4a6bff;
                 }
-                
+
                 .reviews-footer {
                     text-align: center;
                     padding: 20px;
@@ -318,41 +365,61 @@ const HotelReviewList = () => {
                     font-size: 0.9rem;
                     color: #718096;
                 }
-                
+
                 .reviews-footer a {
                     color: #4a6bff;
                     text-decoration: none;
                     font-weight: 600;
                 }
-                
+
                 .reviews-footer a:hover {
                     text-decoration: underline;
                 }
-                
-                .no-reviews {
+
+                .btn {
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    text-decoration: none;
+                    display: inline-block;
                     text-align: center;
-                    padding: 40px 0;
-                    color: #718096;
+                    transition: all 0.2s;
+                    font-size: 0.95rem;
+                    margin-top: 15px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
                 }
-                
+
+                .btn-primary {
+                    background-color: #3498db;
+                    color: white;
+                }
+
+                .btn-primary:hover {
+                    background-color: #2980b9;
+                }
+
                 @media (max-width: 600px) {
                     .reviews-container {
                         margin: 10px;
                     }
-                    
+
                     .reviews-header {
                         padding: 20px;
                     }
-                
+
                     .reviews-content {
                         padding: 20px;
                     }
-                    
+
                     .review-header {
                         flex-direction: column;
                         align-items: flex-start;
                     }
-                    
+
                     .review-avatar {
                         margin-bottom: 10px;
                     }

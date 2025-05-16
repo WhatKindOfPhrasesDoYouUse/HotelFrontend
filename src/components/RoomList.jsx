@@ -385,7 +385,7 @@ const RoomList = () => {
                                         className="room-image"
                                         onError={(e) => {
                                             e.target.onerror = null;
-                                            e.target.src = '/src/images/rooms/hotel-room-1.jpg';
+                                            e.target.src = '/src/images/rooms/HotelType-room-1.jpg';
                                         }}
                                     />
                                 </div>

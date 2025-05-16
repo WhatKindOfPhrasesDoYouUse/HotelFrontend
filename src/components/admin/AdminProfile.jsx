@@ -55,6 +55,13 @@ const AdminProfile = () => {
                     <button>Зарегистрировать нового сотрудника</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/hotel-types-administration">
+                    <button>Управление списком типов отеля</button>
+                </Link>
+
             </div>
         </div>
     );

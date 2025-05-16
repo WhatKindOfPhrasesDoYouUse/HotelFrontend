@@ -15,7 +15,7 @@ const HotelDetail = () => {
     useEffect(() => {
         const fetchHotel = async () => {
             try {
-                const response = await fetch(`http://localhost:5221/api/hotels`);
+                const response = await fetch(`http://localhost:5221/api/hotels`)
                 if (!response.ok) throw new Error("Ошибка загрузки данных отеля");
                 const data = await response.json();
                 setHotel(data[0]);

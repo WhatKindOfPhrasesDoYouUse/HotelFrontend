@@ -28,6 +28,9 @@ import InProgressTask from "./components/employee/InProgressTask.jsx";
 import WriteAmenityReview from "./components/WriteAmenityReview.jsx";
 import AmenityReviewList from "./components/AmenityReviewList.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
+import AdministrationHotelTypeList from "./components/admin/HotelType/AdministrationHotelTypeList.jsx";
+import AddHotelType from "./components/admin/HotelType/AddHotelType.jsx";
+import EditHotelType from "./components/admin/HotelType/EditHotelType.jsx";
 
 function App() {
     return (
@@ -39,6 +42,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-hotel-type/:hotelTypeId" element={<EditHotelType />} />
+                    <Route path="/add-hotel-type" element={<AddHotelType />} />
+                    <Route path="/hotel-types-administration" element={<AdministrationHotelTypeList />} />
                     <Route path="/register-employee" element={<RegisterEmployee />} />
                     <Route path="/admin-panel" element={<AdminProfile />} />
 

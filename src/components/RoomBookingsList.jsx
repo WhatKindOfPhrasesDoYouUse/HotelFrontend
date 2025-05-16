@@ -260,6 +260,7 @@ const RoomBookingsList = () => {
                                     </div>
                                 </div>
 
+
                                 <div className="detail-item">
                                     <div className="icon-wrapper">
                                         <FaMoneyBillWave />
