@@ -62,6 +62,13 @@ const AdminProfile = () => {
                     <button>Управление списком типов отеля</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/payment-room-administration">
+                    <button>Управление списком оплат комнат</button>
+                </Link>
+
             </div>
         </div>
     );
