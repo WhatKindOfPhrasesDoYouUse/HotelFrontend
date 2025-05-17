@@ -75,7 +75,7 @@ const PaymentTypeAdministration = () => {
                 }
             });
 
-            setPaymentTypes(prev => prev.filter(ht => ht.id !== paymentTypes));
+            setPaymentTypes(prev => prev.filter(ht => ht.id !== paymentTypeId));
             setSuccess(true);
             setTimeout(() => setSuccess(false), 3000);
         } catch (err) {

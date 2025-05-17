@@ -6,15 +6,15 @@ import {FaCheck, FaExclamationTriangle, FaHotel, FaSpinner, FaTrash, FaPlus, FaE
 import {Link, useNavigate} from "react-router-dom";
 
 
-const BankAdministration = () => {
-    const [banks, setBanks] = useState([]);
+const HotelReviewAdministration = () => {
+    const [hotelReviews, setHotelReviews] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchHotelTypes = async () => {
+        const fetchHotelReviews = async () => {
             const token = localStorage.getItem('token');
 
             if (!token) {
@@ -32,9 +32,9 @@ const BankAdministration = () => {
                     return;
                 }
 
-                const response = await axios.get('http://localhost:5221/api/banks');
+                const response = await axios.get('http://localhost:5221/api/hotel-reviews');
 
-                setBanks(response.data)
+                setHotelReviews(response.data)
             } catch (err) {
                 if (err.response) {
                     switch (err.response.status) {
@@ -60,22 +60,22 @@ const BankAdministration = () => {
             }
         };
 
-        fetchHotelTypes();
+        fetchHotelReviews();
     }, []);
 
-    const handleDelete = async (bankId) => {
-        const confirmDelete = window.confirm(`Вы действительно хотите удалить тип отеля с ID ${bankId}?`);
+    const handleDelete = async (hotelReviewId) => {
+        const confirmDelete = window.confirm(`Вы действительно хотите удалить тип отеля с ID ${hotelReviewId}?`);
         if (!confirmDelete) return;
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5221/api/banks/${bankId}`, {
+            await axios.delete(`http://localhost:5221/api/hotel-reviews/${hotelReviewId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
 
-            setBanks(prev => prev.filter(ht => ht.id !== bankId));
+            setHotelReviews(prev => prev.filter(ht => ht.id !== hotelReviewId));
             setSuccess(true);
             setTimeout(() => setSuccess(false), 3000);
         } catch (err) {
@@ -132,7 +132,7 @@ const BankAdministration = () => {
 
             <div className="header">
                 <FaHotel className="header-icon"/>
-                <h1>Управление списков банков</h1>
+                <h1>Управление отзывами</h1>
             </div>
 
             {success && (
@@ -141,61 +141,50 @@ const BankAdministration = () => {
                 </div>
             )}
 
-            {banks.length > 0 ? (
+            {hotelReviews.length > 0 ? (
                 <div className="card">
                     <div className="table-container">
                         <table>
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Название</th>
-                                <th>Действия</th>
+                                <th>Комментарий</th>
+                                <th>Рейтинг</th>
+                                <th>Дата публикации</th>
+                                <th>Время публикации</th>
+                                <th>ID бронирования</th>
+                                <th>ID Гостя</th>
+                                <th>Действие</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {banks.map((bank) => (
-                                <tr key={bank.id}>
-                                    <td>{bank.id}</td>
-                                    <td>{bank.name}</td>
+                            {hotelReviews.map((hotelReview) => (
+                                <tr key={hotelReview.id}>
+                                    <td>{hotelReview.id}</td>
+                                    <td className="description-cell">{hotelReview.comment}</td>
+                                    <td>{hotelReview.rating}</td>
+                                    <td>{hotelReview.publicationDate}</td>
+                                    <td>{hotelReview.publicationTime}</td>
+                                    <td>{hotelReview.roomBookingId}</td>
+                                    <td>{hotelReview.guestId}</td>
                                     <td className="actions-cell">
+
                                         <div className="actions">
                                             <button className="btn btn-delete"
-                                                    onClick={() => handleDelete(bank.id)}>
+                                                    onClick={() => handleDelete(hotelReview.id)}>
                                                 <FaTrash/> Удалить
                                             </button>
+
                                         </div>
-
-                                        <button
-                                            onClick={() => navigate(`/edit-bank/${bank.id}`)}
-                                            style={{
-                                                backgroundColor: '#4CAF50',
-                                                color: 'white',
-                                                border: 'none',
-                                                padding: '8px 16px',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            <FaEdit/> Редактировать
-                                        </button>
-
                                     </td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
                     </div>
-
-                    <div style={{textAlign: 'right'}}>
-                        <button onClick={() => navigate('/add-bank')}
-                                style={{backgroundColor: '#3498db', color: 'white'}}>
-                            <FaPlus/> Перейти
-                        </button>
-                    </div>
-
                 </div>
             ) : (
-                <div className="no-data">Нет данных о банках</div>
+                <div className="no-data">Нет отзывов об отеле</div>
             )}
 
             <style jsx>{`
@@ -473,4 +462,4 @@ const BankAdministration = () => {
     );
 };
 
-export default BankAdministration;
+export default HotelReviewAdministration;

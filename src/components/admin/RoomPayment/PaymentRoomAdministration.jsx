@@ -11,7 +11,6 @@ const PaymentRoomAdministration = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHotelTypes = async () => {
