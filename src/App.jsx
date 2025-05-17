@@ -33,6 +33,9 @@ import AddHotelType from "./components/admin/HotelType/AddHotelType.jsx";
 import EditHotelType from "./components/admin/HotelType/EditHotelType.jsx";
 import PaymentRoomAdministration from "./components/admin/RoomPayment/PaymentRoomAdministration.jsx";
 import PaymentAmenityAdministration from "./components/admin/AmenityPayment/PaymentAmenityAdministration.jsx";
+import BankAdministration from "./components/admin/Bank/BankAdministration.jsx";
+import AddBank from "./components/admin/Bank/AddBank.jsx";
+import EditBank from "./components/admin/Bank/EditBank.jsx";
 
 function App() {
     return (
@@ -44,6 +47,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-bank/:bankId" element={<EditBank />} />
+                    <Route path="/add-bank" element={<AddBank />} />
+                    <Route path="/bank-administration" element={<BankAdministration />} />
                     <Route path="/payment-amenity-administration" element={<PaymentAmenityAdministration />} />
                     <Route path="/payment-room-administration" element={<PaymentRoomAdministration />} />
                     <Route path="/edit-hotel-type/:hotelTypeId" element={<EditHotelType />} />

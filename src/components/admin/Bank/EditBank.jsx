@@ -4,13 +4,12 @@ import axios from "axios";
 import { FaSpinner, FaHotel, FaInfoCircle, FaExclamationTriangle, FaCheck, FaSave } from "react-icons/fa";
 import Navbar from "../../Navbar.jsx";
 
-const EditHotelType = () => {
-    const { hotelTypeId } = useParams();
+const EditBank = () => {
+    const { bankId } = useParams();
     const navigate = useNavigate();
-    const [hotelType, setHotelType] = useState(null);
+    const [bank, setBank] = useState(null);
     const [editData, setEditData] = useState({
         name: '',
-        description: ''
     });
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -18,10 +17,8 @@ const EditHotelType = () => {
     const [validationErrors, setValidationErrors] = useState({});
     const [touched, setTouched] = useState({
         name: false,
-        description: false
     });
 
-    // Валидация полей
     const validateField = (name, value) => {
         let error = '';
 
@@ -82,16 +79,15 @@ const EditHotelType = () => {
         return isValid;
     };
 
-    // Загрузка данных типа отеля
     useEffect(() => {
-        const fetchHotelType = async () => {
+        const fetchBanks = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:5221/api/hotel-types/${hotelTypeId}`, {
+                const response = await axios.get(`http://localhost:5221/api/banks/${bankId}`, {
                     headers: {
                         authorization: `Bearer ${localStorage.getItem("token")}`
-                }});
-                setHotelType(response.data);
+                    }});
+                setBank(response.data);
                 setEditData({
                     name: response.data.name,
                     description: response.data.description
@@ -104,13 +100,12 @@ const EditHotelType = () => {
             }
         };
 
-        fetchHotelType();
-    }, [hotelTypeId]);
+        fetchBanks();
+    }, [bankId]);
 
     const handleSave = async (e) => {
         e.preventDefault();
 
-        // Пометить все поля как "тронутые" для отображения ошибок
         const newTouched = {};
         Object.keys(touched).forEach(key => {
             newTouched[key] = true;
@@ -127,14 +122,14 @@ const EditHotelType = () => {
 
         try {
             await axios.patch(
-                `http://localhost:5221/api/hotel-types/${hotelTypeId}`, editData, {
+                `http://localhost:5221/api/banks/${bankId}`, editData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 });
 
             setSuccess("Тип отеля успешно обновлен");
-            setTimeout(() => navigate("/hotel-types-administration"), 1500);
+            setTimeout(() => navigate("/bank-administration"), 1500);
         } catch (err) {
             console.error("Ошибка при обновлении типа отеля:", err);
             setError(err.response?.data?.message || "Ошибка при обновлении");
@@ -143,7 +138,7 @@ const EditHotelType = () => {
         }
     };
 
-    if (loading && !hotelType) return (
+    if (loading && !bank) return (
         <div className="container">
             <div className="loading-spinner">
                 <FaSpinner className="spinner" />
@@ -163,7 +158,6 @@ const EditHotelType = () => {
     return (
         <div className="container">
             <Navbar/>
-
             <h1>Редактирование типа отеля</h1>
 
             <div className="form-card">
@@ -189,25 +183,6 @@ const EditHotelType = () => {
                         {touched.name && validationErrors.name && (
                             <div className="validation-error">
                                 <FaExclamationTriangle /> {validationErrors.name}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label>
-                            <FaInfoCircle /> Описание*
-                        </label>
-                        <textarea
-                            name="description"
-                            value={editData.description}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            rows="4"
-                            className={`form-input ${touched.description && validationErrors.description ? 'input-error' : ''}`}
-                        />
-                        {touched.description && validationErrors.description && (
-                            <div className="validation-error">
-                                <FaExclamationTriangle /> {validationErrors.description}
                             </div>
                         )}
                     </div>
@@ -389,4 +364,4 @@ const EditHotelType = () => {
     );
 };
 
-export default EditHotelType;
+export default EditBank;
