@@ -69,6 +69,13 @@ const AdminProfile = () => {
                     <button>Управление списком оплат комнат</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/payment-amenity-administration">
+                    <button>Управление списком оплат услуг</button>
+                </Link>
+
             </div>
         </div>
     );
