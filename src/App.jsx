@@ -41,6 +41,9 @@ import AddPaymentType from "./components/admin/PaymentType/AddPaymentType.jsx";
 import EditPaymentType from "./components/admin/PaymentType/EditPaymentType.jsx";
 import HotelReviewAdministration from "./components/admin/HotelReview/HotelReviewAdministration.jsx";
 import AmenityReviewAdministration from "./components/admin/AmenityReview/AmenityReviewAdministration.jsx";
+import EmployeeTypeAdministration from "./components/admin/EmployeeType/EmployeeTypeAdministration.jsx";
+import AddEmployeeType from "./components/admin/EmployeeType/AddEmployeeType.jsx";
+import EditEmployeeType from "./components/admin/EmployeeType/EditEmployeeType.jsx";
 
 function App() {
     return (
@@ -52,6 +55,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-employee-type/:employeeTypeId" element={<EditEmployeeType />} />
+                    <Route path="/add-employee-type" element={<AddEmployeeType />} />
+                    <Route path="/employee-type-administration" element={<EmployeeTypeAdministration />} />
                     <Route path="/amenity-review-administration" element={<AmenityReviewAdministration />} />
                     <Route path="/hotel-review-administration" element={<HotelReviewAdministration />} />
                     <Route path="/edit-payment-type/:paymentTypeId" element={<EditPaymentType />} />

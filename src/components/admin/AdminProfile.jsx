@@ -104,6 +104,13 @@ const AdminProfile = () => {
                     <button>Управление отзывами об услугах</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/employee-type-administration">
+                    <button>Управление отзывами об услугах</button>
+                </Link>
+
             </div>
         </div>
     );
