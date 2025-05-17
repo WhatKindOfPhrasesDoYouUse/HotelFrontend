@@ -36,6 +36,9 @@ import PaymentAmenityAdministration from "./components/admin/AmenityPayment/Paym
 import BankAdministration from "./components/admin/Bank/BankAdministration.jsx";
 import AddBank from "./components/admin/Bank/AddBank.jsx";
 import EditBank from "./components/admin/Bank/EditBank.jsx";
+import PaymentTypeAdministration from "./components/admin/PaymentType/PaymentTypeAdministration.jsx";
+import AddPaymentType from "./components/admin/PaymentType/AddPaymentType.jsx";
+import EditPaymentType from "./components/admin/PaymentType/EditPaymentType.jsx";
 
 function App() {
     return (
@@ -47,6 +50,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-payment-type/:paymentTypeId" element={<EditPaymentType />} />
+                    <Route path="/add-payment-type" element={<AddPaymentType />} />
+                    <Route path="/payment-type-administration/" element={<PaymentTypeAdministration />} />
                     <Route path="/edit-bank/:bankId" element={<EditBank />} />
                     <Route path="/add-bank" element={<AddBank />} />
                     <Route path="/bank-administration" element={<BankAdministration />} />
