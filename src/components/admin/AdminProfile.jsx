@@ -94,7 +94,14 @@ const AdminProfile = () => {
                 <br/>
 
                 <Link to="/hotel-review-administration">
-                    <button>Управление типами оплаты</button>
+                    <button>Управление отзывами об отеле</button>
+                </Link>
+
+                <br/>
+                <br/>
+
+                <Link to="/amenity-review-administration">
+                    <button>Управление отзывами об услугах</button>
                 </Link>
 
             </div>
