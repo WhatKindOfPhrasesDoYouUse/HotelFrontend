@@ -125,6 +125,13 @@ const AdminProfile = () => {
                     <button>Управление списком карт</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/comfort-administration">
+                    <button>Управление списком комфорта</button>
+                </Link>
+
             </div>
         </div>
     );
