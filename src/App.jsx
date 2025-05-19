@@ -51,6 +51,9 @@ import CardAdministration from "./components/admin/Card/CardAdministration.jsx";
 import ComfortAdministration from "./components/admin/Comfort/ComfortAdministration.jsx";
 import AddComfort from "./components/admin/Comfort/AddComfort.jsx";
 import EditComfort from "./components/admin/Comfort/EditComfort.jsx";
+import RoomComfortAdministration from "./components/admin/RoomComfort/RoomComfortAdministration.jsx";
+import AddRoomComfort from "./components/admin/RoomComfort/AddRoomComfort.jsx";
+/*import EditRoomComfort from "./components/admin/RoomComfort/EditRoomComfort.jsx";*/
 
 function App() {
     return (
@@ -62,6 +65,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    {/*<Route path="/edit-room-comfort/:roomId/:comfortId" element={<EditRoomComfort />} />*/}
+                    <Route path="/add-room-comfort" element={<AddRoomComfort />} />
+                    <Route path="/room-comfort-administration" element={<RoomComfortAdministration />} />
                     <Route path="/edit-comfort/:comfortId" element={<EditComfort />} />
                     <Route path="/add-comfort" element={<AddComfort />} />
                     <Route path="/comfort-administration" element={<ComfortAdministration />} />
