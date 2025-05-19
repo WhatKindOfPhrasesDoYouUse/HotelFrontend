@@ -139,6 +139,13 @@ const AdminProfile = () => {
                     <button>Управление комфортабельностью комнат</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/guest-administration">
+                    <button>Управление гостевыми аккаунтами</button>
+                </Link>
+
             </div>
         </div>
     );

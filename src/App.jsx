@@ -53,7 +53,7 @@ import AddComfort from "./components/admin/Comfort/AddComfort.jsx";
 import EditComfort from "./components/admin/Comfort/EditComfort.jsx";
 import RoomComfortAdministration from "./components/admin/RoomComfort/RoomComfortAdministration.jsx";
 import AddRoomComfort from "./components/admin/RoomComfort/AddRoomComfort.jsx";
-/*import EditRoomComfort from "./components/admin/RoomComfort/EditRoomComfort.jsx";*/
+import GuestAdministration from "./components/admin/Guest/GuestAdministration.jsx";
 
 function App() {
     return (
@@ -63,9 +63,9 @@ function App() {
                     <Route path="/task-in-progress/:employeeId" element={<InProgressTask />} />
                     <Route path="/task-tracker/:employeeId" element={<TaskTracker />} />
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
-                    <Route path="/employee-panel" element={<EmployeeProfile />} />
+                    <Route path="/employee-panel" elementя={<EmployeeProfile />} />
 
-                    {/*<Route path="/edit-room-comfort/:roomId/:comfortId" element={<EditRoomComfort />} />*/}
+                    <Route path="/guest-administration" element={<GuestAdministration />} />
                     <Route path="/add-room-comfort" element={<AddRoomComfort />} />
                     <Route path="/room-comfort-administration" element={<RoomComfortAdministration />} />
                     <Route path="/edit-comfort/:comfortId" element={<EditComfort />} />
