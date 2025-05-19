@@ -47,6 +47,7 @@ import EditEmployeeType from "./components/admin/EmployeeType/EditEmployeeType.j
 import RoomAdministration from "./components/admin/Room/RoomAdministration.jsx";
 import AddRoom from "./components/admin/Room/AddRoom.jsx";
 import EditRoom from "./components/admin/Room/EditRoom.jsx";
+import CardAdministration from "./components/admin/Card/CardAdministration.jsx";
 
 function App() {
     return (
@@ -58,6 +59,7 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/card-administration" element={<CardAdministration />} />
                     <Route path="/edit-room/:roomId" element={<EditRoom />} />
                     <Route path="/add-room" element={<AddRoom />} />
                     <Route path="/room-administration" element={<RoomAdministration />} />

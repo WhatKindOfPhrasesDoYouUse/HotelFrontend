@@ -120,7 +120,11 @@ const AddCard = () => {
                 guestId: parseInt(response.data.id, 10),
             };
 
-            await axios.post("http://localhost:5221/api/cards", payload);
+            await axios.post("http://localhost:5221/api/cards", payload, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
             setSuccess(true);
             setTimeout(() => navigate("/guest-profile"), 1500);
         } catch (err) {

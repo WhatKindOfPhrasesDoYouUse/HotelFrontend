@@ -47,7 +47,11 @@ const GuestProfile = () => {
     const handleDeleteCard = async () => {
         if (cardData) {
             try {
-                await axios.delete(`http://localhost:5221/api/cards/${cardData.id}`);
+                await axios.delete(`http://localhost:5221/api/cards/${cardData.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
+                });
                 setCardData(null);
                 alert("Карта успешно удалена");
             } catch (error) {
