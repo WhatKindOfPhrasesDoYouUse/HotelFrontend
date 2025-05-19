@@ -111,6 +111,13 @@ const AdminProfile = () => {
                     <button>Управление отзывами об услугах</button>
                 </Link>
 
+                <br/>
+                <br/>
+
+                <Link to="/room-administration">
+                    <button>Управление списком комнат</button>
+                </Link>
+
             </div>
         </div>
     );

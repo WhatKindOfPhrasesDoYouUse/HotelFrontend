@@ -44,6 +44,9 @@ import AmenityReviewAdministration from "./components/admin/AmenityReview/Amenit
 import EmployeeTypeAdministration from "./components/admin/EmployeeType/EmployeeTypeAdministration.jsx";
 import AddEmployeeType from "./components/admin/EmployeeType/AddEmployeeType.jsx";
 import EditEmployeeType from "./components/admin/EmployeeType/EditEmployeeType.jsx";
+import RoomAdministration from "./components/admin/Room/RoomAdministration.jsx";
+import AddRoom from "./components/admin/Room/AddRoom.jsx";
+import EditRoom from "./components/admin/Room/EditRoom.jsx";
 
 function App() {
     return (
@@ -55,6 +58,9 @@ function App() {
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
                     <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-room/:roomId" element={<EditRoom />} />
+                    <Route path="/add-room" element={<AddRoom />} />
+                    <Route path="/room-administration" element={<RoomAdministration />} />
                     <Route path="/edit-employee-type/:employeeTypeId" element={<EditEmployeeType />} />
                     <Route path="/add-employee-type" element={<AddEmployeeType />} />
                     <Route path="/employee-type-administration" element={<EmployeeTypeAdministration />} />
