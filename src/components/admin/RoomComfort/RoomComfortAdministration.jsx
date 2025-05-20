@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "../../Navbar.jsx";
 import { FaCheck, FaExclamationTriangle, FaHotel, FaSpinner, FaTrash, FaPlus, FaEdit} from "react-icons/fa";

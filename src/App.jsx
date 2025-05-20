@@ -19,7 +19,7 @@ import AmenityList from "./components/AmenityList.jsx";
 import AmenityBooking from "./components/AmenityBooking.jsx";
 import AmenityBookingsList from "./components/AmenityBookingsList.jsx";
 import AdminProfile from "./components/admin/AdminProfile.jsx";
-import RegisterEmployee from "./components/admin/RegisterEmployee.jsx";
+import RegisterEmployee from "./components/admin/Employee/RegisterEmployee.jsx";
 import EmployeeProfile from "./components/employee/EmployeeProfile.jsx";
 import DoneTaskList from "./components/employee/DoneTaskList.jsx";
 import TaskTracker from "./components/employee/TaskTracker.jsx";
@@ -54,6 +54,8 @@ import EditComfort from "./components/admin/Comfort/EditComfort.jsx";
 import RoomComfortAdministration from "./components/admin/RoomComfort/RoomComfortAdministration.jsx";
 import AddRoomComfort from "./components/admin/RoomComfort/AddRoomComfort.jsx";
 import GuestAdministration from "./components/admin/Guest/GuestAdministration.jsx";
+import EmployeeAdministration from "./components/admin/Employee/EmployeeAdministration.jsx";
+import EditEmployee from "./components/admin/Employee/EditEmployee.jsx";
 
 function App() {
     return (
@@ -63,8 +65,10 @@ function App() {
                     <Route path="/task-in-progress/:employeeId" element={<InProgressTask />} />
                     <Route path="/task-tracker/:employeeId" element={<TaskTracker />} />
                     <Route path="/done-tasks/:employeeId" element={<DoneTaskList />} />
-                    <Route path="/employee-panel" elementя={<EmployeeProfile />} />
+                    <Route path="/employee-panel" element={<EmployeeProfile />} />
 
+                    <Route path="/edit-employee/:employeeId" element={<EditEmployee />} />
+                    <Route path="/employee-administration" element={<EmployeeAdministration />} />
                     <Route path="/guest-administration" element={<GuestAdministration />} />
                     <Route path="/add-room-comfort" element={<AddRoomComfort />} />
                     <Route path="/room-comfort-administration" element={<RoomComfortAdministration />} />

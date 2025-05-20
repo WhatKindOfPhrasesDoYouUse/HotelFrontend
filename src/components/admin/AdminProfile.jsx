@@ -51,13 +51,6 @@ const AdminProfile = () => {
                 <p><strong>Телефон:</strong> {userData.phoneNumber}</p>
                 <p><strong>Роль:</strong> {userData.role}</p>
 
-                <Link to="/register-employee">
-                    <button>Зарегистрировать нового сотрудника</button>
-                </Link>
-
-                <br/>
-                <br/>
-
                 <Link to="/hotel-types-administration">
                     <button>Управление списком типов отеля</button>
                 </Link>
@@ -144,6 +137,13 @@ const AdminProfile = () => {
 
                 <Link to="/guest-administration">
                     <button>Управление гостевыми аккаунтами</button>
+                </Link>
+
+                <br/>
+                <br/>
+
+                <Link to="/employee-administration">
+                    <button>Управление сотрудниками</button>
                 </Link>
 
             </div>
