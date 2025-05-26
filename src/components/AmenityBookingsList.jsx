@@ -88,10 +88,6 @@ const AmenityBookingsList = () => {
     };
 
     const handleDeleteAmenityBooking = async (amenityId) => {
-        if (!window.confirm("Вы уверены, что хотите удалить это бронирование?")) {
-            return;
-        }
-
         try {
             await axios.delete(`http://localhost:5221/api/amenity-bookings/${amenityId}`);
             const response = await axios.get(`http://localhost:5221/api/amenity-bookings/${bookingId}/details/room-booking`);

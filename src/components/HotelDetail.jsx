@@ -66,7 +66,8 @@ const HotelDetail = () => {
 
             <header className="hotel-header">
                 <img
-                    src="src/images/hotels/hotel-image-1.jpg"
+                    /*src="src/images/hotels/hotel-image-1.jpg"*/
+                    src="src/images/hotels/img_2.png"
                     alt={hotel.name}
                     className="hotel-main-image"
                 />

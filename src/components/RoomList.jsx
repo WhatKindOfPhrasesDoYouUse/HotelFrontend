@@ -15,7 +15,8 @@ import {
     FaChevronUp,
     FaChevronDown,
     FaCheckCircle,
-    FaCalendarAlt
+    FaCalendarAlt,
+    FaChartArea
 } from "react-icons/fa";
 
 const RoomList = () => {
@@ -405,6 +406,10 @@ const RoomList = () => {
                                         <div className="capacity">
                                             <FaUsers/> Вместимость: {room.capacity} чел.
                                         </div>
+
+                                        <p className="description">
+                                            <FaChartArea/> Площадь: {room.area} м²
+                                        </p>
 
                                         <div className="availability-status">
                                             {roomAvailability[room.id] ? (

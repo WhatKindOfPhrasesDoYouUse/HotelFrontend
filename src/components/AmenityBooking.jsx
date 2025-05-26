@@ -70,7 +70,7 @@ const AmenityBooking = () => {
             };
 
             await axios.post('http://localhost:5221/api/amenity-bookings', payload);
-            alert("Услуга успешно заказана!");
+/*            alert("Услуга успешно заказана!");*/
             navigate(`/myamenitys/${bookingId}`);
         } catch (err) {
             console.error("Ошибка при заказе услуги:", err);

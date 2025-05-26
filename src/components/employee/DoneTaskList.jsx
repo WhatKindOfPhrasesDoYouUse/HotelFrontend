@@ -2,65 +2,13 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Navbar from "../Navbar.jsx";
+import { FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 
 const DoneTaskList = () => {
     const [employeeType, setEmployeeType] = useState(null);
     const [doneAmenities, setDoneAmenities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const styles = {
-        container: {
-            padding: "20px",
-            fontFamily: "Arial, sans-serif",
-            maxWidth: "1200px",
-            margin: "0 auto"
-        },
-        title: {
-            color: "#333",
-            marginBottom: "20px",
-            textAlign: "center"
-        },
-        table: {
-            width: "100%",
-            borderCollapse: "collapse",
-            border: "1px solid #ddd",
-            boxShadow: "0 2px 3px rgba(0,0,0,0.1)",
-            marginBottom: "20px"
-        },
-        tableHeader: {
-            backgroundColor: "#f5f5f5",
-            border: "1px solid #ddd",
-            padding: "12px",
-            textAlign: "left",
-            fontWeight: "bold",
-            color: "#333"
-        },
-        tableCell: {
-            border: "1px solid #ddd",
-            padding: "10px",
-            textAlign: "left"
-        },
-        evenRow: {
-            backgroundColor: "#f9f9f9"
-        },
-        oddRow: {
-            backgroundColor: "#fff"
-        },
-        loading: {
-            textAlign: "center",
-            padding: "20px",
-            color: "#666"
-        },
-        error: {
-            color: "#d32f2f",
-            padding: "20px",
-            textAlign: "center",
-            backgroundColor: "#fdecea",
-            borderRadius: "4px",
-            margin: "20px 0"
-        }
-    };
 
     useEffect(() => {
         const fetchEmployeeType = async () => {
@@ -101,7 +49,7 @@ const DoneTaskList = () => {
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
-                        }
+                        },
                     }
                 );
                 setDoneAmenities(response.data);
@@ -117,59 +65,215 @@ const DoneTaskList = () => {
     }, [employeeType?.id]);
 
     if (loading) {
-        return <div style={styles.loading}>Загрузка данных...</div>;
+        return (
+            <div className="container">
+                <Navbar />
+                <div className="loading-spinner">
+                    <FaSpinner className="spinner" />
+                    <p>Загрузка данных...</p>
+                </div>
+            </div>
+        );
     }
 
     if (error) {
-        return <div style={styles.error}>{error}</div>;
+        return (
+            <div className="container">
+                <Navbar />
+                <div className="error-message">
+                    <FaExclamationTriangle /> {error}
+                </div>
+            </div>
+        );
     }
 
     if (!employeeType) {
-        return <div style={styles.error}>Данные о сотруднике не загружены</div>;
+        return (
+            <div className="container">
+                <Navbar />
+                <div className="error-message">
+                    <FaExclamationTriangle /> Данные о сотруднике не загружены
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div style={styles.container}>
+        <div className="container">
             <Navbar />
 
-            <h2 style={styles.title}>Оказанные услуги</h2>
+            <div className="header">
+                <h1>Оказанные услуги</h1>
+            </div>
 
-            <table style={styles.table}>
-                <thead>
-                <tr>
-                    <th style={styles.tableHeader}>ID</th>
-                    <th style={styles.tableHeader}>Услуга</th>
-                    <th style={styles.tableHeader}>Дата заказа</th>
-                    <th style={styles.tableHeader}>Время заказа</th>
-                    <th style={styles.tableHeader}>Дата выполнения</th>
-                    <th style={styles.tableHeader}>Время выполнения</th>
-                    <th style={styles.tableHeader}>Статус</th>
-                    <th style={styles.tableHeader}>Количество</th>
-                    <th style={styles.tableHeader}>Сумма</th>
-                    <th style={styles.tableHeader}>Оплачено</th>
-                    <th style={styles.tableHeader}>Email гостя</th>
-                    <th style={styles.tableHeader}>ID брони комнаты</th>
-                </tr>
-                </thead>
-                <tbody>
-                {doneAmenities.map((amenity, index) => (
-                    <tr key={amenity.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
-                        <td style={styles.tableCell}>{amenity.id}</td>
-                        <td style={styles.tableCell}>{amenity.amenityName}</td>
-                        <td style={styles.tableCell}>{amenity.orderDate}</td>
-                        <td style={styles.tableCell}>{amenity.orderTime.split('.')[0]}</td>
-                        <td style={styles.tableCell}>{amenity.readyDate}</td>
-                        <td style={styles.tableCell}>{amenity.readyTime.split('.')[0]}</td>
-                        <td style={styles.tableCell}>{amenity.completionStatus}</td>
-                        <td style={styles.tableCell}>{amenity.quantity}</td>
-                        <td style={styles.tableCell}>{amenity.amount} ₽</td>
-                        <td style={styles.tableCell}>{amenity.isPayd}</td>
-                        <td style={styles.tableCell}>{amenity.guestEmail}</td>
-                        <td style={styles.tableCell}>{amenity.roomBookingId}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            {doneAmenities.length > 0 ? (
+                <div className="card">
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Услуга</th>
+                                <th>Дата заказа</th>
+                                <th>Время заказа</th>
+                                <th>Дата выполнения</th>
+                                <th>Время выполнения</th>
+                                <th>Статус</th>
+                                <th>Количество</th>
+                                <th>Сумма</th>
+                                <th>Оплачено</th>
+                                <th>Email гостя</th>
+                                <th>ID брони комнаты</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {doneAmenities.map((amenity) => (
+                                <tr key={amenity.id}>
+                                    <td>{amenity.id}</td>
+                                    <td>{amenity.amenityName}</td>
+                                    <td>{amenity.orderDate}</td>
+                                    <td>{amenity.orderTime.split('.')[0]}</td>
+                                    <td>{amenity.readyDate}</td>
+                                    <td>{amenity.readyTime.split('.')[0]}</td>
+                                    <td>{amenity.completionStatus}</td>
+                                    <td>{amenity.quantity}</td>
+                                    <td>{amenity.amount} ₽</td>
+                                    <td>{amenity.isPayd ? "Оплачено" : "Не оплачено"}</td>
+                                    <td>{amenity.guestEmail}</td>
+                                    <td>{amenity.roomBookingId}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            ) : (
+                <div className="no-data">Нет данных об услугах</div>
+            )}
+
+            <style jsx>{`
+                .container {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                }
+
+                .header {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 30px;
+                }
+
+                h1 {
+                    color: #2c3e50;
+                    margin: 0;
+                    font-weight: 600;
+                    font-size: 28px;
+                }
+
+                .loading-spinner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 200px;
+                }
+
+                .spinner {
+                    animation: spin 1s linear infinite;
+                    font-size: 40px;
+                    margin-bottom: 15px;
+                    color: #3498db;
+                }
+
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                .error-message {
+                    background-color: #fdecea;
+                    padding: 15px;
+                    border-radius: 6px;
+                    margin: 20px 0;
+                    text-align: center;
+                    color: #e74c3c;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    justify-content: center;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 10px;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+                    padding: 25px;
+                    border-left: 4px solid #2980b9;
+                }
+
+                .table-container {
+                    overflow-x: auto;
+                    margin-bottom: 30px;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 15px;
+                    font-size: 14px;
+                }
+
+                th,
+                td {
+                    padding: 12px 15px;
+                    text-align: left;
+                    border-bottom: 1px solid #e0e0e0;
+                    vertical-align: middle;
+                }
+
+                th {
+                    background-color: #f8f9fa;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    position: sticky;
+                    top: 0;
+                }
+
+                tr:hover {
+                    background-color: #f5f5f5;
+                }
+
+                .no-data {
+                    text-align: center;
+                    padding: 20px;
+                    color: #7f8c8d;
+                    background-color: #f8f9fa;
+                    border-radius: 6px;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 15px;
+                    }
+
+                    h1 {
+                        font-size: 24px;
+                    }
+
+                    th,
+                    td {
+                        padding: 8px 10px;
+                        font-size: 13px;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
