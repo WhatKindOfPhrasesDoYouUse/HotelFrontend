@@ -1,0 +1,187 @@
+/* Общие стили для страницы */
+body {
+  background-color: white; /* Белый фон для всей страницы */
+  color: #333; /* Темный цвет для текста */
+  font-family: Arial, sans-serif; /* Устанавливаем шрифт */
+  margin: 0;
+  padding: 0;
+}
+
+/* Контейнер для всей страницы */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Логотипы */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+/* Анимация для логотипов */
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Стили для карточки */
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Контейнер для списка отелей */
+.hotel-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Заголовок списка отелей */
+.title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+/* Стили для списка отелей */
+.hotel-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Адаптивная сетка */
+  gap: 20px;
+}
+
+/* Карточка отеля */
+.hotel-card {
+  border: 2px solid #007bff; /* Сделаем границу синей и толще */
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff; /* Белый фон для карточки */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Более заметная тень */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Плавное изменение фона и тени */
+}
+
+/* Эффект наведения на карточку */
+.hotel-card:hover {
+  background-color: #f0f8ff; /* Легкий голубой фон при наведении */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Увеличенная тень при наведении */
+}
+
+/* Заголовок карточки */
+.hotel-card h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #2c3e50; /* Темный цвет для заголовка */
+}
+
+/* Текст внутри карточки */
+.hotel-card p {
+  margin: 5px 0;
+  color: #34495e; /* Темный цвет для текста */
+}
+
+/* Ссылка для контакта */
+.contact-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease; /* Плавное изменение фона при наведении */
+}
+
+/* Эффект наведения на ссылку */
+.contact-link:hover {
+  background-color: #0056b3;
+}
+
+.room-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.room-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.room-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.room-card-header h3 {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+.room-card-header .price {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.room-card-body p {
+  margin: 5px 0;
+}
+
+.room-card-body ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.room-card-body ul li {
+  margin-bottom: 5px;
+}
