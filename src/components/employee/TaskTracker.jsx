@@ -173,7 +173,7 @@ const TaskTracker = () => {
                                 <tr key={amenity.id}>
                                     <td>{amenity.id}</td>
                                     <td>{amenity.orderDate}</td>
-                                    <td>{amenity.orderTime}</td>
+                                    <td>{amenity.orderTime.substring(0, 5)}</td>
                                     <td>{amenity.completionStatus}</td>
                                     <td>{amenity.quantity}</td>
                                     <td>{amenity.guestName}</td>

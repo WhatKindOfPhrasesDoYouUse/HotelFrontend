@@ -306,7 +306,7 @@ const RoomBookingsList = () => {
 
                                 {booking.amenities && booking.amenities.length > 0 && (
                                     <div className="amenities">
-                                        <p className="amenities-title">Удобства номера:</p>
+                                        <p className="amenities-title">Допступные услуги:</p>
                                         <div className="amenities-list">
                                             {booking.amenities.map(amenity => (
                                                 <span key={amenity.id} className="amenity">

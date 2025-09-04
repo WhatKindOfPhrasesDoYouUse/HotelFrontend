@@ -152,7 +152,7 @@ const AmenityBookingsList = () => {
                                     </div>
                                     <div>
                                         <p className="detail-value">
-                                            {new Date(booking.orderDate).toLocaleDateString()} в {booking.orderTime}
+                                        {new Date(booking.orderDate).toLocaleDateString()} в {booking.orderTime.substring(0, 5)}
                                         </p>
                                     </div>
                                 </div>

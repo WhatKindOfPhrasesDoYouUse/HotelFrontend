@@ -77,10 +77,6 @@ const EmployeeProfile = () => {
 
                 <div className="profile-info">
                     <div className="info-item">
-                        <FaIdCard/> <span className="info-label">ID:</span>
-                        {userData.id}
-                    </div>
-                    <div className="info-item">
                         <FaUser/> <span className="info-label">ФИО:</span>
                         {userData.surname} {userData.name} {userData.patronymic}
                     </div>
@@ -94,7 +90,7 @@ const EmployeeProfile = () => {
                     </div>
                     <div className="info-item">
                         <FaUserTie/> <span className="info-label">Роль:</span>
-                        {userData.role}
+                        Уборщик
                     </div>
                 </div>
 

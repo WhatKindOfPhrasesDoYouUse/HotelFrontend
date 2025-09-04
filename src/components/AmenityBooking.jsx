@@ -134,7 +134,7 @@ const AmenityBooking = () => {
 
                     <div className="form-actions">
                         <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? <FaSpinner className="spinner" /> : "Забронировать"}
+                            {loading ? <FaSpinner className="spinner" /> : "Заказать услугу"}
                         </button>
                     </div>
 
